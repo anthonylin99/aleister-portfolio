@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { HoldingWithPrice, categoryColors } from '@/types/portfolio';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
@@ -13,6 +16,7 @@ interface TopHoldingCardProps {
 export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldingCardProps) {
   const color = categoryColors[holding.category];
   const isPositive = holding.dayChangePercent >= 0;
+  const { isVisible } = useVisibility();
   
   return (
     <Link 
@@ -44,7 +48,7 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
       <div className="space-y-2">
         <div className="flex items-end justify-between">
           <span className="text-2xl font-bold text-white tabular-nums">
-            {formatCurrency(holding.value)}
+            {isVisible ? formatCurrency(holding.value) : '$••••••'}
           </span>
         </div>
         
@@ -64,8 +68,8 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
       
       {/* Price info */}
       <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-slate-500">
-        <span>{holding.shares.toLocaleString()} shares</span>
-        <span>${holding.currentPrice.toFixed(2)}</span>
+        <span>{isVisible ? `${holding.shares.toLocaleString()} shares` : '•••• shares'}</span>
+        <span>{isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}</span>
       </div>
     </Link>
   );

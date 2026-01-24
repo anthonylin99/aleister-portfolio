@@ -4,10 +4,11 @@ import YahooFinance from 'yahoo-finance2';
 const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 
 // Ticker mapping for international/OTC stocks
+// Note: GLXY moved from TSX to NASDAQ (May 2025), FIGR IPO'd on NASDAQ (Sept 2025)
+// Both now trade directly without special mapping
 const tickerMap: Record<string, string> = {
-  'GLXY': 'GLXY.TO',      // Galaxy Digital on TSX
   'MTPLF': 'MTPLF',       // Metaplanet OTC
-  'KRKNF': 'KRKNF',       // Kraken OTC (may not be available)
+  'KRKNF': 'KRKNF',       // Kraken Robotics OTC
 };
 
 export function getYahooTicker(ticker: string): string {

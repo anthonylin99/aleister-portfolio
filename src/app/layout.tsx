@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
+import { VisibilityProvider } from "@/lib/visibility-context";
 
 export const metadata: Metadata = {
-  title: "PathFinder ETF | Personal Portfolio Tracker",
+  title: "Prometheus ETF | Personal Portfolio Tracker",
   description: "A hypothetical ETF showcasing my personal investment thesis across Space, Crypto, Fintech, and AI sectors.",
   keywords: ["portfolio", "ETF", "investing", "crypto", "fintech", "AI", "space"],
-  authors: [{ name: "PathFinder" }],
+  authors: [{ name: "Prometheus" }],
   openGraph: {
-    title: "PathFinder ETF",
+    title: "Prometheus ETF",
     description: "Personal Investment Portfolio Tracker",
     type: "website",
   },
@@ -29,9 +30,11 @@ export default function RootLayout({
           <div className="bg-orb bg-orb-3" />
         </div>
         
-        <LayoutWrapper>
-          {children}
-        </LayoutWrapper>
+        <VisibilityProvider>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
+        </VisibilityProvider>
       </body>
     </html>
   );

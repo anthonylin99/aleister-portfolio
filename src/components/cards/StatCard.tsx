@@ -1,4 +1,7 @@
+'use client';
+
 import { cn } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
@@ -8,6 +11,7 @@ interface StatCardProps {
   changeType?: 'positive' | 'negative' | 'neutral';
   icon?: LucideIcon;
   className?: string;
+  isCurrency?: boolean;
 }
 
 export function StatCard({ 
@@ -16,8 +20,15 @@ export function StatCard({
   change, 
   changeType = 'neutral',
   icon: Icon,
-  className 
+  className,
+  isCurrency = false
 }: StatCardProps) {
+  const { isVisible } = useVisibility();
+  
+  // Check if value contains a dollar sign (is a currency value)
+  const shouldMask = isCurrency || value.includes('$');
+  const displayValue = shouldMask && !isVisible ? '$••••••' : value;
+  
   return (
     <div className={cn(
       "glass-card p-6 rounded-2xl animate-fade-in-up",
@@ -32,7 +43,7 @@ export function StatCard({
         )}
       </div>
       <p className="text-3xl font-bold text-white tabular-nums mb-1">
-        {value}
+        {displayValue}
       </p>
       {change && (
         <p className={cn(

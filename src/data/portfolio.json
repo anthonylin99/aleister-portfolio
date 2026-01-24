@@ -26,8 +26,7 @@
       "name": "Galaxy Digital",
       "shares": 420,
       "category": "Crypto Infrastructure",
-      "description": "Crypto financial services & asset management",
-      "exchange": "TSX"
+      "description": "Digital assets platform and data center infrastructure (NASDAQ: GLXY)"
     },
     {
       "ticker": "MTPLF",
@@ -46,12 +45,10 @@
     },
     {
       "ticker": "FIGR",
-      "name": "Figure Technologies",
+      "name": "Figure Technology Solutions",
       "shares": 110,
       "category": "Fintech",
-      "description": "Blockchain-based lending & financial services",
-      "exchange": "PRIVATE",
-      "manualPrice": 73.64
+      "description": "Blockchain-native capital marketplace for lending and tokenization (NASDAQ: FIGR)"
     },
     {
       "ticker": "META",
@@ -76,17 +73,17 @@
     },
     {
       "ticker": "KRKNF",
-      "name": "Kraken",
+      "name": "Kraken Robotics",
       "shares": 600,
-      "category": "Crypto Infrastructure",
-      "description": "Global crypto exchange",
-      "exchange": "OTC"
+      "category": "Defense Tech",
+      "description": "Underwater robotics, batteries & sensors for defense",
+      "exchange": "TSX"
     }
   ],
   "etf": {
     "ticker": "ALIN",
-    "name": "PathFinder ETF",
-    "inceptionDate": "2024-01-02",
+    "name": "Prometheus ETF",
+    "inceptionDate": "2026-01-24",
     "inceptionPrice": 100
   },
   "lastUpdated": "2026-01-24T21:00:00Z"

@@ -1,6 +1,7 @@
 'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { useState } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from 'recharts';
 import { CategoryData } from '@/types/portfolio';
 import { formatCurrency, formatPercentage } from '@/lib/utils';
 
@@ -10,99 +11,96 @@ interface AllocationDonutProps {
 }
 
 export function AllocationDonut({ data, totalValue }: AllocationDonutProps) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   if (!data.length) {
     return (
-      <div className="h-[320px] flex items-center justify-center">
+      <div className="h-[280px] flex items-center justify-center">
         <p className="text-slate-500">Loading allocation data...</p>
       </div>
     );
   }
 
+  const onPieEnter = (_: unknown, index: number) => {
+    setActiveIndex(index);
+  };
+
+  const onPieLeave = () => {
+    setActiveIndex(null);
+  };
+
+  const activeData = activeIndex !== null ? data[activeIndex] : null;
+
   return (
-    <div className="relative h-[320px] animate-scale-in">
+    <div className="relative h-[280px] animate-scale-in">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={data}
             cx="50%"
             cy="50%"
-            innerRadius={80}
-            outerRadius={120}
+            innerRadius={70}
+            outerRadius={115}
             paddingAngle={2}
             dataKey="value"
             stroke="none"
+            onMouseEnter={onPieEnter}
+            onMouseLeave={onPieLeave}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ activeIndex: activeIndex !== null ? activeIndex : undefined } as any)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            activeShape={(props: any) => (
+              <Sector
+                {...props}
+                outerRadius={props.outerRadius + 6}
+                style={{
+                  filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.4))',
+                  cursor: 'pointer',
+                }}
+              />
+            )}
           >
             {data.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
                 fill={entry.color}
-                className="transition-all duration-300 hover:opacity-80"
                 style={{
-                  filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.3))',
+                  filter: activeIndex === null || activeIndex === index 
+                    ? 'drop-shadow(0 2px 6px rgba(0,0,0,0.25))' 
+                    : 'none',
+                  opacity: activeIndex === null || activeIndex === index ? 1 : 0.4,
+                  transition: 'opacity 0.2s ease, filter 0.2s ease',
+                  cursor: 'pointer',
                 }}
               />
             ))}
           </Pie>
-          <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>
       
-      {/* Center Label */}
+      {/* Center Label - Shows hovered category or total */}
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span className="text-slate-400 text-sm font-medium">Total Value</span>
-        <span className="text-2xl font-bold text-white tabular-nums">
-          {formatCurrency(totalValue)}
-        </span>
-      </div>
-      
-      {/* Legend */}
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        {data.map((category) => (
-          <div 
-            key={category.name}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
-          >
+        {activeData ? (
+          <>
             <div 
-              className="w-3 h-3 rounded-full flex-shrink-0"
-              style={{ backgroundColor: category.color }}
+              className="w-3 h-3 rounded-full mb-1"
+              style={{ backgroundColor: activeData.color }}
             />
-            <div className="min-w-0 flex-1">
-              <p className="text-xs text-slate-400 truncate">{category.name}</p>
-              <p className="text-sm font-medium text-white tabular-nums">
-                {formatPercentage(category.percentage)}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: CategoryData }> }) {
-  if (!active || !payload?.length) return null;
-  
-  const data = payload[0].payload;
-  
-  return (
-    <div className="glass-card p-3 border border-violet-500/30 shadow-xl">
-      <div className="flex items-center gap-2 mb-2">
-        <div 
-          className="w-3 h-3 rounded-full"
-          style={{ backgroundColor: data.color }}
-        />
-        <span className="text-sm font-medium text-white">{data.name}</span>
-      </div>
-      <div className="space-y-1">
-        <p className="text-lg font-bold text-white tabular-nums">
-          {formatCurrency(data.value)}
-        </p>
-        <p className="text-sm text-slate-400">
-          {formatPercentage(data.percentage)} of portfolio
-        </p>
-        <p className="text-xs text-slate-500">
-          {data.holdings.length} holding{data.holdings.length > 1 ? 's' : ''}
-        </p>
+            <span className="text-2xl font-bold text-white tabular-nums">
+              {formatPercentage(activeData.percentage)}
+            </span>
+            <span className="text-sm text-slate-300 text-center px-4 mt-1 max-w-[120px] leading-tight">
+              {activeData.name}
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="text-sm text-slate-400 font-medium">Total Value</span>
+            <span className="text-2xl font-bold text-white tabular-nums">
+              {formatCurrency(totalValue)}
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

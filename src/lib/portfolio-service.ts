@@ -14,11 +14,9 @@ import {
 const holdings = portfolioData.holdings as Holding[];
 const etfConfig = portfolioData.etf;
 
-// Get all tickers that need price fetching (exclude private companies)
+// Get all tickers that need price fetching
 export function getTradableTickers(): string[] {
-  return holdings
-    .filter(h => h.exchange !== 'PRIVATE')
-    .map(h => h.ticker);
+  return holdings.map(h => h.ticker);
 }
 
 // Calculate portfolio with live prices
@@ -32,17 +30,9 @@ export async function getPortfolioWithPrices(): Promise<{
   
   // Calculate holdings with prices
   const holdingsWithPrices: HoldingWithPrice[] = holdings.map(holding => {
-    let currentPrice: number;
-    let previousClose: number;
-    
-    if (holding.exchange === 'PRIVATE' && holding.manualPrice) {
-      currentPrice = holding.manualPrice;
-      previousClose = holding.manualPrice;
-    } else {
-      const quote = quotes[holding.ticker];
-      currentPrice = quote?.price || 0;
-      previousClose = quote?.previousClose || currentPrice;
-    }
+    const quote = quotes[holding.ticker];
+    const currentPrice = quote?.price || 0;
+    const previousClose = quote?.previousClose || currentPrice;
     
     const value = currentPrice * holding.shares;
     const previousValue = previousClose * holding.shares;
@@ -111,28 +101,22 @@ export async function getPortfolioWithPrices(): Promise<{
 export async function getETFData(): Promise<ETFData> {
   const { summary } = await getPortfolioWithPrices();
   
-  // Get historical performance to calculate current ETF price
-  const historicalPrices = await calculateHistoricalETFPrices(new Date(etfConfig.inceptionDate), new Date());
+  // For a fresh start, the ETF price is simply $100
+  // Day change comes from the portfolio's day change percentage applied to $100
+  const currentPrice = etfConfig.inceptionPrice * (1 + summary.dayChangePercent / 100);
+  const dayChange = currentPrice - etfConfig.inceptionPrice;
+  const dayChangePercent = summary.dayChangePercent;
   
-  const latestPrice = historicalPrices.length > 0 
-    ? historicalPrices[historicalPrices.length - 1].close 
-    : etfConfig.inceptionPrice;
-  
-  const previousPrice = historicalPrices.length > 1
-    ? historicalPrices[historicalPrices.length - 2].close
-    : etfConfig.inceptionPrice;
-  
-  const dayChange = latestPrice - previousPrice;
-  const dayChangePercent = previousPrice > 0 ? (dayChange / previousPrice) * 100 : 0;
-  const totalReturn = latestPrice - etfConfig.inceptionPrice;
-  const totalReturnPercent = (totalReturn / etfConfig.inceptionPrice) * 100;
+  // Total return is the same as day change since we just started
+  const totalReturn = dayChange;
+  const totalReturnPercent = dayChangePercent;
   
   return {
     ticker: etfConfig.ticker,
     name: etfConfig.name,
     inceptionDate: etfConfig.inceptionDate,
     inceptionPrice: etfConfig.inceptionPrice,
-    currentPrice: latestPrice,
+    currentPrice,
     dayChange,
     dayChangePercent,
     totalReturn,
@@ -146,29 +130,50 @@ export async function calculateHistoricalETFPrices(
   endDate: Date = new Date()
 ): Promise<HistoricalDataPoint[]> {
   const tickers = getTradableTickers();
+  const inceptionDate = new Date(etfConfig.inceptionDate);
+  
+  // If start date is before inception, use inception date
+  const effectiveStartDate = startDate < inceptionDate ? inceptionDate : startDate;
   
   // Fetch historical data for all stocks
   const historicalDataMap: Record<string, HistoricalData[]> = {};
   
   await Promise.all(
     tickers.map(async (ticker) => {
-      const data = await getHistoricalData(ticker, startDate, endDate);
+      const data = await getHistoricalData(ticker, effectiveStartDate, endDate);
       if (data.length > 0) {
         historicalDataMap[ticker] = data;
       }
     })
   );
   
-  // Find common dates across all stocks
+  // Find common dates across all stocks (only on or after inception)
   const allDates = new Set<string>();
+  const inceptionDateStr = inceptionDate.toISOString().split('T')[0];
+  
   Object.values(historicalDataMap).forEach(data => {
-    data.forEach(d => allDates.add(d.date.toISOString().split('T')[0]));
+    data.forEach(d => {
+      const dateStr = d.date.toISOString().split('T')[0];
+      if (dateStr >= inceptionDateStr) {
+        allDates.add(dateStr);
+      }
+    });
   });
   
   const sortedDates = Array.from(allDates).sort();
   
   if (sortedDates.length === 0) {
-    return [];
+    // No data yet - return single point at inception price
+    const today = new Date().toISOString().split('T')[0];
+    return [{
+      date: today,
+      time: Date.now() / 1000,
+      open: etfConfig.inceptionPrice,
+      high: etfConfig.inceptionPrice,
+      low: etfConfig.inceptionPrice,
+      close: etfConfig.inceptionPrice,
+      value: 0,
+    }];
   }
   
   // Calculate portfolio value for each date
@@ -180,18 +185,12 @@ export async function calculateHistoricalETFPrices(
     let validStocks = 0;
     
     holdings.forEach(holding => {
-      if (holding.exchange === 'PRIVATE') {
-        // Use manual price for private companies
-        portfolioValue += (holding.manualPrice || 0) * holding.shares;
-        validStocks++;
-      } else {
-        const stockData = historicalDataMap[holding.ticker];
-        if (stockData) {
-          const dayData = stockData.find(d => d.date.toISOString().split('T')[0] === dateStr);
-          if (dayData) {
-            portfolioValue += dayData.close * holding.shares;
-            validStocks++;
-          }
+      const stockData = historicalDataMap[holding.ticker];
+      if (stockData) {
+        const dayData = stockData.find(d => d.date.toISOString().split('T')[0] === dateStr);
+        if (dayData) {
+          portfolioValue += dayData.close * holding.shares;
+          validStocks++;
         }
       }
     });
@@ -202,7 +201,8 @@ export async function calculateHistoricalETFPrices(
         baselineValue = portfolioValue;
       }
       
-      // Calculate ETF price based on portfolio performance
+      // Calculate ETF price based on portfolio performance since inception
+      // The first day (inception) is always $100
       const etfPrice = baselineValue > 0 
         ? etfConfig.inceptionPrice * (portfolioValue / baselineValue)
         : etfConfig.inceptionPrice;
@@ -225,26 +225,37 @@ export async function calculateHistoricalETFPrices(
 // Get date range for time filter
 export function getDateRangeForFilter(range: TimeRange): Date {
   const now = new Date();
+  const inceptionDate = new Date(etfConfig.inceptionDate);
+  
+  let startDate: Date;
   
   switch (range) {
     case '1D':
-      return new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      break;
     case '5D':
-      return new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+      startDate = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+      break;
     case '1M':
-      return new Date(now.setMonth(now.getMonth() - 1));
+      startDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
+      break;
     case '3M':
-      return new Date(now.setMonth(now.getMonth() - 3));
+      startDate = new Date(new Date().setMonth(new Date().getMonth() - 3));
+      break;
     case '6M':
-      return new Date(now.setMonth(now.getMonth() - 6));
+      startDate = new Date(new Date().setMonth(new Date().getMonth() - 6));
+      break;
     case 'YTD':
-      return new Date(now.getFullYear(), 0, 1);
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
     case '1Y':
-      return new Date(now.setFullYear(now.getFullYear() - 1));
-    case '3Y':
-      return new Date(now.setFullYear(now.getFullYear() - 3));
+      startDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+      break;
     case 'ALL':
     default:
-      return new Date(etfConfig.inceptionDate);
+      return inceptionDate;
   }
+  
+  // If the calculated start date is before inception, use inception date
+  return startDate < inceptionDate ? inceptionDate : startDate;
 }

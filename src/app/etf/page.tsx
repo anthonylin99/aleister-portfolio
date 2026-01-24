@@ -1,9 +1,12 @@
 'use client';
 
 import { TradingViewChart } from '@/components/charts/TradingViewChart';
+import { BenchmarkChart } from '@/components/charts/BenchmarkChart';
+import { RiskMetricsCard } from '@/components/cards/RiskMetricsCard';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
-import { usePortfolio, useHistoricalData, useETF } from '@/lib/hooks';
+import { usePortfolio, useHistoricalData, useETF, useRiskMetrics } from '@/lib/hooks';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { categoryColors, Category } from '@/types/portfolio';
 import { 
   Compass, 
@@ -16,7 +19,8 @@ import {
   Calendar,
   TrendingUp,
   TrendingDown,
-  ArrowUpRight
+  ArrowUpRight,
+  Shield
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -27,12 +31,15 @@ const categoryIcons: Record<Category, React.ReactNode> = {
   'AI Infrastructure': <Cpu className="w-5 h-5" />,
   'Digital Asset Treasury': <Building2 className="w-5 h-5" />,
   'Big Tech': <Globe className="w-5 h-5" />,
+  'Defense Tech': <Shield className="w-5 h-5" />,
 };
 
 export default function ETFPage() {
-  const { holdings, summary, categories, loading: portfolioLoading } = usePortfolio();
+  const { holdings, summary, categories } = usePortfolio();
   const { data: historicalData, loading: chartLoading, range, setRange } = useHistoricalData('ALL');
-  const { etf, loading: etfLoading } = useETF();
+  const { etf } = useETF();
+  const { metrics: riskMetrics, loading: riskLoading } = useRiskMetrics(range === 'ALL' ? '1Y' : range);
+  const { isVisible } = useVisibility();
 
   const isPositive = etf ? etf.totalReturn >= 0 : true;
 
@@ -56,11 +63,11 @@ export default function ETFPage() {
                     ${etf?.ticker || 'ALIN'}
                   </h1>
                   <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-sm font-medium">
-                    PathFinder ETF
+                    Prometheus ETF
                   </span>
                 </div>
                 <p className="text-slate-400 mt-1">
-                  Personal Investment Portfolio • Inception Jan 2, 2024
+                  Personal Investment Portfolio • Inception Jan 24, 2026
                 </p>
               </div>
             </div>
@@ -69,7 +76,7 @@ export default function ETFPage() {
             {etf && (
               <div className="text-left lg:text-right">
                 <p className="text-5xl font-bold text-white tabular-nums">
-                  ${etf.currentPrice.toFixed(2)}
+                  {isVisible ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
                 </p>
                 <div className="flex items-center gap-3 mt-1 lg:justify-end">
                   <span className={cn(
@@ -89,7 +96,7 @@ export default function ETFPage() {
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <p className="text-sm text-slate-400 mb-1">Net Assets</p>
               <p className="text-2xl font-bold text-white tabular-nums">
-                {formatCurrency(summary.totalValue)}
+                {isVisible ? formatCurrency(summary.totalValue) : '$••••••'}
               </p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
@@ -110,7 +117,7 @@ export default function ETFPage() {
                 <Calendar className="w-4 h-4" />
                 <span>Inception</span>
               </div>
-              <p className="text-2xl font-bold text-white">Jan 2024</p>
+              <p className="text-2xl font-bold text-white">Jan 2026</p>
             </div>
           </div>
         </div>
@@ -128,6 +135,18 @@ export default function ETFPage() {
           priceChange={etf?.totalReturn || 0}
           priceChangePercent={etf?.totalReturnPercent || 0}
         />
+      </div>
+
+      {/* Risk Metrics */}
+      {riskMetrics && !riskLoading && (
+        <div className="mb-8">
+          <RiskMetricsCard metrics={riskMetrics} />
+        </div>
+      )}
+
+      {/* Benchmark Comparison */}
+      <div className="mb-8">
+        <BenchmarkChart range={range === 'ALL' ? '1Y' : range} />
       </div>
 
       {/* Category Weightings */}
@@ -158,7 +177,7 @@ export default function ETFPage() {
                       {formatPercentage(category.percentage)}
                     </p>
                     <p className="text-sm text-slate-400 tabular-nums">
-                      {formatCurrency(category.value)}
+                      {isVisible ? formatCurrency(category.value) : '$••••••'}
                     </p>
                   </div>
                 </div>
@@ -226,7 +245,7 @@ export default function ETFPage() {
                     </td>
                     <td className="p-3 hidden md:table-cell">
                       <span 
-                        className="px-2 py-1 rounded-full text-xs font-medium"
+                        className="inline-flex items-center justify-center px-2 py-1.5 rounded-lg text-[11px] font-medium text-center leading-tight max-w-[85px]"
                         style={{ backgroundColor: `${color}20`, color }}
                       >
                         {holding.category}
@@ -234,7 +253,7 @@ export default function ETFPage() {
                     </td>
                     <td className="p-3 text-right">
                       <p className="font-medium text-white tabular-nums">
-                        ${holding.currentPrice.toFixed(2)}
+                        {isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}
                       </p>
                       <p className={cn(
                         "text-xs tabular-nums",
@@ -244,11 +263,11 @@ export default function ETFPage() {
                       </p>
                     </td>
                     <td className="p-3 text-right hidden sm:table-cell">
-                      <span className="text-slate-300 tabular-nums">{holding.shares.toLocaleString()}</span>
+                      <span className="text-slate-300 tabular-nums">{isVisible ? holding.shares.toLocaleString() : '••••'}</span>
                     </td>
                     <td className="p-3 text-right">
                       <p className="font-bold text-white tabular-nums">
-                        {formatCurrency(holding.value)}
+                        {isVisible ? formatCurrency(holding.value) : '$••••••'}
                       </p>
                     </td>
                     <td className="p-3 text-right">
@@ -267,7 +286,7 @@ export default function ETFPage() {
       {/* Disclaimer */}
       <div className="mt-8 p-4 rounded-xl bg-slate-900/30 border border-slate-800">
         <p className="text-xs text-slate-500 leading-relaxed">
-          <strong className="text-slate-400">Disclaimer:</strong> $ALIN (PathFinder ETF) is a 
+          <strong className="text-slate-400">Disclaimer:</strong> $ALIN (Prometheus ETF) is a 
           hypothetical personal portfolio for educational and tracking purposes only. 
           This is not a registered investment fund. Historical performance is calculated 
           based on actual stock prices but assumes constant share holdings since inception.

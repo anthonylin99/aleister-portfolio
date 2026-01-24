@@ -3,7 +3,6 @@
 import { Header } from '@/components/layout/Header';
 import { AllocationDonut } from '@/components/charts/AllocationDonut';
 import { HoldingsBar } from '@/components/charts/HoldingsBar';
-import { CategoryCard } from '@/components/cards/CategoryCard';
 import { TopHoldingCard } from '@/components/cards/TopHoldingCard';
 import { StatCard } from '@/components/cards/StatCard';
 import { ETFCard } from '@/components/cards/ETFCard';
@@ -47,7 +46,7 @@ export default function Dashboard() {
   return (
     <div className="p-6 lg:p-8 min-h-screen">
       <Header 
-        title="PathFinder ETF"
+        title="Prometheus ETF"
         subtitle="Personal Investment Portfolio"
         totalValue={summary.totalValue}
         change={summary.dayChange}
@@ -125,18 +124,6 @@ export default function Dashboard() {
             </div>
           </div>
           <AllocationDonut data={categories} totalValue={summary.totalValue} />
-        </div>
-      </div>
-
-      {/* Category Breakdown */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-white">Category Breakdown</h3>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((category, index) => (
-            <CategoryCard key={category.name} category={category} index={index} />
-          ))}
         </div>
       </div>
 

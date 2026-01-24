@@ -94,7 +94,7 @@ export function getLogoUrl(ticker: string): string {
     META: 'meta.com',
     NVDA: 'nvidia.com',
     COIN: 'coinbase.com',
-    KRKNF: 'kraken.com',
+    KRKNF: 'krakenrobotics.com',
   };
 
   const domain = domainMap[ticker];

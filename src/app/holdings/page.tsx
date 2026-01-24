@@ -46,15 +46,15 @@ export default function HoldingsPage() {
         </button>
       </div>
 
-      {/* Category Overview with Pie Chart */}
-      <div className="mb-8">
-        <CategoryHoldingsSection data={categories} totalValue={summary.totalValue} />
-      </div>
-
       {/* Individual Holdings Table */}
-      <div>
+      <div className="mb-8">
         <h3 className="text-xl font-bold text-white mb-4">All Holdings</h3>
         <HoldingsTable holdings={holdings} totalValue={summary.totalValue} />
+      </div>
+
+      {/* Category Overview with Pie Chart */}
+      <div>
+        <CategoryHoldingsSection data={categories} totalValue={summary.totalValue} />
       </div>
     </div>
   );

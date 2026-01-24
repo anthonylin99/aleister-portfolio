@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { ETFData } from '@/types/portfolio';
 import { cn, formatCurrencyPrecise, formatPercentagePrecise } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { Compass, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 
 interface ETFCardProps {
@@ -11,6 +14,7 @@ interface ETFCardProps {
 export function ETFCard({ etf, className }: ETFCardProps) {
   const isPositive = etf.dayChange >= 0;
   const totalPositive = etf.totalReturn >= 0;
+  const { isVisible } = useVisibility();
 
   return (
     <Link 
@@ -37,7 +41,7 @@ export function ETFCard({ etf, className }: ETFCardProps) {
             </div>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-2xl font-bold text-white tabular-nums">
-                ${etf.currentPrice.toFixed(2)}
+                {isVisible ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
               </span>
               <span className={cn(
                 "flex items-center gap-1 text-sm font-medium",
@@ -60,7 +64,7 @@ export function ETFCard({ etf, className }: ETFCardProps) {
             {formatPercentagePrecise(etf.totalReturnPercent)}
           </p>
           <p className="text-xs text-slate-500">
-            {totalPositive ? '+' : ''}{formatCurrencyPrecise(etf.totalReturn)}
+            {isVisible ? `${totalPositive ? '+' : ''}${formatCurrencyPrecise(etf.totalReturn)}` : '$••••'}
           </p>
         </div>
 

@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { createChart, ColorType, IChartApi, ISeriesApi, LineStyle, CrosshairMode, AreaSeries } from 'lightweight-charts';
-import { HistoricalDataPoint, TimeRange } from '@/types/portfolio';
+import { HistoricalDataPoint, TimeRange, ChartDisplayState } from '@/types/portfolio';
+import { rangeLabels } from '@/data/etf-config';
 import { cn } from '@/lib/utils';
 
 interface TradingViewChartProps {
@@ -16,7 +17,7 @@ interface TradingViewChartProps {
   priceChangePercent?: number;
 }
 
-const timeRanges: TimeRange[] = ['1D', '5D', '1M', '3M', '6M', 'YTD', '1Y', '3Y', 'ALL'];
+const timeRanges: TimeRange[] = ['1D', '5D', '1M', '3M', '6M', 'YTD', '1Y', 'ALL'];
 
 export function TradingViewChart({
   data,
@@ -38,7 +39,37 @@ export function TradingViewChart({
     changePercent: number;
   } | null>(null);
 
-  const isPositive = priceChange >= 0;
+  // Calculate chart display state based on current data and range
+  const chartDisplayState = useMemo<ChartDisplayState>(() => {
+    if (!data.length) {
+      return {
+        selectedRange: range,
+        displayPrice: currentPrice || 100,
+        displayChange: priceChange,
+        displayChangePercent: priceChangePercent,
+        periodStartPrice: 100,
+        periodEndPrice: currentPrice || 100,
+        periodLabel: rangeLabels[range] || 'All time',
+      };
+    }
+
+    const startPrice = data[0]?.close || 100;
+    const endPrice = data[data.length - 1]?.close || currentPrice || 100;
+    const change = endPrice - startPrice;
+    const changePercent = startPrice > 0 ? (change / startPrice) * 100 : 0;
+
+    return {
+      selectedRange: range,
+      displayPrice: endPrice,
+      displayChange: change,
+      displayChangePercent: changePercent,
+      periodStartPrice: startPrice,
+      periodEndPrice: endPrice,
+      periodLabel: rangeLabels[range] || 'All time',
+    };
+  }, [data, range, currentPrice, priceChange, priceChangePercent]);
+
+  const isPositive = chartDisplayState.displayChange >= 0;
   const lineColor = isPositive ? '#22c55e' : '#ef4444';
   const areaTopColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
   const areaBottomColor = isPositive ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)';
@@ -181,9 +212,10 @@ export function TradingViewChart({
     chartRef.current?.timeScale().fitContent();
   }, [data]);
 
-  const displayPrice = crosshairData?.price ?? currentPrice ?? data[data.length - 1]?.close ?? 100;
-  const displayChange = crosshairData?.change ?? priceChange;
-  const displayChangePercent = crosshairData?.changePercent ?? priceChangePercent;
+  // Use crosshair data if hovering, otherwise use the calculated display state
+  const displayPrice = crosshairData?.price ?? chartDisplayState.displayPrice;
+  const displayChange = crosshairData?.change ?? chartDisplayState.displayChange;
+  const displayChangePercent = crosshairData?.changePercent ?? chartDisplayState.displayChangePercent;
   const displayPositive = displayChange >= 0;
 
   return (
@@ -193,7 +225,7 @@ export function TradingViewChart({
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className="text-2xl font-bold text-white">${ticker}</span>
-            <span className="text-sm text-slate-400">PathFinder ETF</span>
+            <span className="text-sm text-slate-400">Prometheus ETF</span>
           </div>
           <div className="flex items-baseline gap-3">
             <span className="text-4xl font-bold text-white tabular-nums">
@@ -203,11 +235,13 @@ export function TradingViewChart({
               "text-lg font-medium tabular-nums",
               displayPositive ? "text-emerald-400" : "text-red-400"
             )}>
-              {displayPositive ? '+' : ''}{displayChange.toFixed(2)} ({displayPositive ? '+' : ''}{displayChangePercent.toFixed(2)}%)
+              {displayPositive ? '+' : '-'}${Math.abs(displayChange).toFixed(2)} ({displayPositive ? '+' : ''}{displayChangePercent.toFixed(2)}%)
             </span>
           </div>
-          {crosshairData && (
+          {crosshairData ? (
             <span className="text-sm text-slate-500">{crosshairData.date}</span>
+          ) : (
+            <span className="text-sm text-slate-500">{chartDisplayState.periodLabel}</span>
           )}
         </div>
 
@@ -249,7 +283,7 @@ export function TradingViewChart({
       {/* Chart Footer */}
       <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between text-sm">
         <div className="flex items-center gap-4 text-slate-400">
-          <span>Inception: Jan 2, 2024</span>
+          <span>Inception: Jan 24, 2026</span>
           <span>•</span>
           <span>Starting Price: $100.00</span>
         </div>

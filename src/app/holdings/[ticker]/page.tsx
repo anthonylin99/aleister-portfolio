@@ -2,9 +2,11 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { usePortfolio } from '@/lib/hooks';
+import { usePortfolio, useEarnings } from '@/lib/hooks';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
+import { SocialFeed } from '@/components/social/SocialFeed';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { categoryColors } from '@/types/portfolio';
 import { 
   ArrowLeft, 
@@ -14,15 +16,19 @@ import {
   Target,
   FileText,
   Calendar,
-  Coins
+  Coins,
+  MessageSquare,
+  Clock
 } from 'lucide-react';
 
 export default function AssetDetailPage() {
   const params = useParams();
   const ticker = params.ticker as string;
-  const { holdings, summary, loading } = usePortfolio();
+  const { holdings, loading } = usePortfolio();
+  const { earnings } = useEarnings(ticker);
 
   const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
+  const { isVisible } = useVisibility();
 
   if (loading && !holding) {
     return (
@@ -86,6 +92,25 @@ export default function AssetDetailPage() {
                 </div>
                 <p className="text-xl text-slate-400">{holding.name}</p>
                 <p className="text-slate-500 mt-2 max-w-lg">{holding.description}</p>
+                
+                {/* Earnings Date */}
+                {earnings && (
+                  <div className="flex items-center gap-2 mt-3">
+                    <Clock className="w-4 h-4 text-violet-400" />
+                    <span className="text-sm text-slate-400">Next Earnings:</span>
+                    <span className="text-sm font-medium text-white">{earnings.formatted}</span>
+                    {earnings.daysUntil <= 7 && earnings.daysUntil >= 0 && (
+                      <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full font-medium">
+                        {earnings.daysUntil === 0 ? 'Today' : earnings.daysUntil === 1 ? 'Tomorrow' : `In ${earnings.daysUntil} days`}
+                      </span>
+                    )}
+                    {earnings.daysUntil < 0 && (
+                      <span className="px-2 py-0.5 bg-slate-500/20 text-slate-400 text-xs rounded-full font-medium">
+                        Passed
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -93,7 +118,7 @@ export default function AssetDetailPage() {
             <div className="text-left lg:text-right">
               <p className="text-sm text-slate-400 mb-1">Current Price</p>
               <p className="text-4xl font-bold text-white tabular-nums">
-                ${holding.currentPrice.toFixed(2)}
+                {isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••••'}
               </p>
               <div className={cn(
                 "flex items-center gap-1 mt-1 lg:justify-end text-lg font-medium",
@@ -115,7 +140,7 @@ export default function AssetDetailPage() {
             <span>Shares Held</span>
           </div>
           <p className="text-2xl font-bold text-white tabular-nums">
-            {holding.shares.toLocaleString()}
+            {isVisible ? holding.shares.toLocaleString() : '••••'}
           </p>
         </div>
 
@@ -125,7 +150,7 @@ export default function AssetDetailPage() {
             <span>Total Value</span>
           </div>
           <p className="text-2xl font-bold text-white tabular-nums">
-            {formatCurrency(holding.value)}
+            {isVisible ? formatCurrency(holding.value) : '$••••••'}
           </p>
         </div>
 
@@ -148,7 +173,7 @@ export default function AssetDetailPage() {
             "text-2xl font-bold tabular-nums",
             isPositive ? "text-emerald-400" : "text-red-400"
           )}>
-            {isPositive ? '+' : ''}{formatCurrency(holding.dayChange)}
+            {isVisible ? `${isPositive ? '+' : ''}${formatCurrency(holding.dayChange)}` : '$••••'}
           </p>
         </div>
       </div>
@@ -197,6 +222,21 @@ export default function AssetDetailPage() {
         </div>
       </div>
 
+      {/* News & Community Feed */}
+      <div className="glass-card p-6 rounded-2xl mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+            <MessageSquare className="w-5 h-5 text-cyan-400" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">News & Community</h2>
+            <p className="text-sm text-slate-400">Latest updates and social sentiment</p>
+          </div>
+        </div>
+        
+        <SocialFeed ticker={holding.ticker} />
+      </div>
+
       {/* Quick Links */}
       <div className="glass-card p-6 rounded-2xl">
         <h2 className="text-lg font-bold text-white mb-4">Quick Links</h2>
@@ -224,6 +264,14 @@ export default function AssetDetailPage() {
             className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors"
           >
             Google <ExternalLink className="w-4 h-4" />
+          </a>
+          <a 
+            href={`https://stocktwits.com/symbol/${holding.ticker}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors"
+          >
+            StockTwits <ExternalLink className="w-4 h-4" />
           </a>
         </div>
       </div>

@@ -4,7 +4,8 @@ export type Category =
   | 'Fintech'
   | 'AI Infrastructure'
   | 'Digital Asset Treasury'
-  | 'Big Tech';
+  | 'Big Tech'
+  | 'Defense Tech';
 
 export interface Holding {
   ticker: string;
@@ -13,7 +14,6 @@ export interface Holding {
   category: Category;
   description: string;
   exchange?: string;
-  manualPrice?: number;
   // Calculated fields (from API)
   currentPrice?: number;
   previousClose?: number;
@@ -87,6 +87,7 @@ export const categoryColors: Record<Category, string> = {
   'AI Infrastructure': '#34d399',
   'Digital Asset Treasury': '#fbbf24',
   'Big Tech': '#60a5fa',
+  'Defense Tech': '#f97316',
 };
 
 export const categoryGradients: Record<Category, string> = {
@@ -96,6 +97,85 @@ export const categoryGradients: Record<Category, string> = {
   'AI Infrastructure': 'from-emerald-400 to-green-500',
   'Digital Asset Treasury': 'from-amber-400 to-yellow-500',
   'Big Tech': 'from-blue-400 to-indigo-500',
+  'Defense Tech': 'from-orange-500 to-amber-500',
 };
 
-export type TimeRange = '1D' | '5D' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | '3Y' | 'ALL';
+export type TimeRange = '1D' | '5D' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | 'ALL';
+
+// Risk metrics
+export interface RiskMetrics {
+  volatility: number;       // Annualized standard deviation
+  sharpeRatio: number;      // Risk-adjusted return
+  maxDrawdown: number;      // Largest peak-to-trough decline
+  beta: number;             // Volatility vs S&P 500
+  sortinoRatio: number;     // Return per unit of downside risk
+  calculatedAt: string;
+  range: TimeRange;
+}
+
+// Benchmark data for comparison
+export interface BenchmarkData {
+  ticker: string;
+  name: string;
+  color: string;
+  data: { date: string; value: number }[];
+  performance: number; // % change over period
+}
+
+// News article
+export interface NewsArticle {
+  id: string;
+  headline: string;
+  summary: string;
+  source: string;
+  url: string;
+  image?: string;
+  datetime: number;
+  category?: string;
+}
+
+// StockTwits message
+export interface StockTwitsMessage {
+  id: number;
+  body: string;
+  createdAt: string;
+  user: {
+    username: string;
+    name: string;
+    avatarUrl: string;
+    followers: number;
+    official: boolean;
+  };
+  sentiment: 'Bullish' | 'Bearish' | null;
+  likes: number;
+}
+
+// Chart state for interactive features
+export interface ChartDisplayState {
+  selectedRange: TimeRange;
+  displayPrice: number;
+  displayChange: number;
+  displayChangePercent: number;
+  periodStartPrice: number;
+  periodEndPrice: number;
+  periodLabel: string;
+}
+
+// Drag selection for compare feature
+export interface DragSelection {
+  isSelecting: boolean;
+  startIndex: number | null;
+  endIndex: number | null;
+  startPrice: number | null;
+  endPrice: number | null;
+  startDate: string | null;
+  endDate: string | null;
+}
+
+// Earnings information
+export interface EarningsInfo {
+  date: string;
+  formatted: string;
+  isEstimate: boolean;
+  daysUntil: number;
+}

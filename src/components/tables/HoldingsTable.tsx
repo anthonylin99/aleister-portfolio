@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { HoldingWithPrice, categoryColors } from '@/types/portfolio';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { ChevronUp, ChevronDown, ArrowUpDown, Search, ArrowUpRight } from 'lucide-react';
 
@@ -20,6 +21,7 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const { isVisible } = useVisibility();
 
   const categories = useMemo(() => {
     const cats = new Set(holdings.map(h => h.category));
@@ -206,7 +208,7 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                     </td>
                     <td className="p-4 hidden md:table-cell">
                       <span 
-                        className="px-3 py-1 rounded-full text-xs font-medium"
+                        className="inline-flex items-center justify-center px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-center leading-tight max-w-[90px]"
                         style={{ backgroundColor: `${color}20`, color }}
                       >
                         {holding.category}
@@ -214,17 +216,17 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                     </td>
                     <td className="p-4 text-right">
                       <p className="font-medium text-white tabular-nums">
-                        ${holding.currentPrice.toFixed(2)}
+                        {isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}
                       </p>
                     </td>
                     <td className="p-4 text-right hidden sm:table-cell">
                       <span className="text-slate-300 tabular-nums">
-                        {holding.shares.toLocaleString()}
+                        {isVisible ? holding.shares.toLocaleString() : '••••'}
                       </span>
                     </td>
                     <td className="p-4 text-right">
                       <p className="font-bold text-white tabular-nums">
-                        {formatCurrency(holding.value)}
+                        {isVisible ? formatCurrency(holding.value) : '$••••••'}
                       </p>
                     </td>
                     <td className="p-4 text-right hidden lg:table-cell">
@@ -272,7 +274,7 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
             Showing {filteredAndSortedHoldings.length} of {holdings.length} holdings
           </span>
           <span className="text-sm font-medium text-white tabular-nums">
-            Total: {formatCurrency(filteredAndSortedHoldings.reduce((sum, h) => sum + h.value, 0))}
+            Total: {isVisible ? formatCurrency(filteredAndSortedHoldings.reduce((sum, h) => sum + h.value, 0)) : '$••••••'}
           </span>
         </div>
       </div>

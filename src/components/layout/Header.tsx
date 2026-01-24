@@ -1,6 +1,7 @@
 'use client';
 
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { useVisibility } from '@/lib/visibility-context';
 import { TrendingUp, TrendingDown, Clock, RefreshCw } from 'lucide-react';
 
 interface HeaderProps {
@@ -21,6 +22,7 @@ export function Header({
   lastUpdated 
 }: HeaderProps) {
   const isPositive = change >= 0;
+  const { isVisible } = useVisibility();
 
   return (
     <header className="mb-8">
@@ -40,7 +42,7 @@ export function Header({
           <div className="flex flex-col lg:items-end gap-2 animate-fade-in-up delay-100">
             <div className="flex items-baseline gap-3">
               <span className="text-4xl lg:text-5xl font-bold text-white tabular-nums glow-text">
-                {formatCurrency(totalValue)}
+                {isVisible ? formatCurrency(totalValue) : '$••••••'}
               </span>
               <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${
                 isPositive 

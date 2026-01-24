@@ -36,7 +36,7 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
         className={cn(
           "flex-1 min-h-screen transition-all duration-300 ease-out",
           "ml-0",
-          isCollapsed ? "lg:ml-20" : "lg:ml-72"
+          isCollapsed ? "lg:ml-20" : "lg:ml-56"
         )}
       >
         {children}
