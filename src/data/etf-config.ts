@@ -42,11 +42,12 @@ export const etfConfig = {
 };
 
 // Benchmark tickers for comparison
+// Colors: Artemis purple, vibrant green, coral orange, electric blue
 export const benchmarks = [
-  { ticker: 'SPY', name: 'S&P 500', color: '#60a5fa' },
-  { ticker: 'QQQ', name: 'Nasdaq 100', color: '#34d399' },
-  { ticker: 'ARKK', name: 'ARK Innovation', color: '#f472b6' },
-  { ticker: 'BITQ', name: 'Bitwise Crypto', color: '#fbbf24' },
+  { ticker: 'SPY', name: 'S&P 500', color: '#684FF8' },      // Artemis purple
+  { ticker: 'QQQ', name: 'Nasdaq 100', color: '#00D9A5' },   // Vibrant teal-green
+  { ticker: 'ARKK', name: 'ARK Innovation', color: '#FF6B6B' }, // Coral red
+  { ticker: 'BITQ', name: 'Bitwise Crypto', color: '#FFB800' }, // Golden yellow
 ];
 
 // Time range labels for display

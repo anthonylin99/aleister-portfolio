@@ -1,24 +1,52 @@
 import { NextResponse } from 'next/server';
 import { getHistoricalData } from '@/lib/yahoo-finance';
-import { calculateHistoricalETFPrices, getDateRangeForFilter } from '@/lib/portfolio-service';
+import { calculateHistoricalETFPrices } from '@/lib/portfolio-service';
 import { TimeRange, BenchmarkData } from '@/types/portfolio';
-import { benchmarks } from '@/data/etf-config';
+import { benchmarks, etfConfig } from '@/data/etf-config';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const range = (searchParams.get('range') || '1Y') as TimeRange;
   
   try {
-    const startDate = getDateRangeForFilter(range);
     const endDate = new Date();
+    const inceptionDate = new Date(etfConfig.inceptionDate);
     
-    // Fetch portfolio historical data
-    const portfolioHistory = await calculateHistoricalETFPrices(startDate, endDate);
+    // Calculate start date based on range
+    // For benchmarks, we always show historical data (2 years max)
+    let benchmarkStartDate: Date;
+    switch (range) {
+      case '1D':
+        benchmarkStartDate = new Date(endDate.getTime() - 1 * 24 * 60 * 60 * 1000);
+        break;
+      case '5D':
+        benchmarkStartDate = new Date(endDate.getTime() - 5 * 24 * 60 * 60 * 1000);
+        break;
+      case '1M':
+        benchmarkStartDate = new Date(new Date().setMonth(endDate.getMonth() - 1));
+        break;
+      case '3M':
+        benchmarkStartDate = new Date(new Date().setMonth(endDate.getMonth() - 3));
+        break;
+      case '6M':
+        benchmarkStartDate = new Date(new Date().setMonth(endDate.getMonth() - 6));
+        break;
+      case 'YTD':
+        benchmarkStartDate = new Date(endDate.getFullYear(), 0, 1);
+        break;
+      case '1Y':
+        benchmarkStartDate = new Date(new Date().setFullYear(endDate.getFullYear() - 1));
+        break;
+      case 'ALL':
+      default:
+        // Show 2 years of benchmark history for context
+        benchmarkStartDate = new Date(new Date().setFullYear(endDate.getFullYear() - 2));
+    }
     
-    // Fetch benchmark data in parallel
+    // Fetch benchmark data in parallel - always with full history for context
     const benchmarkPromises = benchmarks.map(async (benchmark) => {
       try {
-        const data = await getHistoricalData(benchmark.ticker, startDate, endDate);
+        const data = await getHistoricalData(benchmark.ticker, benchmarkStartDate, endDate);
         
         if (data.length === 0) return null;
         
@@ -47,18 +75,37 @@ export async function GET(request: Request) {
     });
     
     const benchmarkResults = await Promise.all(benchmarkPromises);
+    const validBenchmarks = benchmarkResults.filter(Boolean) as BenchmarkData[];
+    
+    // Fetch portfolio historical data (only from inception)
+    const portfolioStartDate = benchmarkStartDate < inceptionDate ? inceptionDate : benchmarkStartDate;
+    const portfolioHistory = await calculateHistoricalETFPrices(portfolioStartDate, endDate);
     
     // Normalize portfolio data to base 100
     let portfolioNormalized: { date: string; value: number }[] = [];
     let portfolioPerformance = 0;
     
-    if (portfolioHistory.length > 0) {
+    if (portfolioHistory.length > 1) {
       const basePrice = portfolioHistory[0].close;
       portfolioNormalized = portfolioHistory.map(p => ({
         date: p.date,
         value: (p.close / basePrice) * 100,
       }));
       portfolioPerformance = ((portfolioHistory[portfolioHistory.length - 1].close - basePrice) / basePrice) * 100;
+    } else if (validBenchmarks.length > 0 && validBenchmarks[0].data.length > 0) {
+      // If no portfolio history yet, show $ALIN as a flat line at 100 starting from inception
+      // Or if inception is in the future/today, show it at the last date
+      const inceptionDateStr = inceptionDate.toISOString().split('T')[0];
+      const todayStr = endDate.toISOString().split('T')[0];
+      
+      // Add portfolio data point at inception date (or today if inception is today/future)
+      const startDateStr = inceptionDateStr <= todayStr ? inceptionDateStr : todayStr;
+      
+      portfolioNormalized = [
+        { date: startDateStr, value: 100 },
+        { date: todayStr, value: 100 },
+      ];
+      portfolioPerformance = 0;
     }
     
     // Add portfolio as first item
@@ -72,7 +119,7 @@ export async function GET(request: Request) {
     
     return NextResponse.json({
       portfolio: alinData,
-      benchmarks: benchmarkResults.filter(Boolean),
+      benchmarks: validBenchmarks,
       range,
     });
   } catch (error) {

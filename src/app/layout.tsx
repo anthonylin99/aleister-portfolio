@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   description: "A hypothetical ETF showcasing my personal investment thesis across Space, Crypto, Fintech, and AI sectors.",
   keywords: ["portfolio", "ETF", "investing", "crypto", "fintech", "AI", "space"],
   authors: [{ name: "Prometheus" }],
+  icons: {
+    icon: "/profile icon 1.jpg",
+    apple: "/profile icon 1.jpg",
+  },
   openGraph: {
     title: "Prometheus ETF",
     description: "Personal Investment Portfolio Tracker",

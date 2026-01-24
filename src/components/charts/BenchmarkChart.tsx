@@ -92,8 +92,9 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
 
   // Update chart data when portfolio/benchmarks/active benchmarks change
   useEffect(() => {
-    if (!chartRef.current || !portfolio) return;
-
+    if (!chartRef.current) return;
+    
+    // Allow chart to render with just benchmarks, even if portfolio is null
     const chart = chartRef.current;
 
     // Remove existing series
@@ -106,8 +107,8 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
     });
     seriesRefs.current.clear();
 
-    // Add portfolio series (always visible, thicker)
-    if (portfolio.data.length > 0) {
+    // Add portfolio series (always visible, thicker) - if we have data
+    if (portfolio && portfolio.data.length > 0) {
       const portfolioSeries = chart.addSeries(LineSeries, {
         color: portfolio.color,
         lineWidth: 3,
@@ -126,7 +127,7 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
         const series = chart.addSeries(LineSeries, {
           color: benchmark.color,
           lineWidth: 2,
-          lineStyle: LineStyle.Dashed,
+          lineStyle: LineStyle.Solid,
           priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
         });
         series.setData(benchmark.data.map(d => ({
@@ -238,7 +239,7 @@ function PerformanceBox({ name, color, value }: PerformanceBoxProps) {
         "text-lg font-semibold tabular-nums",
         isPositive ? "text-emerald-400" : "text-red-400"
       )}>
-        {isPositive ? '+' : ''}{formatPercentagePrecise(value)}
+        {formatPercentagePrecise(value)}
       </span>
     </div>
   );

@@ -6,10 +6,8 @@ import { RiskMetricsCard } from '@/components/cards/RiskMetricsCard';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { usePortfolio, useHistoricalData, useETF, useRiskMetrics } from '@/lib/hooks';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
-import { useVisibility } from '@/lib/visibility-context';
 import { categoryColors, Category } from '@/types/portfolio';
 import { 
-  Compass, 
   Globe,
   Satellite,
   Bitcoin,
@@ -23,6 +21,7 @@ import {
   Shield
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const categoryIcons: Record<Category, React.ReactNode> = {
   'Space & Satellite': <Satellite className="w-5 h-5" />,
@@ -39,7 +38,8 @@ export default function ETFPage() {
   const { data: historicalData, loading: chartLoading, range, setRange } = useHistoricalData('ALL');
   const { etf } = useETF();
   const { metrics: riskMetrics, loading: riskLoading } = useRiskMetrics(range === 'ALL' ? '1Y' : range);
-  const { isVisible } = useVisibility();
+  // ETF Overview page shows simulated ETF values publicly (starting at $100)
+  // Only personal portfolio dollar values need privacy protection
 
   const isPositive = etf ? etf.totalReturn >= 0 : true;
 
@@ -54,8 +54,14 @@ export default function ETFPage() {
         <div className="relative">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                <Compass className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/30">
+                <Image 
+                  src="/prometheus.png" 
+                  alt="Prometheus ETF" 
+                  width={64} 
+                  height={64}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <div className="flex items-center gap-3">
@@ -72,11 +78,11 @@ export default function ETFPage() {
               </div>
             </div>
 
-            {/* Current Price */}
+            {/* Current Price - ETF price is public (simulated from $100) */}
             {etf && (
               <div className="text-left lg:text-right">
                 <p className="text-5xl font-bold text-white tabular-nums">
-                  {isVisible ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
+                  ${etf.currentPrice.toFixed(2)}
                 </p>
                 <div className="flex items-center gap-3 mt-1 lg:justify-end">
                   <span className={cn(
@@ -91,12 +97,12 @@ export default function ETFPage() {
             )}
           </div>
 
-          {/* Key Metrics */}
+          {/* Key Metrics - All ETF metrics are public */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <p className="text-sm text-slate-400 mb-1">Net Assets</p>
               <p className="text-2xl font-bold text-white tabular-nums">
-                {isVisible ? formatCurrency(summary.totalValue) : '$••••••'}
+                {formatCurrency(summary.totalValue)}
               </p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
@@ -177,7 +183,7 @@ export default function ETFPage() {
                       {formatPercentage(category.percentage)}
                     </p>
                     <p className="text-sm text-slate-400 tabular-nums">
-                      {isVisible ? formatCurrency(category.value) : '$••••••'}
+                      {formatCurrency(category.value)}
                     </p>
                   </div>
                 </div>
@@ -253,7 +259,7 @@ export default function ETFPage() {
                     </td>
                     <td className="p-3 text-right">
                       <p className="font-medium text-white tabular-nums">
-                        {isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}
+                        ${holding.currentPrice.toFixed(2)}
                       </p>
                       <p className={cn(
                         "text-xs tabular-nums",
@@ -263,11 +269,11 @@ export default function ETFPage() {
                       </p>
                     </td>
                     <td className="p-3 text-right hidden sm:table-cell">
-                      <span className="text-slate-300 tabular-nums">{isVisible ? holding.shares.toLocaleString() : '••••'}</span>
+                      <span className="text-slate-300 tabular-nums">{holding.shares.toLocaleString()}</span>
                     </td>
                     <td className="p-3 text-right">
                       <p className="font-bold text-white tabular-nums">
-                        {isVisible ? formatCurrency(holding.value) : '$••••••'}
+                        {formatCurrency(holding.value)}
                       </p>
                     </td>
                     <td className="p-3 text-right">

@@ -14,10 +14,13 @@ import {
   TrendingDown,
   AlertCircle,
   Save,
-  History
+  History,
+  Lock
 } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Category, categoryColors } from '@/types/portfolio';
+import { useVisibility } from '@/lib/visibility-context';
+import { PINModal } from '@/components/ui/PINModal';
 
 interface Holding {
   ticker: string;
@@ -51,12 +54,16 @@ const categories: Category[] = [
 ];
 
 export default function AdminPage() {
+  const { isVisible, isPINModalOpen, openPINModal, closePINModal, unlockWithPIN, correctPIN } = useVisibility();
   const [holdings, setHoldings] = useState<Holding[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
+  // Admin requires PIN authentication
+  const isAuthenticated = isVisible;
   
   // Edit state
   const [editingTicker, setEditingTicker] = useState<string | null>(null);
@@ -254,6 +261,42 @@ export default function AdminPage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  // Show PIN lock screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
+        <div className="glass-card p-8 rounded-2xl text-center max-w-md">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-500/10 flex items-center justify-center border border-violet-500/30">
+            <Lock className="w-10 h-10 text-violet-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Admin Access Required</h2>
+          <p className="text-slate-400 mb-6">
+            Enter your PIN to access the Holdings Manager and modify portfolio data.
+          </p>
+          <button
+            onClick={openPINModal}
+            className="px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-xl transition-colors"
+          >
+            Enter PIN
+          </button>
+          <Link 
+            href="/"
+            className="block mt-4 text-slate-500 hover:text-slate-300 text-sm transition-colors"
+          >
+            ← Back to Dashboard
+          </Link>
+        </div>
+        
+        <PINModal
+          isOpen={isPINModalOpen}
+          onClose={closePINModal}
+          onSuccess={unlockWithPIN}
+          correctPIN={correctPIN}
+        />
+      </div>
+    );
   }
 
   if (loading) {
