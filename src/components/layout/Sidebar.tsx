@@ -7,12 +7,13 @@ import {
   Wallet, 
   FileText, 
   TrendingUp,
+  TrendingDown,
   Menu,
   X,
   Compass
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { cn, formatCurrency, formatPercentagePrecise } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -20,9 +21,46 @@ const navigation = [
   { name: 'ETF Overview', href: '/etf', icon: FileText },
 ];
 
+interface SidebarData {
+  totalValue: number;
+  dayChangePercent: number;
+  holdingsCount: number;
+  etfPrice: number;
+  etfChange: number;
+}
+
 export function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState<SidebarData | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [pricesRes, etfRes] = await Promise.all([
+          fetch('/api/prices'),
+          fetch('/api/etf'),
+        ]);
+        
+        const prices = await pricesRes.json();
+        const etf = await etfRes.json();
+        
+        setData({
+          totalValue: prices.summary?.totalValue || 0,
+          dayChangePercent: prices.summary?.dayChangePercent || 0,
+          holdingsCount: prices.holdings?.length || 0,
+          etfPrice: etf.currentPrice || 100,
+          etfChange: etf.dayChangePercent || 0,
+        });
+      } catch (error) {
+        console.error('Failed to fetch sidebar data:', error);
+      }
+    }
+    
+    fetchData();
+  }, []);
+
+  const isPositive = (data?.dayChangePercent || 0) >= 0;
 
   return (
     <>
@@ -98,22 +136,54 @@ export function Sidebar() {
 
         {/* Stats Summary */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[rgba(139,92,246,0.1)]">
+          {/* $ALIN Price */}
+          <div className="glass-card p-4 rounded-xl mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-slate-400">$ALIN</span>
+              {data && (
+                <span className={cn(
+                  "text-xs font-medium flex items-center gap-1",
+                  data.etfChange >= 0 ? "text-emerald-400" : "text-red-400"
+                )}>
+                  {data.etfChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {formatPercentagePrecise(data.etfChange)}
+                </span>
+              )}
+            </div>
+            <p className="text-2xl font-bold text-white tabular-nums">
+              ${data?.etfPrice.toFixed(2) || '100.00'}
+            </p>
+          </div>
+
+          {/* Portfolio Summary */}
           <div className="glass-card p-4 rounded-xl">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <div className={cn(
+                "w-8 h-8 rounded-lg flex items-center justify-center",
+                isPositive ? "bg-emerald-500/20" : "bg-red-500/20"
+              )}>
+                {isPositive ? (
+                  <TrendingUp className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <TrendingDown className="w-4 h-4 text-red-400" />
+                )}
               </div>
               <div>
                 <p className="text-xs text-slate-400">Portfolio Value</p>
-                <p className="text-lg font-bold text-white tabular-nums">$137,300</p>
+                <p className="text-lg font-bold text-white tabular-nums">
+                  {data ? formatCurrency(data.totalValue) : '—'}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">
-                11 Holdings
+              <span className={cn(
+                "px-2 py-0.5 rounded-full text-xs font-medium",
+                isPositive ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
+              )}>
+                {data ? formatPercentagePrecise(data.dayChangePercent) : '—'}
               </span>
               <span className="px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400 text-xs font-medium">
-                6 Categories
+                {data?.holdingsCount || 0} Holdings
               </span>
             </div>
           </div>

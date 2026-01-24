@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { LayoutWrapper } from "@/components/layout/LayoutWrapper";
 
 export const metadata: Metadata = {
   title: "PathFinder ETF | Personal Portfolio Tracker",
@@ -29,12 +29,9 @@ export default function RootLayout({
           <div className="bg-orb bg-orb-3" />
         </div>
         
-        <div className="relative flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 ml-0 lg:ml-72 min-h-screen">
-            {children}
-          </main>
-        </div>
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

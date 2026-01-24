@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Holding, Category, CategoryData, categoryColors } from '@/types/portfolio';
+import { Holding, HoldingWithPrice, Category, CategoryData, categoryColors } from '@/types/portfolio';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,8 +15,21 @@ export function formatCurrency(value: number): string {
   }).format(value);
 }
 
+export function formatCurrencyPrecise(value: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 export function formatPercentage(value: number): string {
   return `${value.toFixed(1)}%`;
+}
+
+export function formatPercentagePrecise(value: number): string {
+  return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 }
 
 export function formatCompactNumber(value: number): string {
@@ -29,13 +42,22 @@ export function formatCompactNumber(value: number): string {
   return `$${value}`;
 }
 
-export function calculatePortfolioTotal(holdings: Holding[]): number {
-  return holdings.reduce((sum, holding) => sum + holding.value, 0);
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat('en-US').format(value);
 }
 
-export function calculateCategoryData(holdings: Holding[]): CategoryData[] {
+export function calculatePortfolioTotal(holdings: (Holding | HoldingWithPrice)[]): number {
+  return holdings.reduce((sum, holding) => {
+    if ('value' in holding && holding.value) {
+      return sum + holding.value;
+    }
+    return sum;
+  }, 0);
+}
+
+export function calculateCategoryData(holdings: HoldingWithPrice[]): CategoryData[] {
   const total = calculatePortfolioTotal(holdings);
-  const categoryMap = new Map<Category, { value: number; holdings: Holding[] }>();
+  const categoryMap = new Map<Category, { value: number; holdings: HoldingWithPrice[] }>();
 
   holdings.forEach((holding) => {
     const existing = categoryMap.get(holding.category) || { value: 0, holdings: [] };
@@ -55,12 +77,12 @@ export function calculateCategoryData(holdings: Holding[]): CategoryData[] {
     .sort((a, b) => b.value - a.value);
 }
 
-export function getTopHoldings(holdings: Holding[], count: number = 5): Holding[] {
+export function getTopHoldings(holdings: HoldingWithPrice[], count: number = 5): HoldingWithPrice[] {
   return [...holdings].sort((a, b) => b.value - a.value).slice(0, count);
 }
 
 export function getLogoUrl(ticker: string): string {
-  // Use Clearbit for common companies, fallback to placeholder
+  // Domain mapping for logo services
   const domainMap: Record<string, string> = {
     ASTS: 'ast-science.com',
     IREN: 'irisenergy.co',
@@ -77,7 +99,8 @@ export function getLogoUrl(ticker: string): string {
 
   const domain = domainMap[ticker];
   if (domain) {
-    return `https://logo.clearbit.com/${domain}`;
+    // Use img.logo.dev - a free reliable logo service
+    return `https://img.logo.dev/${domain}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ`;
   }
   return '';
 }
@@ -90,4 +113,27 @@ export function formatDate(dateString: string): string {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+export function formatDateShort(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+export function getRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return formatDateShort(dateString);
 }

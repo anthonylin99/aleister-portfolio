@@ -9,12 +9,26 @@ export type Category =
 export interface Holding {
   ticker: string;
   name: string;
-  value: number;
+  shares: number;
   category: Category;
   description: string;
-  shares?: number;
-  costBasis?: number;
+  exchange?: string;
+  manualPrice?: number;
+  // Calculated fields (from API)
   currentPrice?: number;
+  previousClose?: number;
+  value?: number;
+  dayChange?: number;
+  dayChangePercent?: number;
+}
+
+export interface HoldingWithPrice extends Holding {
+  currentPrice: number;
+  previousClose: number;
+  value: number;
+  dayChange: number;
+  dayChangePercent: number;
+  weight: number;
 }
 
 export interface CategoryData {
@@ -22,15 +36,48 @@ export interface CategoryData {
   value: number;
   percentage: number;
   color: string;
-  holdings: Holding[];
+  holdings: HoldingWithPrice[];
 }
 
 export interface PortfolioSummary {
   totalValue: number;
+  previousValue: number;
+  dayChange: number;
+  dayChangePercent: number;
   holdingsCount: number;
   categoriesCount: number;
-  topHolding: Holding;
   lastUpdated: string;
+}
+
+export interface ETFData {
+  ticker: string;
+  name: string;
+  inceptionDate: string;
+  inceptionPrice: number;
+  currentPrice: number;
+  dayChange: number;
+  dayChangePercent: number;
+  totalReturn: number;
+  totalReturnPercent: number;
+}
+
+export interface HistoricalDataPoint {
+  date: string;
+  time?: number; // Unix timestamp
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  value?: number; // Portfolio value
+}
+
+export interface PriceCache {
+  prices: Record<string, {
+    price: number;
+    previousClose: number;
+    lastUpdated: string;
+  }>;
+  lastFetch: string;
 }
 
 export const categoryColors: Record<Category, string> = {
@@ -50,3 +97,5 @@ export const categoryGradients: Record<Category, string> = {
   'Digital Asset Treasury': 'from-amber-400 to-yellow-500',
   'Big Tech': 'from-blue-400 to-indigo-500',
 };
+
+export type TimeRange = '1D' | '5D' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | '3Y' | 'ALL';

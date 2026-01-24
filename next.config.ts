@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: 'logo.clearbit.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.logo.dev',
+        pathname: '/**',
+      },
     ],
   },
 };

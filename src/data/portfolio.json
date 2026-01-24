@@ -3,80 +3,91 @@
     {
       "ticker": "ASTS",
       "name": "AST SpaceMobile",
-      "value": 28000,
+      "shares": 242,
       "category": "Space & Satellite",
       "description": "Space-based cellular broadband network"
     },
     {
       "ticker": "IREN",
       "name": "Iris Energy",
-      "value": 23400,
+      "shares": 378,
       "category": "Crypto Infrastructure",
       "description": "Bitcoin mining with renewable energy"
     },
     {
       "ticker": "HOOD",
       "name": "Robinhood",
-      "value": 22900,
+      "shares": 190,
       "category": "Fintech",
       "description": "Commission-free trading platform"
     },
     {
       "ticker": "GLXY",
       "name": "Galaxy Digital",
-      "value": 14400,
+      "shares": 420,
       "category": "Crypto Infrastructure",
-      "description": "Crypto financial services & asset management"
+      "description": "Crypto financial services & asset management",
+      "exchange": "TSX"
     },
     {
       "ticker": "MTPLF",
       "name": "Metaplanet",
-      "value": 11200,
+      "shares": 3000,
       "category": "Digital Asset Treasury",
-      "description": "Japan's Bitcoin treasury company"
+      "description": "Japan's Bitcoin treasury company",
+      "exchange": "OTC"
     },
     {
       "ticker": "AMZN",
       "name": "Amazon",
-      "value": 10600,
+      "shares": 46,
       "category": "Big Tech",
       "description": "E-commerce, cloud (AWS), AI infrastructure"
     },
     {
       "ticker": "FIGR",
       "name": "Figure Technologies",
-      "value": 8100,
+      "shares": 110,
       "category": "Fintech",
-      "description": "Blockchain-based lending & financial services"
+      "description": "Blockchain-based lending & financial services",
+      "exchange": "PRIVATE",
+      "manualPrice": 73.64
     },
     {
       "ticker": "META",
       "name": "Meta Platforms",
-      "value": 6800,
+      "shares": 11,
       "category": "AI Infrastructure",
       "description": "Social media, VR/AR, AI research"
     },
     {
       "ticker": "NVDA",
       "name": "NVIDIA",
-      "value": 5300,
+      "shares": 128,
       "category": "AI Infrastructure",
       "description": "GPU computing & AI chips"
     },
     {
       "ticker": "COIN",
       "name": "Coinbase",
-      "value": 3700,
+      "shares": 7,
       "category": "Fintech",
       "description": "Crypto exchange & custody"
     },
     {
       "ticker": "KRKNF",
       "name": "Kraken",
-      "value": 2900,
+      "shares": 600,
       "category": "Crypto Infrastructure",
-      "description": "Global crypto exchange"
+      "description": "Global crypto exchange",
+      "exchange": "OTC"
     }
   ],
-  "lastUpdated": "2026-01-23T12:00:00Z"
+  "etf": {
+    "ticker": "ALIN",
+    "name": "PathFinder ETF",
+    "inceptionDate": "2024-01-02",
+    "inceptionPrice": 100
+  },
+  "lastUpdated": "2026-01-24T21:00:00Z"
 }

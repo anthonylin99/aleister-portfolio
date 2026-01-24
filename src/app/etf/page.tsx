@@ -1,27 +1,24 @@
-import { Header } from '@/components/layout/Header';
+'use client';
+
+import { TradingViewChart } from '@/components/charts/TradingViewChart';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
-import portfolioData from '@/data/portfolio.json';
-import { Holding, categoryColors, Category } from '@/types/portfolio';
-import { 
-  calculatePortfolioTotal, 
-  calculateCategoryData, 
-  formatCurrency, 
-  formatPercentage 
-} from '@/lib/utils';
+import { usePortfolio, useHistoricalData, useETF } from '@/lib/hooks';
+import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
+import { categoryColors, Category } from '@/types/portfolio';
 import { 
   Compass, 
-  Target, 
-  TrendingUp, 
-  Shield, 
-  Zap, 
   Globe,
-  Rocket,
-  Cpu,
-  Coins,
-  Building2,
   Satellite,
-  Bitcoin
+  Bitcoin,
+  Coins,
+  Cpu,
+  Building2,
+  Calendar,
+  TrendingUp,
+  TrendingDown,
+  ArrowUpRight
 } from 'lucide-react';
+import Link from 'next/link';
 
 const categoryIcons: Record<Category, React.ReactNode> = {
   'Space & Satellite': <Satellite className="w-5 h-5" />,
@@ -32,55 +29,67 @@ const categoryIcons: Record<Category, React.ReactNode> = {
   'Big Tech': <Globe className="w-5 h-5" />,
 };
 
-const categoryDescriptions: Record<Category, string> = {
-  'Space & Satellite': 'Investing in the commercialization of space and satellite-based communication networks',
-  'Crypto Infrastructure': 'Core infrastructure enabling the digital asset ecosystem including mining, exchanges, and services',
-  'Fintech': 'Next-generation financial technology platforms disrupting traditional financial services',
-  'AI Infrastructure': 'Companies building and powering the artificial intelligence revolution',
-  'Digital Asset Treasury': 'Corporate treasury strategies utilizing Bitcoin as a reserve asset',
-  'Big Tech': 'Established technology giants with diversified growth opportunities',
-};
-
 export default function ETFPage() {
-  const holdings = portfolioData.holdings as Holding[];
-  const totalValue = calculatePortfolioTotal(holdings);
-  const categoryData = calculateCategoryData(holdings);
-  const topHoldings = [...holdings].sort((a, b) => b.value - a.value).slice(0, 10);
+  const { holdings, summary, categories, loading: portfolioLoading } = usePortfolio();
+  const { data: historicalData, loading: chartLoading, range, setRange } = useHistoricalData('ALL');
+  const { etf, loading: etfLoading } = useETF();
+
+  const isPositive = etf ? etf.totalReturn >= 0 : true;
 
   return (
     <div className="p-6 lg:p-8 min-h-screen">
       {/* Hero Section */}
-      <div className="glass-card p-8 lg:p-12 rounded-3xl mb-8 relative overflow-hidden">
+      <div className="glass-card p-8 lg:p-10 rounded-3xl mb-8 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-br from-violet-600/10 via-transparent to-cyan-600/10" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl" />
         
         <div className="relative">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
-              <Compass className="w-8 h-8 text-white" />
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <Compass className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight">
+                    ${etf?.ticker || 'ALIN'}
+                  </h1>
+                  <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 text-sm font-medium">
+                    PathFinder ETF
+                  </span>
+                </div>
+                <p className="text-slate-400 mt-1">
+                  Personal Investment Portfolio • Inception Jan 2, 2024
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight">
-                PathFinder ETF
-              </h1>
-              <p className="text-violet-400 font-medium">
-                Hypothetical Personal Investment Fund
-              </p>
-            </div>
-          </div>
 
-          <p className="text-xl text-slate-300 max-w-3xl mb-8 leading-relaxed">
-            A curated portfolio capturing the convergence of emerging technologies — 
-            from space infrastructure to digital assets, fintech innovation to AI computing.
-          </p>
+            {/* Current Price */}
+            {etf && (
+              <div className="text-left lg:text-right">
+                <p className="text-5xl font-bold text-white tabular-nums">
+                  ${etf.currentPrice.toFixed(2)}
+                </p>
+                <div className="flex items-center gap-3 mt-1 lg:justify-end">
+                  <span className={cn(
+                    "flex items-center gap-1 text-lg font-medium",
+                    isPositive ? "text-emerald-400" : "text-red-400"
+                  )}>
+                    {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+                    {formatPercentagePrecise(etf.totalReturnPercent)} all time
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Key Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <p className="text-sm text-slate-400 mb-1">Net Assets</p>
               <p className="text-2xl font-bold text-white tabular-nums">
-                {formatCurrency(totalValue)}
+                {formatCurrency(summary.totalValue)}
               </p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
@@ -88,72 +97,44 @@ export default function ETFPage() {
               <p className="text-2xl font-bold text-white">{holdings.length}</p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-              <p className="text-sm text-slate-400 mb-1">Expense Ratio</p>
-              <p className="text-2xl font-bold text-emerald-400">0.00%</p>
+              <p className="text-sm text-slate-400 mb-1">Day Change</p>
+              <p className={cn(
+                "text-2xl font-bold tabular-nums",
+                summary.dayChange >= 0 ? "text-emerald-400" : "text-red-400"
+              )}>
+                {formatPercentagePrecise(summary.dayChangePercent)}
+              </p>
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-              <p className="text-sm text-slate-400 mb-1">Inception</p>
-              <p className="text-2xl font-bold text-white">2024</p>
+              <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
+                <Calendar className="w-4 h-4" />
+                <span>Inception</span>
+              </div>
+              <p className="text-2xl font-bold text-white">Jan 2024</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Investment Thesis */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="glass-card p-6 rounded-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
-              <Target className="w-5 h-5 text-violet-400" />
-            </div>
-            <h2 className="text-xl font-bold text-white">Investment Thesis</h2>
-          </div>
-          <div className="space-y-4 text-slate-300">
-            <p>
-              PathFinder ETF represents a conviction-based approach to identifying 
-              transformative technologies at inflection points. The fund focuses on 
-              companies building essential infrastructure for the next decade.
-            </p>
-            <p>
-              Key themes include the monetization of space, the institutionalization 
-              of digital assets, and the proliferation of AI across every industry.
-            </p>
-          </div>
-        </div>
-
-        <div className="glass-card p-6 rounded-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-emerald-400" />
-            </div>
-            <h2 className="text-xl font-bold text-white">Strategy</h2>
-          </div>
-          <ul className="space-y-3 text-slate-300">
-            <li className="flex items-start gap-3">
-              <Zap className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-              <span>Concentrated positions in high-conviction names</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Rocket className="w-5 h-5 text-pink-400 flex-shrink-0 mt-0.5" />
-              <span>Early-stage exposure to emerging sectors</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Globe className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-              <span>Global exposure across markets and exchanges</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <TrendingUp className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-              <span>Long-term horizon with tactical adjustments</span>
-            </li>
-          </ul>
-        </div>
+      {/* Historical Chart */}
+      <div className="mb-8">
+        <TradingViewChart
+          data={historicalData}
+          loading={chartLoading}
+          range={range}
+          onRangeChange={setRange}
+          ticker={etf?.ticker || 'ALIN'}
+          currentPrice={etf?.currentPrice}
+          priceChange={etf?.totalReturn || 0}
+          priceChangePercent={etf?.totalReturnPercent || 0}
+        />
       </div>
 
       {/* Category Weightings */}
       <div className="glass-card p-6 rounded-2xl mb-8">
         <h2 className="text-xl font-bold text-white mb-6">Category Weightings</h2>
         <div className="space-y-4">
-          {categoryData.map((category) => {
+          {categories.map((category) => {
             const color = categoryColors[category.name];
             return (
               <div key={category.name} className="group">
@@ -167,8 +148,8 @@ export default function ETFPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">{category.name}</p>
-                      <p className="text-sm text-slate-400 hidden lg:block">
-                        {categoryDescriptions[category.name]}
+                      <p className="text-sm text-slate-400">
+                        {category.holdings.length} holding{category.holdings.length > 1 ? 's' : ''}
                       </p>
                     </div>
                   </div>
@@ -197,11 +178,16 @@ export default function ETFPage() {
         </div>
       </div>
 
-      {/* Top 10 Holdings */}
+      {/* All Holdings */}
       <div className="glass-card p-6 rounded-2xl">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Top 10 Holdings</h2>
-          <span className="text-sm text-slate-400">As of {new Date().toLocaleDateString()}</span>
+          <h2 className="text-xl font-bold text-white">All Holdings</h2>
+          <Link 
+            href="/holdings" 
+            className="text-sm text-violet-400 hover:text-violet-300 flex items-center gap-1"
+          >
+            View Details <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </div>
         
         <div className="overflow-x-auto">
@@ -211,13 +197,16 @@ export default function ETFPage() {
                 <th className="text-left p-3 text-sm font-semibold text-slate-400">#</th>
                 <th className="text-left p-3 text-sm font-semibold text-slate-400">Holding</th>
                 <th className="text-left p-3 text-sm font-semibold text-slate-400 hidden md:table-cell">Category</th>
+                <th className="text-right p-3 text-sm font-semibold text-slate-400">Price</th>
+                <th className="text-right p-3 text-sm font-semibold text-slate-400 hidden sm:table-cell">Shares</th>
+                <th className="text-right p-3 text-sm font-semibold text-slate-400">Value</th>
                 <th className="text-right p-3 text-sm font-semibold text-slate-400">Weight</th>
               </tr>
             </thead>
             <tbody>
-              {topHoldings.map((holding, index) => {
-                const percentage = (holding.value / totalValue) * 100;
+              {holdings.map((holding, index) => {
                 const color = categoryColors[holding.category];
+                const dayPositive = holding.dayChangePercent >= 0;
                 return (
                   <tr 
                     key={holding.ticker}
@@ -227,13 +216,13 @@ export default function ETFPage() {
                       <span className="text-slate-500 font-medium">{index + 1}</span>
                     </td>
                     <td className="p-3">
-                      <div className="flex items-center gap-3">
+                      <Link href={`/holdings/${holding.ticker}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                         <CompanyLogo ticker={holding.ticker} size="sm" />
                         <div>
                           <p className="font-semibold text-white">{holding.ticker}</p>
-                          <p className="text-sm text-slate-400">{holding.name}</p>
+                          <p className="text-sm text-slate-400 hidden sm:block">{holding.name}</p>
                         </div>
-                      </div>
+                      </Link>
                     </td>
                     <td className="p-3 hidden md:table-cell">
                       <span 
@@ -244,8 +233,27 @@ export default function ETFPage() {
                       </span>
                     </td>
                     <td className="p-3 text-right">
+                      <p className="font-medium text-white tabular-nums">
+                        ${holding.currentPrice.toFixed(2)}
+                      </p>
+                      <p className={cn(
+                        "text-xs tabular-nums",
+                        dayPositive ? "text-emerald-400" : "text-red-400"
+                      )}>
+                        {formatPercentagePrecise(holding.dayChangePercent)}
+                      </p>
+                    </td>
+                    <td className="p-3 text-right hidden sm:table-cell">
+                      <span className="text-slate-300 tabular-nums">{holding.shares.toLocaleString()}</span>
+                    </td>
+                    <td className="p-3 text-right">
                       <p className="font-bold text-white tabular-nums">
-                        {formatPercentage(percentage)}
+                        {formatCurrency(holding.value)}
+                      </p>
+                    </td>
+                    <td className="p-3 text-right">
+                      <p className="font-medium text-white tabular-nums">
+                        {formatPercentage(holding.weight)}
                       </p>
                     </td>
                   </tr>
@@ -254,24 +262,16 @@ export default function ETFPage() {
             </tbody>
           </table>
         </div>
-
-        <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between">
-          <span className="text-sm text-slate-400">
-            Top 10 represent {formatPercentage(
-              topHoldings.reduce((sum, h) => sum + (h.value / totalValue) * 100, 0)
-            )} of portfolio
-          </span>
-        </div>
       </div>
 
       {/* Disclaimer */}
       <div className="mt-8 p-4 rounded-xl bg-slate-900/30 border border-slate-800">
         <p className="text-xs text-slate-500 leading-relaxed">
-          <strong className="text-slate-400">Disclaimer:</strong> PathFinder ETF is a 
+          <strong className="text-slate-400">Disclaimer:</strong> $ALIN (PathFinder ETF) is a 
           hypothetical personal portfolio for educational and tracking purposes only. 
-          This is not a registered investment fund and should not be construed as 
-          investment advice. Past performance does not guarantee future results. 
-          Investments involve risk including possible loss of principal.
+          This is not a registered investment fund. Historical performance is calculated 
+          based on actual stock prices but assumes constant share holdings since inception.
+          Past performance does not guarantee future results.
         </p>
       </div>
     </div>

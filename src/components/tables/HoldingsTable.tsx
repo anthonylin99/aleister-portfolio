@@ -1,17 +1,18 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Holding, categoryColors } from '@/types/portfolio';
-import { formatCurrency, formatPercentage, cn } from '@/lib/utils';
+import Link from 'next/link';
+import { HoldingWithPrice, categoryColors } from '@/types/portfolio';
+import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
-import { ChevronUp, ChevronDown, ArrowUpDown, Search } from 'lucide-react';
+import { ChevronUp, ChevronDown, ArrowUpDown, Search, ArrowUpRight } from 'lucide-react';
 
 interface HoldingsTableProps {
-  holdings: Holding[];
+  holdings: HoldingWithPrice[];
   totalValue: number;
 }
 
-type SortKey = 'ticker' | 'name' | 'value' | 'category';
+type SortKey = 'ticker' | 'name' | 'value' | 'category' | 'price' | 'dayChange' | 'weight';
 type SortOrder = 'asc' | 'desc';
 
 export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
@@ -53,6 +54,15 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
           break;
         case 'value':
           comparison = a.value - b.value;
+          break;
+        case 'price':
+          comparison = a.currentPrice - b.currentPrice;
+          break;
+        case 'dayChange':
+          comparison = a.dayChangePercent - b.dayChangePercent;
+          break;
+        case 'weight':
+          comparison = a.weight - b.weight;
           break;
       }
       return sortOrder === 'asc' ? comparison : -comparison;
@@ -135,6 +145,18 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                 </th>
                 <th className="text-right p-4">
                   <button
+                    onClick={() => handleSort('price')}
+                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                  >
+                    Price
+                    <SortIcon columnKey="price" />
+                  </button>
+                </th>
+                <th className="text-right p-4 hidden sm:table-cell">
+                  <span className="text-sm font-semibold text-slate-400">Shares</span>
+                </th>
+                <th className="text-right p-4">
+                  <button
                     onClick={() => handleSort('value')}
                     className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
                   >
@@ -142,30 +164,45 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                     <SortIcon columnKey="value" />
                   </button>
                 </th>
-                <th className="text-right p-4">
-                  <span className="text-sm font-semibold text-slate-400">% of Portfolio</span>
+                <th className="text-right p-4 hidden lg:table-cell">
+                  <button
+                    onClick={() => handleSort('dayChange')}
+                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                  >
+                    Day
+                    <SortIcon columnKey="dayChange" />
+                  </button>
                 </th>
+                <th className="text-right p-4">
+                  <button
+                    onClick={() => handleSort('weight')}
+                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                  >
+                    Weight
+                    <SortIcon columnKey="weight" />
+                  </button>
+                </th>
+                <th className="w-10 p-4"></th>
               </tr>
             </thead>
             <tbody>
               {filteredAndSortedHoldings.map((holding, index) => {
-                const percentage = (holding.value / totalValue) * 100;
                 const color = categoryColors[holding.category];
+                const dayPositive = holding.dayChangePercent >= 0;
                 
                 return (
                   <tr 
                     key={holding.ticker}
-                    className="border-b border-slate-800/50 hover:bg-white/5 transition-colors animate-fade-in-up"
-                    style={{ animationDelay: `${index * 30}ms` }}
+                    className="border-b border-slate-800/50 hover:bg-white/5 transition-colors group"
                   >
                     <td className="p-4">
-                      <div className="flex items-center gap-3">
+                      <Link href={`/holdings/${holding.ticker}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                         <CompanyLogo ticker={holding.ticker} size="md" />
                         <div>
                           <p className="font-semibold text-white">{holding.ticker}</p>
                           <p className="text-sm text-slate-400">{holding.name}</p>
                         </div>
-                      </div>
+                      </Link>
                     </td>
                     <td className="p-4 hidden md:table-cell">
                       <span 
@@ -176,25 +213,51 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                       </span>
                     </td>
                     <td className="p-4 text-right">
+                      <p className="font-medium text-white tabular-nums">
+                        ${holding.currentPrice.toFixed(2)}
+                      </p>
+                    </td>
+                    <td className="p-4 text-right hidden sm:table-cell">
+                      <span className="text-slate-300 tabular-nums">
+                        {holding.shares.toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
                       <p className="font-bold text-white tabular-nums">
                         {formatCurrency(holding.value)}
                       </p>
                     </td>
+                    <td className="p-4 text-right hidden lg:table-cell">
+                      <p className={cn(
+                        "font-medium tabular-nums",
+                        dayPositive ? "text-emerald-400" : "text-red-400"
+                      )}>
+                        {formatPercentagePrecise(holding.dayChangePercent)}
+                      </p>
+                    </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <div className="w-20 h-2 bg-slate-800 rounded-full overflow-hidden hidden sm:block">
+                        <div className="w-16 h-2 bg-slate-800 rounded-full overflow-hidden hidden sm:block">
                           <div 
                             className="h-full rounded-full"
                             style={{ 
-                              width: `${percentage}%`,
+                              width: `${Math.min(holding.weight * 3, 100)}%`,
                               backgroundColor: color,
                             }}
                           />
                         </div>
-                        <span className="text-sm text-slate-300 tabular-nums w-14 text-right">
-                          {formatPercentage(percentage)}
+                        <span className="text-sm text-slate-300 tabular-nums w-12 text-right">
+                          {formatPercentage(holding.weight)}
                         </span>
                       </div>
+                    </td>
+                    <td className="p-4">
+                      <Link 
+                        href={`/holdings/${holding.ticker}`}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-500/20 rounded-lg inline-flex"
+                      >
+                        <ArrowUpRight className="w-4 h-4 text-violet-400" />
+                      </Link>
                     </td>
                   </tr>
                 );

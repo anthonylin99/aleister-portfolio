@@ -1,46 +1,91 @@
+'use client';
+
 import { Header } from '@/components/layout/Header';
 import { AllocationDonut } from '@/components/charts/AllocationDonut';
 import { HoldingsBar } from '@/components/charts/HoldingsBar';
 import { CategoryCard } from '@/components/cards/CategoryCard';
 import { TopHoldingCard } from '@/components/cards/TopHoldingCard';
 import { StatCard } from '@/components/cards/StatCard';
-import portfolioData from '@/data/portfolio.json';
-import { Holding, Category } from '@/types/portfolio';
-import { 
-  calculatePortfolioTotal, 
-  calculateCategoryData, 
-  getTopHoldings,
-  formatCurrency 
-} from '@/lib/utils';
-import { Wallet, PieChart, TrendingUp, Layers } from 'lucide-react';
+import { ETFCard } from '@/components/cards/ETFCard';
+import { usePortfolio, useETF } from '@/lib/hooks';
+import { formatCurrency, getRelativeTime } from '@/lib/utils';
+import { Wallet, PieChart, TrendingUp, Layers, RefreshCw } from 'lucide-react';
 
 export default function Dashboard() {
-  const holdings = portfolioData.holdings as Holding[];
-  const totalValue = calculatePortfolioTotal(holdings);
-  const categoryData = calculateCategoryData(holdings);
-  const topHoldings = getTopHoldings(holdings, 5);
+  const { holdings, summary, categories, loading, error, refresh, cached } = usePortfolio();
+  const { etf } = useETF();
+
+  if (loading && holdings.length === 0) {
+    return (
+      <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-3 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-slate-400">Loading portfolio data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && holdings.length === 0) {
+    return (
+      <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
+        <div className="glass-card p-8 rounded-2xl text-center max-w-md">
+          <p className="text-red-400 mb-4">Error loading portfolio: {error}</p>
+          <button 
+            onClick={refresh}
+            className="px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const topHoldings = holdings.slice(0, 5);
 
   return (
     <div className="p-6 lg:p-8 min-h-screen">
       <Header 
         title="PathFinder ETF"
         subtitle="Personal Investment Portfolio"
-        totalValue={totalValue}
-        change={2847}
-        changePercent={2.12}
-        lastUpdated={portfolioData.lastUpdated}
+        totalValue={summary.totalValue}
+        change={summary.dayChange}
+        changePercent={summary.dayChangePercent}
+        lastUpdated={summary.lastUpdated}
       />
+
+      {/* ETF Card & Refresh */}
+      <div className="flex flex-col lg:flex-row gap-4 mb-8">
+        {etf && <ETFCard etf={etf} className="flex-1" />}
+        
+        <button
+          onClick={refresh}
+          disabled={loading}
+          className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-slate-400 hover:text-white hover:border-violet-500/40 transition-all disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <span className="text-sm">
+            {loading ? 'Refreshing...' : cached ? 'Refresh Prices' : 'Prices Updated'}
+          </span>
+          {cached && summary.lastUpdated && (
+            <span className="text-xs text-slate-500">
+              ({getRelativeTime(summary.lastUpdated)})
+            </span>
+          )}
+        </button>
+      </div>
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard 
           label="Total Holdings"
-          value={holdings.length.toString()}
+          value={summary.holdingsCount.toString()}
           icon={Wallet}
         />
         <StatCard 
           label="Categories"
-          value={categoryData.length.toString()}
+          value={summary.categoriesCount.toString()}
           icon={Layers}
         />
         <StatCard 
@@ -52,7 +97,7 @@ export default function Dashboard() {
         />
         <StatCard 
           label="Avg. Position Size"
-          value={formatCurrency(totalValue / holdings.length)}
+          value={formatCurrency(summary.totalValue / summary.holdingsCount || 0)}
           icon={PieChart}
         />
       </div>
@@ -64,7 +109,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-xl font-bold text-white">Holdings</h3>
-              <p className="text-sm text-slate-400">Sorted by value</p>
+              <p className="text-sm text-slate-400">Sorted by value • Click to view details</p>
             </div>
             <span className="text-sm text-slate-500">{holdings.length} positions</span>
           </div>
@@ -79,7 +124,7 @@ export default function Dashboard() {
               <p className="text-sm text-slate-400">By category</p>
             </div>
           </div>
-          <AllocationDonut data={categoryData} totalValue={totalValue} />
+          <AllocationDonut data={categories} totalValue={summary.totalValue} />
         </div>
       </div>
 
@@ -89,7 +134,7 @@ export default function Dashboard() {
           <h3 className="text-xl font-bold text-white">Category Breakdown</h3>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categoryData.map((category, index) => (
+          {categories.map((category, index) => (
             <CategoryCard key={category.name} category={category} index={index} />
           ))}
         </div>
@@ -109,7 +154,7 @@ export default function Dashboard() {
               key={holding.ticker}
               holding={holding}
               rank={index + 1}
-              portfolioPercentage={(holding.value / totalValue) * 100}
+              portfolioPercentage={holding.weight}
             />
           ))}
         </div>

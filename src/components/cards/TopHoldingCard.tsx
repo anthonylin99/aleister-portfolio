@@ -1,19 +1,24 @@
-import { Holding, categoryColors } from '@/types/portfolio';
-import { formatCurrency, formatPercentage, cn } from '@/lib/utils';
+import Link from 'next/link';
+import { HoldingWithPrice, categoryColors } from '@/types/portfolio';
+import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface TopHoldingCardProps {
-  holding: Holding;
+  holding: HoldingWithPrice;
   rank: number;
   portfolioPercentage: number;
 }
 
 export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldingCardProps) {
   const color = categoryColors[holding.category];
+  const isPositive = holding.dayChangePercent >= 0;
   
   return (
-    <div className="glass-card p-4 rounded-xl group hover:border-violet-500/40 transition-all animate-fade-in-up">
+    <Link 
+      href={`/holdings/${holding.ticker}`}
+      className="glass-card p-4 rounded-xl group hover:border-violet-500/40 transition-all block animate-fade-in-up"
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -26,7 +31,9 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
             </div>
           </div>
           <div>
-            <h4 className="font-bold text-white">{holding.ticker}</h4>
+            <h4 className="font-bold text-white group-hover:text-violet-400 transition-colors">
+              {holding.ticker}
+            </h4>
             <p className="text-sm text-slate-400 truncate max-w-[120px]">
               {holding.name}
             </p>
@@ -42,11 +49,12 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
         </div>
         
         <div className="flex items-center justify-between text-sm">
-          <span 
-            className="px-2 py-0.5 rounded-full text-xs font-medium"
-            style={{ backgroundColor: `${color}20`, color }}
-          >
-            {holding.category}
+          <span className={cn(
+            "flex items-center gap-1 font-medium",
+            isPositive ? "text-emerald-400" : "text-red-400"
+          )}>
+            {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+            {formatPercentagePrecise(holding.dayChangePercent)}
           </span>
           <span className="text-slate-400 tabular-nums">
             {formatPercentage(portfolioPercentage)}
@@ -54,10 +62,11 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
         </div>
       </div>
       
-      {/* Hover description */}
-      <div className="mt-3 pt-3 border-t border-slate-700/50 opacity-0 group-hover:opacity-100 transition-opacity">
-        <p className="text-xs text-slate-400">{holding.description}</p>
+      {/* Price info */}
+      <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-slate-500">
+        <span>{holding.shares.toLocaleString()} shares</span>
+        <span>${holding.currentPrice.toFixed(2)}</span>
       </div>
-    </div>
+    </Link>
   );
 }

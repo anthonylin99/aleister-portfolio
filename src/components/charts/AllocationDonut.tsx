@@ -10,6 +10,14 @@ interface AllocationDonutProps {
 }
 
 export function AllocationDonut({ data, totalValue }: AllocationDonutProps) {
+  if (!data.length) {
+    return (
+      <div className="h-[320px] flex items-center justify-center">
+        <p className="text-slate-500">Loading allocation data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="relative h-[320px] animate-scale-in">
       <ResponsiveContainer width="100%" height="100%">
@@ -71,10 +79,10 @@ export function AllocationDonut({ data, totalValue }: AllocationDonutProps) {
   );
 }
 
-function CustomTooltip({ active, payload }: any) {
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: CategoryData }> }) {
   if (!active || !payload?.length) return null;
   
-  const data = payload[0].payload as CategoryData;
+  const data = payload[0].payload;
   
   return (
     <div className="glass-card p-3 border border-violet-500/30 shadow-xl">
