@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PathFinder ETF
+
+A professional, dark-themed personal portfolio tracking website showcasing your investment thesis. Built with Next.js 14, Tailwind CSS, and Recharts.
+
+![PathFinder ETF](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss)
+
+## Features
+
+- **Dashboard**: Total portfolio value, interactive allocation donut chart, holdings bar chart, category breakdown
+- **Holdings Page**: Sortable/filterable table with search, category filters, and visual allocation bars
+- **ETF Overview**: Investment thesis, strategy explanation, category weightings, top 10 holdings
+- **Dark Theme**: Beautiful purple/blue gradient aesthetic with glassmorphism cards
+- **Responsive**: Mobile-first design with collapsible sidebar navigation
+- **Animations**: Smooth fade-in effects, hover states, and chart animations
+
+## Portfolio Summary
+
+| Category | Value | Weight |
+|----------|-------|--------|
+| Crypto Infrastructure | $40,700 | 29.6% |
+| Fintech | $34,700 | 25.3% |
+| Space & Satellite | $28,000 | 20.4% |
+| AI Infrastructure | $12,100 | 8.8% |
+| Digital Asset Treasury | $11,200 | 8.2% |
+| Big Tech | $10,600 | 7.7% |
+| **Total** | **$137,300** | **100%** |
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Charts**: Recharts
+- **Icons**: Lucide React
+- **Fonts**: Outfit, JetBrains Mono
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy to Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Option 1: Vercel CLI
 
-## Learn More
+```bash
+# Login to Vercel
+npx vercel login
 
-To learn more about Next.js, take a look at the following resources:
+# Deploy to production
+npx vercel --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Option 2: GitHub Integration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push this repo to GitHub
+2. Go to [vercel.com](https://vercel.com)
+3. Import your GitHub repository
+4. Vercel will auto-detect Next.js and deploy
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/
+│   ├── page.tsx          # Dashboard
+│   ├── holdings/page.tsx # Holdings table
+│   ├── etf/page.tsx      # ETF overview
+│   └── layout.tsx        # Root layout
+├── components/
+│   ├── charts/           # Donut, bar charts
+│   ├── cards/            # Stat, category, holding cards
+│   ├── layout/           # Sidebar, header
+│   ├── tables/           # Holdings table
+│   └── ui/               # Logo, badges
+├── data/
+│   └── portfolio.json    # Portfolio data
+├── lib/
+│   └── utils.ts          # Utilities
+└── types/
+    └── portfolio.ts      # TypeScript types
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Customization
+
+### Update Holdings
+
+Edit `src/data/portfolio.json` to update your portfolio:
+
+```json
+{
+  "holdings": [
+    {
+      "ticker": "ASTS",
+      "name": "AST SpaceMobile",
+      "value": 28000,
+      "category": "Space & Satellite",
+      "description": "Space-based cellular broadband network"
+    }
+  ]
+}
+```
+
+### Categories
+
+Available categories (defined in `src/types/portfolio.ts`):
+- Space & Satellite
+- Crypto Infrastructure
+- Fintech
+- AI Infrastructure
+- Digital Asset Treasury
+- Big Tech
+
+### Colors
+
+Category colors can be customized in `src/types/portfolio.ts`:
+
+```typescript
+export const categoryColors = {
+  'Space & Satellite': '#f472b6',
+  'Crypto Infrastructure': '#22d3ee',
+  // ...
+};
+```
+
+## License
+
+Personal project - not intended for distribution.
