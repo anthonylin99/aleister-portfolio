@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   keywords: ["portfolio", "ETF", "investing", "crypto", "fintech", "AI", "space"],
   authors: [{ name: "Prometheus" }],
   icons: {
-    icon: "/profile icon 1.jpg",
-    apple: "/profile icon 1.jpg",
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
   openGraph: {
     title: "Prometheus ETF",

@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { usePortfolio, useEarnings } from '@/lib/hooks';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { SocialFeed } from '@/components/social/SocialFeed';
+import { HoldingsPriceChart } from '@/components/charts/HoldingsPriceChart';
+import { ThesisSection } from '@/components/holdings/ThesisSection';
+import { AIAnalysisSection } from '@/components/holdings/AIAnalysisSection';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
 import { categoryColors } from '@/types/portfolio';
@@ -14,7 +17,6 @@ import {
   TrendingDown, 
   ExternalLink,
   Target,
-  FileText,
   Calendar,
   Coins,
   MessageSquare,
@@ -178,48 +180,19 @@ export default function AssetDetailPage() {
         </div>
       </div>
 
-      {/* Thesis Section (Placeholder) */}
-      <div className="glass-card p-6 rounded-2xl mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
-            <FileText className="w-5 h-5 text-violet-400" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">Investment Thesis</h2>
-            <p className="text-sm text-slate-400">Your reasoning and analysis</p>
-          </div>
-        </div>
-        
-        <div className="bg-slate-900/50 rounded-xl p-6 border border-dashed border-slate-700">
-          <p className="text-slate-500 text-center">
-            Investment thesis coming soon...
-          </p>
-          <p className="text-slate-600 text-sm text-center mt-2">
-            Add your reasoning, price targets, and analysis for {holding.ticker}
-          </p>
-        </div>
+      {/* Price Chart */}
+      <div className="mb-8">
+        <HoldingsPriceChart ticker={holding.ticker} companyName={holding.name} />
       </div>
 
-      {/* Price Target Section (Placeholder) */}
-      <div className="glass-card p-6 rounded-2xl mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-            <Target className="w-5 h-5 text-emerald-400" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">Price Target</h2>
-            <p className="text-sm text-slate-400">Your expected valuation</p>
-          </div>
-        </div>
-        
-        <div className="bg-slate-900/50 rounded-xl p-6 border border-dashed border-slate-700">
-          <p className="text-slate-500 text-center">
-            Price target coming soon...
-          </p>
-          <p className="text-slate-600 text-sm text-center mt-2">
-            Set your bull case, base case, and bear case targets
-          </p>
-        </div>
+      {/* Anthony's Thesis */}
+      <div className="mb-8">
+        <ThesisSection ticker={holding.ticker} />
+      </div>
+
+      {/* AI Analysis */}
+      <div className="mb-8">
+        <AIAnalysisSection ticker={holding.ticker} companyName={holding.name} />
       </div>
 
       {/* News & Community Feed */}

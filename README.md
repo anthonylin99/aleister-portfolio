@@ -54,6 +54,13 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
+## Environment Variables
+
+Create `.env.local` with:
+
+- `ANTHROPIC_API_KEY` — Optional. Required for AI-generated investment analysis on holding detail pages (Claude). Get a key at [console.anthropic.com](https://console.anthropic.com).
+- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — For Redis (caching, AI analysis cache).
+
 ## Deploy to Vercel
 
 ### Option 1: Vercel CLI
