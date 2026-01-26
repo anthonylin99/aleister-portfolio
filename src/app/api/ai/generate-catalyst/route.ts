@@ -72,6 +72,14 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  if (forceRegenerate && isRedisAvailable() && redis) {
+    try {
+      await redis.del(key);
+    } catch {
+      // non-fatal
+    }
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey || apiKey.trim() === '') {
     return NextResponse.json(

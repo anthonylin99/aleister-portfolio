@@ -32,7 +32,7 @@ export default function AssetDetailPage() {
 
   const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
   const { isVisible } = useVisibility();
-  const { analysisProps, historicalMetrics, loading: analysisLoading, error: analysisError, refetch } = useStockAnalysis(ticker, holding ?? null);
+  const { analysisProps, historicalMetrics, loading: analysisLoading, refreshing: analysisRefreshing, error: analysisError, refetch } = useStockAnalysis(ticker, holding ?? null);
 
   if (loading && !holding) {
     return (
@@ -202,6 +202,7 @@ export default function AssetDetailPage() {
         <StockAnalysisPanel
           {...analysisProps}
           loading={analysisLoading}
+          refreshing={analysisRefreshing}
           onRefresh={refetch}
           historicalMetrics={historicalMetrics}
         />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { RefreshCw, ChevronDown, ChevronRight } from 'lucide-react';
+import { RefreshCw, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 import { cn, getRelativeTime } from '@/lib/utils';
 
 export interface MetricHistorical {
@@ -39,6 +39,8 @@ export interface StockAnalysisProps {
   lastAnalysisUpdate: Date;
   /** Optional: show loading skeleton instead of content */
   loading?: boolean;
+  /** Optional: refresh in progress; disable Refresh button and show spinner */
+  refreshing?: boolean;
   /** Called when the user taps the refresh button */
   onRefresh?: () => void;
   /** Optional per-metric delta strings, e.g. { marketCap: '+5%', beta: '-0.1' } */
@@ -104,6 +106,7 @@ export function StockAnalysisPanel({
   thesisStatus,
   lastAnalysisUpdate,
   loading = false,
+  refreshing = false,
   onRefresh,
   metricDeltas,
   historicalMetrics,
@@ -231,9 +234,19 @@ export function StockAnalysisPanel({
           <button
             type="button"
             onClick={onRefresh}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors"
+            disabled={refreshing}
+            className={cn(
+              'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors',
+              refreshing
+                ? 'text-slate-500 cursor-not-allowed'
+                : 'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10'
+            )}
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            {refreshing ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="w-3.5 h-3.5" />
+            )}
             Refresh
           </button>
         )}

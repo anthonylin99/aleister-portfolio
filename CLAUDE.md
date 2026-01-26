@@ -14,7 +14,7 @@ Personal portfolio tracker for **Prometheus ETF ($ALIN)**. Next.js 16 (App Route
   - Anthropic client is created only when `ANTHROPIC_API_KEY` is set (no init at module load with undefined key).
   - `request.json()` wrapped in try/catch; invalid JSON returns `400` with `Invalid JSON body`.
   - API `catch` returns `err.message` (e.g. invalid API key, rate limit, network) in `{ error }` so the UI can show the real reason instead of a generic message.
-  - Clearer message when key is missing: `ANTHROPIC_API_KEY not configured. Add it to .env.local.`
+  - Clearer message when key is missing: for local `.env.local`, for Vercel: Project Settings → Environment Variables, add ANTHROPIC_API_KEY, then redeploy.
 - **404 model not found:** Switched from deprecated `claude-3-5-haiku-20241022` to **`claude-haiku-4-5-20251001`**. Override with `ANTHROPIC_MODEL_ID` in `.env.local` if needed.
 - **New investment research prompt:** Structured report: 1) Fundamental Analysis (revenue, margins, FCF, valuation, insider), 2) Thesis Validation (3 for, 2 against, Verdict), 3) Sector & Macro, 4) Catalyst Watch (short/long term), 5) Investment Summary (5 bullets, Buy/Hold/Sell, confidence, timeframe). User thesis/price target/catalysts/risks passed as optional context. `max_tokens: 2048`.
 
@@ -58,7 +58,7 @@ Personal portfolio tracker for **Prometheus ETF ($ALIN)**. Next.js 16 (App Route
 
 ## What’s not / weak spots
 
-- **AI:** Requires `ANTHROPIC_API_KEY` in `.env.local`. If missing or invalid, the UI now shows the API `error` (e.g. `ANTHROPIC_API_KEY not configured. Add it to .env.local.` or Anthropic’s message). No streaming.
+- **AI:** Requires `ANTHROPIC_API_KEY`. Local: `.env.local`; Vercel: Project Settings → Environment Variables, then redeploy. If missing or invalid, the UI shows the API `error`. No streaming.
 - **Redis:** If Upstash is not configured, AI and price caching fall back to no persistence; AI always calls Claude.
 - **OTC / international:** `MTPLF`, `KRKNF` rely on Yahoo; some symbols can have gaps or delays.
 - **Left price scale:** In $ mode with compare, the compare series uses `priceScaleId: 'left'`. If the left scale does not appear, `chart.priceScale('left').applyOptions({ visible: true })` may be needed when adding that series.
@@ -98,7 +98,7 @@ Personal portfolio tracker for **Prometheus ETF ($ALIN)**. Next.js 16 (App Route
 ## Env
 
 ```bash
-# .env.local
+# .env.local (local) or Vercel → Project Settings → Environment Variables (production)
 ANTHROPIC_API_KEY=sk-ant-...      # Required for AI analysis
 ANTHROPIC_MODEL_ID=               # Optional. Default: claude-haiku-4-5-20251001
 UPSTASH_REDIS_REST_URL=...

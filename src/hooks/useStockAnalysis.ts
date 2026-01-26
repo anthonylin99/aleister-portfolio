@@ -90,10 +90,12 @@ export function useStockAnalysis(
   analysisProps: Omit<StockAnalysisProps, 'loading' | 'onRefresh' | 'metricDeltas' | 'historicalMetrics'>;
   historicalMetrics: Partial<Record<string, MetricHistorical>> | undefined;
   loading: boolean;
+  refreshing: boolean;
   error: string | null;
   refetch: () => void;
 } {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [quote, setQuote] = useState<QuoteData | null>(null);
   const [thesis, setThesis] = useState<StructuredThesis | null>(null);
@@ -114,9 +116,12 @@ export function useStockAnalysis(
         setHistoricalRaw(null);
         setIvRaw(null);
         setLoading(false);
+        setRefreshing(false);
         return;
       }
-      setLoading(true);
+      const isRefetch = forceRegenerate;
+      if (isRefetch) setRefreshing(true);
+      else setLoading(true);
       setError(null);
 
       let quoteData: QuoteData = {
@@ -191,6 +196,7 @@ export function useStockAnalysis(
               dayChange: quoteData.dayChangePercent,
               forceRegenerate,
             }),
+            cache: 'no-store',
           }).then((r) => (r.ok ? (r.json() as Promise<StructuredThesisResponse>) : null)),
           fetch('/api/ai/generate-catalyst', {
             method: 'POST',
@@ -201,6 +207,7 @@ export function useStockAnalysis(
               recentNews,
               forceRegenerate,
             }),
+            cache: 'no-store',
           }).then((r) => (r.ok ? (r.json() as Promise<CatalystApiResponse>) : null)),
         ]);
 
@@ -228,6 +235,7 @@ export function useStockAnalysis(
         setThesis(thesisData);
         setCatalyst(catalystData);
         setLoading(false);
+        setRefreshing(false);
       }
     },
     [ticker, companyName, priceFallback, dayChangeFallback]
@@ -269,5 +277,5 @@ export function useStockAnalysis(
         )
       : undefined;
 
-  return { analysisProps, historicalMetrics, loading, error, refetch };
+  return { analysisProps, historicalMetrics, loading, refreshing, error, refetch };
 }

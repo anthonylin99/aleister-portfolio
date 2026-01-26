@@ -56,12 +56,27 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## Environment Variables
 
-Create `.env.local` with:
+**Local development** — create `.env.local`:
 
-- `ANTHROPIC_API_KEY` — Optional. Required for AI-generated investment analysis on holding detail pages (Claude). Get a key at [console.anthropic.com](https://console.anthropic.com).
+- `ANTHROPIC_API_KEY` — Required for AI Analysis (Claude). Get a key at [console.anthropic.com](https://console.anthropic.com).
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — For Redis (caching, AI analysis cache).
 
+**Vercel (live site)** — add the same variables in **Project Settings → Environment Variables**, then redeploy. The app does not use `.env.local` in production.
+
 ## Deploy to Vercel
+
+### Environment variables (required for AI on the live site)
+
+For **AI Analysis** to work on the deployed site, add these in Vercel:
+
+1. Open [vercel.com](https://vercel.com) → your project → **Settings** → **Environment Variables**
+2. Add:
+   - `ANTHROPIC_API_KEY` — your Claude API key from [console.anthropic.com](https://console.anthropic.com)
+   - (Optional) `ANTHROPIC_MODEL_ID` — e.g. `claude-haiku-4-5-20251001`
+   - (Optional) `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — for AI and price caching
+3. **Redeploy** (Deployments → … → Redeploy) so the new env vars are applied.
+
+Without `ANTHROPIC_API_KEY` on Vercel, “Generate AI Analysis” will show an error; `.env.local` is only used when running locally and is not deployed.
 
 ### Option 1: Vercel CLI
 
