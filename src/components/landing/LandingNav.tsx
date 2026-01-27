@@ -1,16 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/lib/hooks';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 
 export function LandingNav() {
-  const { isAuthenticated } = useAuth();
-  const pathname = usePathname();
+  const handleScroll = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-lg border-b border-white/5">
+    <nav className="fixed top-8 left-0 right-0 z-50 bg-[#050510]/60 backdrop-blur-xl border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -25,50 +26,31 @@ export function LandingNav() {
               className="text-slate-300 hover:text-white transition-colors text-sm font-medium cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
-                // Smooth scroll to features section (when implemented)
+                handleScroll('features');
               }}
             >
               Features
-            </a>
-            <a
-              href="#methodology"
-              className="text-slate-300 hover:text-white transition-colors text-sm font-medium cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                // Smooth scroll to methodology section (when implemented)
-              }}
-            >
-              Methodology
             </a>
             <a
               href="#about"
               className="text-slate-300 hover:text-white transition-colors text-sm font-medium cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
-                // Smooth scroll to about section (when implemented)
+                handleScroll('about');
               }}
             >
               About
             </a>
           </div>
 
-          {/* Sign In Button */}
+          {/* Dashboard Link */}
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 text-slate-300 hover:text-white transition-colors text-sm font-medium"
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all text-sm font-medium border border-white/20 backdrop-blur-sm"
-              >
-                Sign In
-              </Link>
-            )}
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 text-slate-300 hover:text-white transition-colors text-sm font-medium"
+            >
+              Dashboard
+            </Link>
           </div>
         </div>
       </div>

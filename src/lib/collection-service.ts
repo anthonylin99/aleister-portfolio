@@ -29,7 +29,7 @@ export interface CollectionWithPrices extends Omit<Collection, 'stocks'> {
   category: CollectionCategory;
 }
 
-const CACHE_TTL = 300; // 5 min
+const CACHE_TTL = 600; // 10 min - increased for price stability
 
 /**
  * Fetch live quotes for a list of tickers, with optional Redis caching.

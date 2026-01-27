@@ -38,7 +38,10 @@ export default function LoginPage() {
         setError('Failed to send magic link. Please try again.');
       } else if (!process.env.NEXT_PUBLIC_RESEND_CONFIGURED) {
         // Dev mode: auto-complete the magic link flow
-        window.location.href = '/api/auth/dev-callback';
+        // Add a small delay to ensure sendVerificationRequest has run
+        setTimeout(() => {
+          window.location.href = '/api/auth/dev-callback';
+        }, 500);
         return;
       } else {
         setSent(true);
@@ -140,7 +143,11 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading || !email.trim()}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-500/25"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+                    boxShadow: '0 10px 30px rgba(139, 92, 246, 0.3)',
+                  }}
                 >
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

@@ -2,12 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Header } from '@/components/layout/Header';
 import { AllocationDonut } from '@/components/charts/AllocationDonut';
 import { HoldingsBar } from '@/components/charts/HoldingsBar';
 import { TopHoldingCard } from '@/components/cards/TopHoldingCard';
 import { StatCard } from '@/components/cards/StatCard';
-import { useUserPortfolio, useAuth, useUserProfile } from '@/lib/hooks';
+import { usePortfolio, useUserPortfolio, useUserProfile } from '@/lib/hooks';
 import { formatCurrency } from '@/lib/utils';
 import {
   Wallet,
@@ -20,22 +21,29 @@ import {
   Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { etfConfig } from '@/data/etf-config';
 
 export default function UserDashboard() {
   const router = useRouter();
-  const { isLoading: authLoading } = useAuth();
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
   const { profile, loading: profileLoading } = useUserProfile();
-  const { holdings, summary, categories, loading, error, refresh } =
-    useUserPortfolio();
+  
+  // Use public portfolio for unauthenticated, user portfolio for authenticated
+  const publicPortfolio = usePortfolio();
+  const userPortfolio = useUserPortfolio();
+  
+  const { holdings, summary, categories, loading, error, refresh } = 
+    isAuthenticated ? userPortfolio : publicPortfolio;
 
-  // Redirect to onboarding if not onboarded
+  // Redirect to onboarding if authenticated but not onboarded
   useEffect(() => {
-    if (!authLoading && !profileLoading && profile && !profile.onboarded) {
+    if (isAuthenticated && !profileLoading && profile && !profile.onboarded) {
       router.push('/onboarding');
     }
-  }, [authLoading, profileLoading, profile, router]);
+  }, [isAuthenticated, profileLoading, profile, router]);
 
-  if (authLoading || profileLoading) {
+  if (isAuthenticated && profileLoading) {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -74,8 +82,8 @@ export default function UserDashboard() {
   }
 
   const topHoldings = holdings.slice(0, 5);
-  const etfTicker = profile?.etfTicker || 'ETF';
-  const etfName = profile?.etfName || 'My Portfolio';
+  const etfTicker = isAuthenticated ? (profile?.etfTicker || 'ETF') : etfConfig.ticker;
+  const etfName = isAuthenticated ? (profile?.etfName || 'My Portfolio') : etfConfig.name;
 
   // Empty portfolio state
   if (holdings.length === 0 && !loading) {

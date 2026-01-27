@@ -2,24 +2,19 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type ThemeMode = 'dark' | 'light';
 export type AccentColor = 'violet' | 'blue' | 'emerald' | 'amber' | 'rose' | 'cyan';
 
 interface ThemeSettings {
-  mode: ThemeMode;
   accent: AccentColor;
   showBitcoinRain: boolean;
 }
 
 interface ThemeContextType extends ThemeSettings {
-  setMode: (mode: ThemeMode) => void;
   setAccent: (accent: AccentColor) => void;
   toggleBitcoinRain: () => void;
-  toggleMode: () => void;
 }
 
 const defaultSettings: ThemeSettings = {
-  mode: 'dark',
   accent: 'violet',
   showBitcoinRain: true,
 };
@@ -44,7 +39,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try {
       const stored = localStorage.getItem('prometheus-theme');
       if (stored) {
-        setSettings({ ...defaultSettings, ...JSON.parse(stored) });
+        const parsed = JSON.parse(stored);
+        setSettings({ 
+          accent: parsed.accent || defaultSettings.accent,
+          showBitcoinRain: parsed.showBitcoinRain ?? defaultSettings.showBitcoinRain,
+        });
       }
     } catch {
       // Ignore localStorage errors
@@ -52,41 +51,28 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Apply theme to document
+  // Apply theme to document - always dark mode
   useEffect(() => {
     if (!mounted) return;
 
     const root = document.documentElement;
     const colors = accentColors[settings.accent];
 
-    // Mode
-    root.classList.remove('light', 'dark');
-    root.classList.add(settings.mode);
+    // Always dark mode
+    root.classList.remove('light');
+    root.classList.add('dark');
 
-    // Light mode backgrounds
-    if (settings.mode === 'light') {
-      root.style.setProperty('--bg-primary', '#f8fafc');
-      root.style.setProperty('--bg-secondary', '#f1f5f9');
-      root.style.setProperty('--bg-tertiary', '#e2e8f0');
-      root.style.setProperty('--bg-card', 'rgba(255, 255, 255, 0.8)');
-      root.style.setProperty('--bg-card-hover', 'rgba(255, 255, 255, 0.95)');
-      root.style.setProperty('--text-primary', '#0f172a');
-      root.style.setProperty('--text-secondary', '#475569');
-      root.style.setProperty('--text-muted', '#64748b');
-      root.style.setProperty('--border-primary', `${colors.primary}30`);
-      root.style.setProperty('--border-secondary', 'rgba(100, 116, 139, 0.3)');
-    } else {
-      root.style.setProperty('--bg-primary', '#050510');
-      root.style.setProperty('--bg-secondary', '#0a0a1a');
-      root.style.setProperty('--bg-tertiary', '#12122a');
-      root.style.setProperty('--bg-card', 'rgba(15, 15, 35, 0.6)');
-      root.style.setProperty('--bg-card-hover', 'rgba(20, 20, 45, 0.8)');
-      root.style.setProperty('--text-primary', '#ffffff');
-      root.style.setProperty('--text-secondary', '#94a3b8');
-      root.style.setProperty('--text-muted', '#64748b');
-      root.style.setProperty('--border-primary', `${colors.primary}33`);
-      root.style.setProperty('--border-secondary', 'rgba(100, 116, 139, 0.2)');
-    }
+    // Dark mode colors - locked
+    root.style.setProperty('--bg-primary', '#050510');
+    root.style.setProperty('--bg-secondary', '#0a0a1a');
+    root.style.setProperty('--bg-tertiary', '#12122a');
+    root.style.setProperty('--bg-card', 'rgba(15, 15, 35, 0.6)');
+    root.style.setProperty('--bg-card-hover', 'rgba(20, 20, 45, 0.8)');
+    root.style.setProperty('--text-primary', '#ffffff');
+    root.style.setProperty('--text-secondary', '#94a3b8');
+    root.style.setProperty('--text-muted', '#64748b');
+    root.style.setProperty('--border-primary', `${colors.primary}33`);
+    root.style.setProperty('--border-secondary', 'rgba(100, 116, 139, 0.2)');
 
     // Accent colors
     root.style.setProperty('--accent-primary', colors.primary);
@@ -97,10 +83,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('prometheus-theme', JSON.stringify(settings));
   }, [settings, mounted]);
 
-  const setMode = (mode: ThemeMode) => setSettings((s) => ({ ...s, mode }));
   const setAccent = (accent: AccentColor) => setSettings((s) => ({ ...s, accent }));
   const toggleBitcoinRain = () => setSettings((s) => ({ ...s, showBitcoinRain: !s.showBitcoinRain }));
-  const toggleMode = () => setSettings((s) => ({ ...s, mode: s.mode === 'dark' ? 'light' : 'dark' }));
 
   // Prevent flash of unstyled content
   if (!mounted) {
@@ -111,10 +95,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     <ThemeContext.Provider
       value={{
         ...settings,
-        setMode,
         setAccent,
         toggleBitcoinRain,
-        toggleMode,
       }}
     >
       {children}
