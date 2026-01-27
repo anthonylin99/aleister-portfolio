@@ -5,6 +5,8 @@ import {
   setUserPortfolio,
   type UserPortfolio,
 } from '@/lib/user-portfolio-service';
+import { getPortfolioWithPrices } from '@/lib/portfolio-service';
+import { isOwnerEmail } from '@/lib/user-service';
 
 export async function GET() {
   const session = await auth();
@@ -13,6 +15,12 @@ export async function GET() {
   }
 
   try {
+    // If the user is the owner, return the main Prometheus ETF portfolio
+    if (session.user.email && isOwnerEmail(session.user.email)) {
+      const data = await getPortfolioWithPrices();
+      return NextResponse.json({ ...data, isOwner: true });
+    }
+
     const data = await getUserPortfolioWithPrices(session.user.id);
     return NextResponse.json(data);
   } catch (err) {

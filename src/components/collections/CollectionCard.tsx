@@ -16,6 +16,7 @@ const categoryBorderColors: Record<string, string> = {
   'real-world-scarcity': 'border-l-amber-500',
   'alternative-assets': 'border-l-orange-500',
   'thematic-frontiers': 'border-l-cyan-500',
+  'healthcare-biotech': 'border-l-emerald-500',
 };
 
 export function CollectionCard({ collection, className }: CollectionCardProps) {

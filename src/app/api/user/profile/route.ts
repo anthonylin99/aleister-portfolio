@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { getAppUser, updateAppUser, createAppUser } from '@/lib/user-service';
+import { getAppUser, updateAppUser, createAppUser, isOwnerEmail } from '@/lib/user-service';
+import { etfConfig } from '@/data/etf-config';
 
 export async function GET() {
   const session = await auth();
@@ -8,7 +9,22 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const user = await getAppUser(session.user.id);
+  let user = await getAppUser(session.user.id);
+  
+  // Auto-create profile for authenticated users who don't have one
+  if (!user && session.user.email) {
+    const isOwner = isOwnerEmail(session.user.email);
+    user = await createAppUser({
+      id: session.user.id,
+      email: session.user.email,
+      name: isOwner ? 'Anthony' : '',
+      etfTicker: isOwner ? etfConfig.ticker : '',
+      etfName: isOwner ? etfConfig.name : '',
+      avatarColor: '#8b5cf6',
+      onboarded: isOwner, // Owner is pre-onboarded
+    });
+  }
+
   if (!user) {
     return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
   }

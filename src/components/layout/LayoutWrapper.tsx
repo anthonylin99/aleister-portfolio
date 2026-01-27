@@ -9,7 +9,7 @@ interface LayoutWrapperProps {
   children: React.ReactNode;
 }
 
-const NO_SIDEBAR_ROUTES = ['/login', '/onboarding'];
+const NO_SIDEBAR_ROUTES = ['/login', '/onboarding', '/landing'];
 
 export function LayoutWrapper({ children }: LayoutWrapperProps) {
   const pathname = usePathname();
@@ -17,7 +17,7 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
 
   const hideSidebar = NO_SIDEBAR_ROUTES.some((route) =>
     pathname.startsWith(route)
-  );
+  ) || pathname === '/';
 
   useEffect(() => {
     if (hideSidebar) return;

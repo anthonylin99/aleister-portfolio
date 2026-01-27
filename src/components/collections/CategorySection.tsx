@@ -62,6 +62,7 @@ function getCategoryEmoji(icon: string): string {
     Gem: '\u{1F48E}',
     Coins: '\u{1FA99}',
     Rocket: '\u{1F680}',
+    Heart: '\u{1F9E0}', // Brain/mind for healthcare/biotech
   };
   return map[icon] || '\u{1F4CA}';
 }

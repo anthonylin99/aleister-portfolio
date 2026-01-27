@@ -33,10 +33,10 @@ export default function CollectionDetailPage() {
   const staticCollection = getCollectionById(id);
   const category = staticCollection ? getCategoryById(staticCollection.categoryId) : null;
 
-  const fetchPrices = useCallback(async () => {
+  const fetchPrices = useCallback(async (forceRefresh = false) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/collections/${id}`);
+      const res = await fetch(`/api/collections/${id}${forceRefresh ? '?refresh=true' : ''}`);
       if (res.ok) {
         const json = await res.json();
         setCollection(json.collection);
@@ -175,7 +175,7 @@ export default function CollectionDetailPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white">Holdings</h2>
           <button
-            onClick={fetchPrices}
+            onClick={() => fetchPrices(true)}
             disabled={loading}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors text-sm disabled:opacity-50"
           >
@@ -190,6 +190,7 @@ export default function CollectionDetailPage() {
               key={stock.ticker}
               stock={stock as CollectionStockWithPrice}
               rank={i + 1}
+              holdingsPercent={displayStocks.length > 0 ? 100 / displayStocks.length : 0}
               isWatchlisted={watchlist.has(stock.ticker)}
               onToggleWatchlist={toggleWatchlist}
             />
@@ -212,6 +213,8 @@ function getCategoryEmoji(icon: string): string {
     Shield: '\u{1F6E1}',
     Atom: '\u269B\uFE0F',
     Sun: '\u2600\uFE0F',
+    Heart: '\u{1F9E0}', // Brain/mind for healthcare/biotech
+    Pickaxe: '\u26CF\uFE0F', // Pickaxe for mining
   };
   return map[icon] || '\u{1F4CA}';
 }

@@ -9,11 +9,12 @@ import type { CollectionStockWithPrice } from '@/lib/collection-service';
 interface StockRowProps {
   stock: CollectionStockWithPrice;
   rank?: number;
+  holdingsPercent?: number;
   isWatchlisted?: boolean;
   onToggleWatchlist?: (ticker: string) => void;
 }
 
-export function StockRow({ stock, rank, isWatchlisted, onToggleWatchlist }: StockRowProps) {
+export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggleWatchlist }: StockRowProps) {
   const isPositive = (stock.dayChangePercent ?? 0) >= 0;
 
   return (
@@ -46,6 +47,15 @@ export function StockRow({ stock, rank, isWatchlisted, onToggleWatchlist }: Stoc
           <p className="text-xs text-slate-500 truncate mt-0.5">{stock.note}</p>
         )}
       </div>
+
+      {/* Holdings % */}
+      {holdingsPercent !== undefined && (
+        <div className="text-right flex-shrink-0 min-w-[60px]">
+          <p className="text-sm font-medium text-slate-400 tabular-nums">
+            {holdingsPercent.toFixed(2)}%
+          </p>
+        </div>
+      )}
 
       {/* Price */}
       <div className="text-right flex-shrink-0">

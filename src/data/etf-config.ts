@@ -1,10 +1,24 @@
 // ETF Configuration for $ALIN (Prometheus ETF)
 // Inception Date: January 24, 2026
 // Starting Price: $100.00
+// Owner: anthonylin99@gmail.com
+
+export const OWNER_EMAIL = 'anthonylin99@gmail.com';
 
 export const etfConfig = {
   ticker: 'ALIN',
   name: 'Prometheus ETF',
+  description: `In Greek mythology, Prometheus defied the gods to steal fire from Mount Olympus and gift it to humanity—giving mortals the power that was once reserved only for the divine.
+
+Today, the financial markets remain a modern Olympus. Institutional investors, hedge funds, and algorithms command tools, data, and strategies that everyday investors can only dream of. The game has always been rigged in favor of the few.
+
+Prometheus ETF exists to change that.
+
+We are returning fire to the people. This portfolio represents a thesis-driven approach to investing—transparent, conviction-based, and built on the belief that individual investors deserve access to the same opportunities as the institutions. No hidden fees. No opaque strategies. Just a curated selection of high-conviction positions across the themes shaping our future: AI infrastructure, digital assets, space technology, and fintech innovation.
+
+This is not financial advice. This is a declaration: the power to build wealth belongs to everyone, not just the elite.
+
+Welcome to Prometheus. Take the fire.`,
   inceptionDate: '2026-01-24',
   inceptionPrice: 100.00,
   

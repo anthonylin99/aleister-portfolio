@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  if (process.env.NODE_ENV === 'production') {
+  // Only allow in development or when RESEND_API_KEY is not configured
+  const isDevMode = process.env.NODE_ENV !== 'production' || !process.env.RESEND_API_KEY;
+  
+  if (!isDevMode) {
     return NextResponse.json({ error: 'Not available' }, { status: 404 });
   }
 

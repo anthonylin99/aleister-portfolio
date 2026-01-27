@@ -276,3 +276,31 @@ body {
   pointer-events: none;
   z-index: 100;
 }
+
+/* Bitcoin Rain Animation */
+@keyframes bitcoin-fall {
+  0% {
+    transform: translateY(-50px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(calc(100vh + 50px)) rotate(360deg);
+  }
+}
+
+@keyframes bitcoin-sway {
+  0%, 100% {
+    margin-left: 0px;
+  }
+  50% {
+    margin-left: 15px;
+  }
+}
+
+.bitcoin-rain-particle {
+  position: absolute;
+  color: #f59e0b;
+  font-weight: bold;
+  animation: bitcoin-fall linear infinite, bitcoin-sway ease-in-out infinite;
+  user-select: none;
+  pointer-events: none;
+}

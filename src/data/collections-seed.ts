@@ -64,6 +64,13 @@ export const collectionCategories: CollectionCategory[] = [
     color: '#06b6d4', // cyan
     icon: 'Rocket',
   },
+  {
+    id: 'healthcare-biotech',
+    name: 'Healthcare & Biotech',
+    description: 'Breakthrough therapeutics, mental health innovation, and life sciences pioneers',
+    color: '#10b981', // emerald
+    icon: 'Heart',
+  },
 ];
 
 // ─── Collections ────────────────────────────────────────────
@@ -412,6 +419,44 @@ export const collections: Collection[] = [
       { ticker: 'FTNT', note: 'Unified SASE + FortiGate next-gen firewalls' },
       { ticker: 'S', note: 'AI-powered autonomous endpoint protection' },
       { ticker: 'CYBR', note: 'Identity security + privileged access management' },
+    ],
+  },
+
+  // ── Healthcare & Biotech ───────────────────────────────────
+  {
+    id: 'psychedelics-mental-health',
+    name: 'Psychedelics & Mental Health',
+    description: 'Biotech pioneers developing psychedelic-based therapies for depression, PTSD, and anxiety. The FDA has granted breakthrough therapy status to multiple compounds, signaling a paradigm shift in mental health treatment.',
+    categoryId: 'healthcare-biotech',
+    icon: 'Brain',
+    methodology: 'equal-weighted',
+    riskLevel: 'very-high',
+    tags: ['psychedelics', 'mental-health', 'biotech', 'breakthrough'],
+    stocks: [
+      { ticker: 'CMPS', note: 'COMP360 psilocybin therapy for treatment-resistant depression' },
+      { ticker: 'MNMD', note: 'MM120 LSD-based therapy for anxiety disorders' },
+      { ticker: 'ATAI', note: 'Platform approach with multiple psychedelic compounds' },
+      { ticker: 'CYBN', note: 'CYB003 deuterated psilocybin for major depression' },
+      { ticker: 'GHRS', note: '5-MeO-DMT therapy for treatment-resistant depression' },
+      { ticker: 'JAZZ', note: 'Acquired GW Pharma, developing cannabinoid-based therapies' },
+      { ticker: 'SEEL', note: 'SLS-002 intranasal ketamine for suicidal ideation' },
+    ],
+  },
+  {
+    id: 'copper-miners',
+    name: 'Copper Kings',
+    description: 'The red metal powering electrification. Copper demand is set to double by 2035 as EVs, renewable energy, and AI data centers drive an unprecedented supercycle. These miners control the veins of the clean energy transition.',
+    categoryId: 'real-world-scarcity',
+    icon: 'Pickaxe',
+    methodology: 'market-cap-weighted',
+    riskLevel: 'high',
+    tags: ['copper', 'mining', 'electrification', 'commodities'],
+    stocks: [
+      { ticker: 'FCX', note: 'World\'s largest publicly traded copper producer, Grasberg mine' },
+      { ticker: 'SCCO', note: 'Lowest-cost copper producer, dominant in Peru and Mexico' },
+      { ticker: 'TECK', note: 'Copper-focused after coal exit, QB2 mine ramping' },
+      { ticker: 'HBM', note: 'Copper growth story with Copper World project in Arizona' },
+      { ticker: 'ERO', note: 'High-grade Brazilian copper operations, expanding capacity' },
     ],
   },
 ];

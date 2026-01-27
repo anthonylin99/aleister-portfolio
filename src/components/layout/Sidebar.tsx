@@ -261,15 +261,12 @@ export function Sidebar() {
                       : 'Portfolio Value'
                     : 'Portfolio Value'}
                 </p>
-                <p className="text-base font-bold text-white tabular-nums">
-                  {data ? formatCurrency(data.totalValue) : '—'}
-                </p>
                 {data && (
                   <p className={cn(
-                    "text-xs font-medium mt-0.5 tabular-nums",
+                    "text-base font-medium mt-0.5 tabular-nums",
                     isPositive ? "text-emerald-400" : "text-red-400"
                   )}>
-                    {formatPercentagePrecise(data.dayChangePercent)} ({data.dayChange >= 0 ? '+' : ''}{formatCurrency(data.dayChange)})
+                    {formatPercentagePrecise(data.dayChangePercent)}
                   </p>
                 )}
               </div>

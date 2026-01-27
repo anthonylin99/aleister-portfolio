@@ -1,5 +1,6 @@
 import { getRequiredRedis } from './redis';
 import { v4 as uuidv4 } from 'uuid';
+import { OWNER_EMAIL } from '@/data/etf-config';
 
 export interface AppUser {
   id: string;
@@ -11,6 +12,11 @@ export interface AppUser {
   circleId: string | null;
   createdAt: string;
   onboarded: boolean;
+  isOwner?: boolean;
+}
+
+export function isOwnerEmail(email: string): boolean {
+  return email.toLowerCase() === OWNER_EMAIL.toLowerCase();
 }
 
 const AVATAR_COLORS = [
@@ -25,7 +31,8 @@ function randomAvatarColor(): string {
 export async function getAppUser(userId: string): Promise<AppUser | null> {
   const redis = getRequiredRedis();
   const data = await redis.get<AppUser>(`app:user:${userId}`);
-  return data || null;
+  if (!data) return null;
+  return { ...data, isOwner: isOwnerEmail(data.email) };
 }
 
 export async function createAppUser(

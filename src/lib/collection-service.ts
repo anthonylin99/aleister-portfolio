@@ -35,14 +35,15 @@ const CACHE_TTL = 300; // 5 min
  * Fetch live quotes for a list of tickers, with optional Redis caching.
  */
 async function fetchQuotes(
-  tickers: string[]
+  tickers: string[],
+  forceRefresh = false
 ): Promise<Record<string, { name?: string; price?: number; dayChangePercent?: number; marketCap?: number }>> {
   const redis = getOptionalRedis();
   const result: Record<string, { name?: string; price?: number; dayChangePercent?: number; marketCap?: number }> = {};
 
-  // Try Redis cache first
+  // Try Redis cache first (unless force refresh)
   const uncached: string[] = [];
-  if (redis) {
+  if (redis && !forceRefresh) {
     const cacheKeys = tickers.map((t) => `collection:quote:${t}`);
     const cached = await redis.mget<(string | null)[]>(...cacheKeys);
     for (let i = 0; i < tickers.length; i++) {
@@ -58,6 +59,11 @@ async function fetchQuotes(
       }
     }
   } else {
+    // Force refresh: clear cache and fetch all
+    if (forceRefresh && redis) {
+      const cacheKeys = tickers.map((t) => `collection:quote:${t}`);
+      await Promise.all(cacheKeys.map((key) => redis.del(key)));
+    }
     uncached.push(...tickers);
   }
 
@@ -122,13 +128,14 @@ export async function getCollectionsWithPrices(
  * Get a single collection with live prices.
  */
 export async function getCollectionWithPrices(
-  id: string
+  id: string,
+  forceRefresh = false
 ): Promise<CollectionWithPrices | null> {
   const collection = getCollectionById(id);
   if (!collection) return null;
 
   const tickers = collection.stocks.map((s) => s.ticker);
-  const quotes = await fetchQuotes(tickers);
+  const quotes = await fetchQuotes(tickers, forceRefresh);
   const category = getCategoryById(collection.categoryId)!;
 
   return {

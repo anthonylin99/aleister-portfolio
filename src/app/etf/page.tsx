@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { TradingViewChart } from '@/components/charts/TradingViewChart';
 import { BenchmarkChart } from '@/components/charts/BenchmarkChart';
 import { RiskMetricsCard } from '@/components/cards/RiskMetricsCard';
@@ -7,6 +8,7 @@ import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { usePortfolio, useHistoricalData, useETF, useRiskMetrics } from '@/lib/hooks';
 import { formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { categoryColors, Category } from '@/types/portfolio';
+import { etfConfig } from '@/data/etf-config';
 import { 
   Globe,
   Satellite,
@@ -19,7 +21,10 @@ import {
   TrendingDown,
   ArrowUpRight,
   Shield,
-  Download
+  Download,
+  Flame,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -41,10 +46,14 @@ export default function ETFPage() {
   const { etf } = useETF();
   const { metrics: riskMetrics, loading: riskLoading } = useRiskMetrics(range === 'ALL' ? '1Y' : range);
   const { isVisible } = useVisibility();
+  const [showFullStory, setShowFullStory] = useState(false);
   // ETF Overview page shows simulated ETF values publicly (starting at $100)
   // Only personal portfolio dollar values need privacy protection
 
   const isPositive = etf ? etf.totalReturn >= 0 : true;
+  
+  // Split description into paragraphs for display
+  const descriptionParagraphs = etfConfig.description.split('\n\n');
 
   const handleExportCSV = () => {
     // If PIN authenticated, include full values; otherwise public only
@@ -132,6 +141,46 @@ export default function ETFPage() {
               <p className="text-2xl font-bold text-white">Jan 2026</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* The Prometheus Story */}
+      <div className="glass-card p-6 lg:p-8 rounded-2xl mb-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl" />
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 flex items-center justify-center">
+              <Flame className="w-5 h-5 text-orange-400" />
+            </div>
+            <h2 className="text-xl font-bold text-white">The Prometheus Story</h2>
+          </div>
+          
+          <div className="prose prose-invert max-w-none">
+            {descriptionParagraphs.slice(0, showFullStory ? undefined : 2).map((paragraph, i) => (
+              <p key={i} className="text-slate-300 leading-relaxed mb-4 last:mb-0">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+          
+          {descriptionParagraphs.length > 2 && (
+            <button
+              onClick={() => setShowFullStory(!showFullStory)}
+              className="flex items-center gap-2 mt-4 text-violet-400 hover:text-violet-300 transition-colors text-sm font-medium"
+            >
+              {showFullStory ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Show less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Read the full story
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 

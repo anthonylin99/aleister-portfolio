@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, Loader2, Rocket } from 'lucide-react';
@@ -10,6 +10,7 @@ import { NameETFStep } from '@/components/onboarding/NameETFStep';
 import { AddHoldingsStep } from '@/components/onboarding/AddHoldingsStep';
 import { JoinCircleStep } from '@/components/onboarding/JoinCircleStep';
 import { Category } from '@/types/portfolio';
+import { OWNER_EMAIL } from '@/data/etf-config';
 
 interface HoldingEntry {
   ticker: string;
@@ -51,7 +52,17 @@ export default function OnboardingPage() {
     circleName: '',
   });
 
-  if (status === 'loading') {
+  // Check if user is owner and redirect immediately
+  const isOwner = session?.user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+  
+  useEffect(() => {
+    if (status === 'authenticated' && isOwner) {
+      // Owner skips onboarding - their profile is auto-created
+      router.push('/dashboard');
+    }
+  }, [status, isOwner, router]);
+
+  if (status === 'loading' || (status === 'authenticated' && isOwner)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />

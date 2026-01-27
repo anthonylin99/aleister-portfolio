@@ -250,6 +250,21 @@ const TICKER_DOMAIN_MAP: Record<string, string> = {
   FTNT: 'fortinet.com',
   S: 'sentinelone.com',
   CYBR: 'cyberark.com',
+
+  // ── Psychedelics & Mental Health ───────────────────────────
+  CMPS: 'compasspathways.com',
+  ATAI: 'atai.life',
+  CYBN: 'cybin.com',
+  GHRS: 'ghres.com',
+  MNMD: 'mindmed.co',
+  JAZZ: 'jazzpharma.com',
+  SEEL: 'seelostherapeutics.com',
+
+  // ── Copper Miners ──────────────────────────────────────────
+  SCCO: 'southerncoppercorp.com',
+  TECK: 'teck.com',
+  HBM: 'hudbayminerals.com',
+  ERO: 'erocopper.com',
 };
 
 export function getLogoUrl(ticker: string, domain?: string): string {
