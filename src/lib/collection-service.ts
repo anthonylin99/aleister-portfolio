@@ -78,11 +78,14 @@ async function fetchQuotes(
       if (!quote) continue;
       const data = {
         name: undefined, // Name not available from getQuotes, would need quoteSummary
-        price: quote.price,
-        dayChangePercent: quote.changePercent,
+        price: Number.isFinite(quote.price) && quote.price > 0 ? quote.price : undefined,
+        dayChangePercent: Number.isFinite(quote.changePercent) ? quote.changePercent : undefined,
         marketCap: undefined, // Market cap not available from getQuotes
       };
-      result[ticker] = data;
+      // Only add if we have valid price data
+      if (data.price !== undefined) {
+        result[ticker] = data;
+      }
 
       // Cache in Redis
       if (redis) {

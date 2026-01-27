@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import Resend from 'next-auth/providers/resend';
 import { UpstashRedisAdapter } from '@auth/upstash-redis-adapter';
-import { getRequiredRedis } from './redis';
+import { getRequiredRedis, redis } from './redis';
 import { OWNER_EMAIL } from '@/data/etf-config';
 
 // Check if email is the owner
@@ -9,10 +9,24 @@ function isOwner(email: string | null | undefined): boolean {
   return email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
 }
 
+// Get adapter - use Redis if available, otherwise undefined (memory sessions)
+function getAdapter() {
+  try {
+    if (redis) {
+      return UpstashRedisAdapter(getRequiredRedis(), {
+        baseKeyPrefix: 'auth:',
+      });
+    }
+  } catch (error) {
+    console.warn('Redis not available for auth adapter, using memory sessions:', error);
+  }
+  return undefined; // NextAuth will use memory sessions
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: UpstashRedisAdapter(getRequiredRedis(), {
-    baseKeyPrefix: 'auth:',
-  }),
+  adapter: getAdapter(),
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || 'dev-secret-change-in-production',
+  trustHost: true, // Required for Vercel deployments
   providers: [
     Resend({
       apiKey: process.env.RESEND_API_KEY || 'fake-key-for-dev',
@@ -38,11 +52,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     newUser: '/onboarding',
   },
   callbacks: {
-    session({ session, user }) {
-      if (session.user && user) {
+    async jwt({ token, user }) {
+      // When user signs in, add user data to token
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.isOwner = isOwner(user.email);
+      }
+      return token;
+    },
+    session({ session, token, user }) {
+      // Database strategy: use user object
+      if (user && session.user) {
         session.user.id = user.id;
-        // Add isOwner flag to session
         (session.user as { isOwner?: boolean }).isOwner = isOwner(user.email);
+      }
+      // JWT strategy: use token
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        (session.user as { isOwner?: boolean }).isOwner = token.isOwner as boolean;
       }
       return session;
     },
@@ -61,6 +89,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   session: {
-    strategy: 'database',
+    strategy: redis ? 'database' : 'jwt',
   },
 });

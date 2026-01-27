@@ -35,16 +35,21 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('Failed to send magic link. Please try again.');
-      } else if (!process.env.NEXT_PUBLIC_RESEND_CONFIGURED) {
-        // Dev mode: auto-complete the magic link flow
-        // Add a small delay to ensure sendVerificationRequest has run
-        setTimeout(() => {
-          window.location.href = '/api/auth/dev-callback';
-        }, 500);
-        return;
+        setError(result.error || 'Failed to send magic link. Please try again.');
       } else {
-        setSent(true);
+        // Check if we're in dev mode (no RESEND_API_KEY configured)
+        const isDevMode = !process.env.NEXT_PUBLIC_RESEND_API_KEY || process.env.NODE_ENV === 'development';
+        
+        if (isDevMode) {
+          // Dev mode: auto-complete the magic link flow
+          // Add a delay to ensure sendVerificationRequest has run
+          setTimeout(() => {
+            window.location.href = '/api/auth/dev-callback';
+          }, 800);
+          return;
+        } else {
+          setSent(true);
+        }
       }
     } catch {
       setError('Something went wrong. Please try again.');
@@ -95,9 +100,9 @@ export default function LoginPage() {
               <p className="text-slate-500 text-xs">
                 Click the link in the email to sign in. It expires in 24 hours.
               </p>
-              {!process.env.NEXT_PUBLIC_RESEND_CONFIGURED && (
+              {(!process.env.NEXT_PUBLIC_RESEND_API_KEY || process.env.NODE_ENV === 'development') && (
                 <p className="text-amber-400/80 text-xs mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                  Dev mode: Check your server console for the magic link URL.
+                  Dev mode: Auto-redirecting to magic link...
                 </p>
               )}
               <button
