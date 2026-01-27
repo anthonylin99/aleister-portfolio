@@ -13,7 +13,7 @@ import { CollectionBadges } from '@/components/holdings/CollectionBadges';
 import { useStockAnalysis } from '@/hooks/useStockAnalysis';
 import { formatCurrency, formatPercentage, formatPercentagePrecise, cn } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
-import { categoryColors, Category } from '@/types/portfolio';
+import { categoryColors, Category, HoldingWithPrice } from '@/types/portfolio';
 import { 
   ArrowLeft, 
   TrendingUp, 
@@ -70,7 +70,7 @@ export default function AssetDetailPage() {
     costBasis: 0,
   });
 
-  const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
+  const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase()) as HoldingWithPrice | undefined;
   const alreadyInPortfolio = !!holding;
   
   // Get portfolio name for display
@@ -271,7 +271,7 @@ export default function AssetDetailPage() {
                   <div className="flex-1">
                     <p className="text-amber-400 font-medium">{ticker} is already in your portfolio</p>
                     <p className="text-amber-400/70 text-sm">
-                      Current: {holding.shares.toFixed(4)} shares @ ${holding.currentPrice?.toFixed(2) || 'N/A'}
+                      Current: {holding.shares.toFixed(4)} shares @ ${holding.currentPrice ? holding.currentPrice.toFixed(2) : 'N/A'}
                     </p>
                     <p className="text-amber-400/70 text-sm mt-1">
                       Click "Add to Portfolio" below to add more shares
