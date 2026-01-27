@@ -278,7 +278,7 @@ export function HoldingsTable({ holdings, totalValue }: HoldingsTableProps) {
                     </td>
                     <td className="p-4 text-right">
                       <p className="font-medium text-white tabular-nums">
-                        {isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}
+                        {isVisible && Number.isFinite(holding.currentPrice) ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}
                       </p>
                     </td>
                     <td className="p-4 text-right hidden sm:table-cell">

@@ -58,7 +58,15 @@ export function usePortfolio(): PortfolioData {
       const data = await response.json();
       
       setHoldings(data.holdings || []);
-      setSummary(data.summary || summary);
+      setSummary(data.summary || {
+        totalValue: 0,
+        previousValue: 0,
+        dayChange: 0,
+        dayChangePercent: 0,
+        holdingsCount: 0,
+        categoriesCount: 0,
+        lastUpdated: new Date().toISOString(),
+      });
       setCategories(data.categories || []);
       setCached(data.cached || false);
     } catch (err) {
@@ -359,7 +367,15 @@ export function useUserPortfolio(): PortfolioData {
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       const data = await response.json();
       setHoldings(data.holdings || []);
-      setSummary(data.summary || summary);
+      setSummary(data.summary || {
+        totalValue: 0,
+        previousValue: 0,
+        dayChange: 0,
+        dayChangePercent: 0,
+        holdingsCount: 0,
+        categoriesCount: 0,
+        lastUpdated: new Date().toISOString(),
+      });
       setCategories(data.categories || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');

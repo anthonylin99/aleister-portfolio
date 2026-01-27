@@ -59,12 +59,12 @@ export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggle
 
       {/* Price */}
       <div className="text-right flex-shrink-0">
-        {stock.price !== undefined ? (
+        {stock.price !== undefined && Number.isFinite(stock.price) && stock.price > 0 ? (
           <>
             <p className="font-semibold text-white tabular-nums">
               {formatCurrency(stock.price)}
             </p>
-            {stock.dayChangePercent !== undefined && (
+            {stock.dayChangePercent !== undefined && Number.isFinite(stock.dayChangePercent) && (
               <p className={cn(
                 'flex items-center gap-0.5 text-sm font-medium justify-end',
                 isPositive ? 'text-emerald-400' : 'text-red-400'

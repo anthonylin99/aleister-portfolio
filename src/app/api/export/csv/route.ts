@@ -23,9 +23,9 @@ export async function GET(request: Request) {
     lines.push(`Ticker,$ALIN`);
     lines.push(`Inception Date,${etf.inceptionDate}`);
     lines.push(`Inception Price,$100.00`);
-    lines.push(`Current Price,$${etf.currentPrice.toFixed(2)}`);
-    lines.push(`Day Change,${etf.dayChangePercent >= 0 ? '+' : ''}${etf.dayChangePercent.toFixed(2)}%`);
-    lines.push(`Total Return,${etf.totalReturnPercent >= 0 ? '+' : ''}${etf.totalReturnPercent.toFixed(2)}%`);
+    lines.push(`Current Price,${Number.isFinite(etf.currentPrice) ? `$${etf.currentPrice.toFixed(2)}` : 'N/A'}`);
+    lines.push(`Day Change,${Number.isFinite(etf.dayChangePercent) ? `${etf.dayChangePercent >= 0 ? '+' : ''}${etf.dayChangePercent.toFixed(2)}%` : 'N/A'}`);
+    lines.push(`Total Return,${Number.isFinite(etf.totalReturnPercent) ? `${etf.totalReturnPercent >= 0 ? '+' : ''}${etf.totalReturnPercent.toFixed(2)}%` : 'N/A'}`);
     lines.push('');
     
     // Category Allocation (always public - just percentages)
@@ -42,23 +42,29 @@ export async function GET(request: Request) {
       lines.push('=== Holdings (Full Details) ===');
       lines.push('Ticker,Name,Category,Shares,Current Price,Value,Weight %,Day Change %');
       holdings.forEach(h => {
-        lines.push(`${h.ticker},"${h.name}",${h.category},${h.shares},$${h.currentPrice.toFixed(2)},$${h.value.toFixed(2)},${h.weight.toFixed(2)}%,${h.dayChangePercent >= 0 ? '+' : ''}${h.dayChangePercent.toFixed(2)}%`);
+        const price = Number.isFinite(h.currentPrice) ? h.currentPrice.toFixed(2) : 'N/A';
+        const value = Number.isFinite(h.value) ? h.value.toFixed(2) : 'N/A';
+        const weight = Number.isFinite(h.weight) ? h.weight.toFixed(2) : 'N/A';
+        const change = Number.isFinite(h.dayChangePercent) ? `${h.dayChangePercent >= 0 ? '+' : ''}${h.dayChangePercent.toFixed(2)}%` : 'N/A';
+        lines.push(`${h.ticker},"${h.name}",${h.category},${h.shares},$${price},$${value},${weight}%,${change}`);
       });
       lines.push('');
       
       // Portfolio Summary (requires PIN)
       lines.push('=== Portfolio Summary ===');
       lines.push(`Date,${today}`);
-      lines.push(`Total Value,$${summary.totalValue.toFixed(2)}`);
-      lines.push(`Day Change,$${summary.dayChange.toFixed(2)}`);
-      lines.push(`Day Change %,${summary.dayChangePercent >= 0 ? '+' : ''}${summary.dayChangePercent.toFixed(2)}%`);
+      lines.push(`Total Value,${Number.isFinite(summary.totalValue) ? `$${summary.totalValue.toFixed(2)}` : 'N/A'}`);
+      lines.push(`Day Change,${Number.isFinite(summary.dayChange) ? `$${summary.dayChange.toFixed(2)}` : 'N/A'}`);
+      lines.push(`Day Change %,${Number.isFinite(summary.dayChangePercent) ? `${summary.dayChangePercent >= 0 ? '+' : ''}${summary.dayChangePercent.toFixed(2)}%` : 'N/A'}`);
       lines.push(`Holdings Count,${summary.holdingsCount}`);
     } else {
       // Public data only (no values)
       lines.push('=== Holdings (Public View) ===');
       lines.push('Ticker,Name,Category,Weight %,Day Change %');
       holdings.forEach(h => {
-        lines.push(`${h.ticker},"${h.name}",${h.category},${h.weight.toFixed(2)}%,${h.dayChangePercent >= 0 ? '+' : ''}${h.dayChangePercent.toFixed(2)}%`);
+        const weight = Number.isFinite(h.weight) ? h.weight.toFixed(2) : 'N/A';
+        const change = Number.isFinite(h.dayChangePercent) ? `${h.dayChangePercent >= 0 ? '+' : ''}${h.dayChangePercent.toFixed(2)}%` : 'N/A';
+        lines.push(`${h.ticker},"${h.name}",${h.category},${weight}%,${change}`);
       });
     }
     

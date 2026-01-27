@@ -94,24 +94,6 @@ export function TickerTape() {
         </div>
       </div>
       
-      <style jsx>{`
-        .ticker-scroll {
-          animation: scroll 30s linear infinite;
-        }
-        
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        
-        .ticker-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </div>
   );
 }

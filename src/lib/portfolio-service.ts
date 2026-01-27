@@ -31,13 +31,13 @@ export async function getPortfolioWithPrices(): Promise<{
   // Calculate holdings with prices
   const holdingsWithPrices: HoldingWithPrice[] = holdings.map(holding => {
     const quote = quotes[holding.ticker];
-    const currentPrice = quote?.price || 0;
-    const previousClose = quote?.previousClose || currentPrice;
+    const currentPrice = quote?.price && Number.isFinite(quote.price) ? quote.price : 0;
+    const previousClose = (quote?.previousClose && Number.isFinite(quote.previousClose)) ? quote.previousClose : currentPrice;
     
     const value = currentPrice * holding.shares;
     const previousValue = previousClose * holding.shares;
     const dayChange = value - previousValue;
-    const dayChangePercent = previousValue > 0 ? (dayChange / previousValue) * 100 : 0;
+    const dayChangePercent = previousValue > 0 && Number.isFinite(previousValue) ? (dayChange / previousValue) * 100 : 0;
     
     return {
       ...holding,

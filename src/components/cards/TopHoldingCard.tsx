@@ -69,7 +69,7 @@ export function TopHoldingCard({ holding, rank, portfolioPercentage }: TopHoldin
       {/* Price info */}
       <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-slate-500">
         <span>{isVisible ? `${holding.shares.toLocaleString()} shares` : '•••• shares'}</span>
-        <span>{isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}</span>
+        <span>{isVisible && Number.isFinite(holding.currentPrice) ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}</span>
       </div>
     </Link>
   );

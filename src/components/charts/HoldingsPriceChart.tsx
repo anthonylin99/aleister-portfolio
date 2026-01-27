@@ -37,10 +37,30 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
   const [data, setData] = useState<Record<string, CandleData[]>>({});
   const [loading, setLoading] = useState(true);
   const [displayMode, setDisplayMode] = useState<'price' | 'percent'>('price');
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [currentPriceLoading, setCurrentPriceLoading] = useState(false);
 
   useEffect(() => {
     setDisplayMode(compareTicker ? 'percent' : 'price');
   }, [compareTicker]);
+
+  // Fetch current live price to match holdings page
+  const fetchCurrentPrice = useCallback(async () => {
+    setCurrentPriceLoading(true);
+    try {
+      const res = await fetch(`/api/quote/${ticker}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.price) {
+          setCurrentPrice(json.price);
+        }
+      }
+    } catch {
+      // Silently fail - will use historical lastClose as fallback
+    } finally {
+      setCurrentPriceLoading(false);
+    }
+  }, [ticker]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -59,23 +79,27 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchCurrentPrice();
+  }, [fetchData, fetchCurrentPrice]);
 
   const primary = data[ticker] || [];
-  const firstClose = primary.length > 0 ? primary[0].close : 0;
-  const lastClose = primary.length > 0 ? primary[primary.length - 1].close : 0;
+  const firstClose = primary.length > 0 && Number.isFinite(primary[0].close) ? primary[0].close : 0;
+  const lastClose = primary.length > 0 && Number.isFinite(primary[primary.length - 1].close) ? primary[primary.length - 1].close : 0;
+  
+  // Use current live price if available and valid, otherwise fall back to last close from historical data
+  const displayPrice = (currentPrice && Number.isFinite(currentPrice) && currentPrice > 0) ? currentPrice : (lastClose > 0 ? lastClose : 0);
 
   // For 1D/5D we fetch 2 months; period % uses the range-appropriate lookback.
   let periodPct = 0;
-  if (primary.length > 0 && lastClose > 0) {
+  if (primary.length > 0 && displayPrice > 0 && Number.isFinite(displayPrice)) {
     if (range === '1D' && primary.length >= 2) {
       const prev = primary[primary.length - 2].close;
-      if (prev > 0) periodPct = ((lastClose - prev) / prev) * 100;
+      if (prev > 0 && Number.isFinite(prev)) periodPct = ((displayPrice - prev) / prev) * 100;
     } else if (range === '5D' && primary.length >= 6) {
       const fiveAgo = primary[primary.length - 6].close;
-      if (fiveAgo > 0) periodPct = ((lastClose - fiveAgo) / fiveAgo) * 100;
-    } else if (firstClose > 0) {
-      periodPct = ((lastClose - firstClose) / firstClose) * 100;
+      if (fiveAgo > 0 && Number.isFinite(fiveAgo)) periodPct = ((displayPrice - fiveAgo) / fiveAgo) * 100;
+    } else if (firstClose > 0 && Number.isFinite(firstClose)) {
+      periodPct = ((displayPrice - firstClose) / firstClose) * 100;
     }
   }
   const periodLabel = rangeLabels[range] || range;
@@ -154,15 +178,17 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
     const isPercent = displayMode === 'percent';
 
     if (primary.length > 0) {
-      if (isPercent && firstClose > 0) {
+      if (isPercent && firstClose > 0 && Number.isFinite(firstClose)) {
         const k = 100 / firstClose;
-        const candleData = primary.map((d) => ({
-          time: d.date as string,
-          open: (d.open - firstClose) * k,
-          high: (d.high - firstClose) * k,
-          low: (d.low - firstClose) * k,
-          close: (d.close - firstClose) * k,
-        }));
+        const candleData = primary
+          .filter(d => Number.isFinite(d.open) && Number.isFinite(d.high) && Number.isFinite(d.low) && Number.isFinite(d.close))
+          .map((d) => ({
+            time: d.date as string,
+            open: (d.open - firstClose) * k,
+            high: (d.high - firstClose) * k,
+            low: (d.low - firstClose) * k,
+            close: (d.close - firstClose) * k,
+          }));
         const cs = chart.addSeries(CandlestickSeries, {
           upColor: '#26a69a',
           downColor: '#ef5350',
@@ -175,13 +201,15 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
         cs.setData(candleData);
         seriesRefs.current.set(ticker, cs);
       } else {
-        const candleData = primary.map((d) => ({
-          time: d.date as string,
-          open: d.open,
-          high: d.high,
-          low: d.low,
-          close: d.close,
-        }));
+        const candleData = primary
+          .filter(d => Number.isFinite(d.open) && Number.isFinite(d.high) && Number.isFinite(d.low) && Number.isFinite(d.close))
+          .map((d) => ({
+            time: d.date as string,
+            open: d.open,
+            high: d.high,
+            low: d.low,
+            close: d.close,
+          }));
         const cs = chart.addSeries(CandlestickSeries, {
           upColor: '#26a69a',
           downColor: '#ef5350',
@@ -200,12 +228,14 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
     const ov = (data[compare] || []) as CandleData[];
     if (compare && ov.length > 0) {
       if (isPercent) {
-        const f0 = ov[0].close;
-        if (f0 > 0) {
-          const lineData = ov.map((d) => ({
-            time: d.date as string,
-            value: ((d.close - f0) / f0) * 100,
-          }));
+        const f0 = ov[0]?.close;
+        if (f0 > 0 && Number.isFinite(f0)) {
+          const lineData = ov
+            .filter(d => Number.isFinite(d.close))
+            .map((d) => ({
+              time: d.date as string,
+              value: ((d.close - f0) / f0) * 100,
+            }));
           const ls = chart.addSeries(LineSeries, {
             color: '#5C7CFA',
             lineWidth: 2,
@@ -216,7 +246,9 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
           seriesRefs.current.set(compare, ls);
         }
       } else {
-        const lineData = ov.map((d) => ({ time: d.date as string, value: d.close }));
+        const lineData = ov
+          .filter(d => Number.isFinite(d.close))
+          .map((d) => ({ time: d.date as string, value: d.close }));
         try {
           chart.priceScale('left').applyOptions({ visible: true });
         } catch {
@@ -235,7 +267,6 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
     }
 
     chart.timeScale().fitContent();
-    // firstClose/primary derived from data; displayMode drives price vs %
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, ticker, compareTicker, displayMode]);
 
@@ -260,11 +291,11 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
           <div>
             <h3 className="text-lg font-bold text-white">{ticker}</h3>
             <p className="text-sm text-slate-400">{companyName}</p>
-            {primary.length > 0 && (
+            {displayPrice > 0 && Number.isFinite(displayPrice) && (
               <p className={cn('text-sm font-semibold tabular-nums mt-0.5', periodPct >= 0 ? 'text-emerald-400' : 'text-red-400')}>
                 {displayMode === 'price'
-                  ? `${periodLabel}: $${lastClose.toFixed(2)} (${periodSign}${periodPct.toFixed(1)}%)`
-                  : `${periodLabel}: ${periodSign}${periodPct.toFixed(1)}%`}
+                  ? `${periodLabel}: $${displayPrice.toFixed(2)} (${Number.isFinite(periodPct) ? `${periodSign}${periodPct.toFixed(1)}%` : 'N/A'})`
+                  : `${periodLabel}: ${Number.isFinite(periodPct) ? `${periodSign}${periodPct.toFixed(1)}%` : 'N/A'}`}
               </p>
             )}
           </div>

@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(value: number): string {
+  if (!Number.isFinite(value) || value < 0) return '$0';
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -16,6 +17,7 @@ export function formatCurrency(value: number): string {
 }
 
 export function formatCurrencyPrecise(value: number): string {
+  if (!Number.isFinite(value) || value < 0) return '$0.00';
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -25,21 +27,24 @@ export function formatCurrencyPrecise(value: number): string {
 }
 
 export function formatPercentage(value: number): string {
+  if (!Number.isFinite(value)) return '0.0%';
   return `${value.toFixed(1)}%`;
 }
 
 export function formatPercentagePrecise(value: number): string {
+  if (!Number.isFinite(value)) return '0.00%';
   return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 }
 
 export function formatCompactNumber(value: number): string {
+  if (!Number.isFinite(value) || value < 0) return '$0';
   if (value >= 1000000) {
     return `$${(value / 1000000).toFixed(1)}M`;
   }
   if (value >= 1000) {
     return `$${(value / 1000).toFixed(1)}K`;
   }
-  return `$${value}`;
+  return `$${value.toFixed(2)}`;
 }
 
 export function formatNumber(value: number): string {

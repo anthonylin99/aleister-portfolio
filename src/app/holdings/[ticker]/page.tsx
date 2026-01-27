@@ -414,7 +414,7 @@ export default function AssetDetailPage() {
             <div className="text-left lg:text-right">
               <p className="text-sm text-slate-400 mb-1">Current Price</p>
               <p className="text-4xl font-bold text-white tabular-nums">
-                {isVisible ? `$${holding.currentPrice.toFixed(2)}` : '$••••••'}
+                {isVisible && Number.isFinite(holding.currentPrice) ? `$${holding.currentPrice.toFixed(2)}` : '$••••••'}
               </p>
               <div className={cn(
                 "flex items-center gap-1 mt-1 lg:justify-end text-lg font-medium",

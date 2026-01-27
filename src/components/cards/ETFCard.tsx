@@ -48,7 +48,7 @@ export function ETFCard({ etf, className }: ETFCardProps) {
             </div>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-2xl font-bold text-white tabular-nums">
-                {isVisible ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
+                {isVisible && Number.isFinite(etf.currentPrice) ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
               </span>
               <span className={cn(
                 "flex items-center gap-1 text-sm font-medium",

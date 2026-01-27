@@ -100,7 +100,7 @@ export default function ETFPage() {
             {etf && (
               <div className="text-left lg:text-right">
                 <p className="text-5xl font-bold text-white tabular-nums">
-                  ${etf.currentPrice.toFixed(2)}
+                  {Number.isFinite(etf.currentPrice) ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
                 </p>
                 <div className="flex items-center gap-3 mt-1 lg:justify-end">
                   <span className={cn(

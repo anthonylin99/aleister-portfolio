@@ -69,25 +69,24 @@ async function fetchQuotes(
 
   if (uncached.length === 0) return result;
 
-  // Fetch from Yahoo via internal API (batched)
+  // Fetch from Yahoo via getQuotes (properly handles arrays)
   try {
-    const yahooFinance = (await import('yahoo-finance2')).default;
-    const raw = await yahooFinance.quote(uncached);
-    const quoteArray: Record<string, unknown>[] = Array.isArray(raw) ? raw : [raw];
-
-    for (const q of quoteArray) {
-      if (!q || !q.symbol) continue;
+    const { getQuotes } = await import('./yahoo-finance');
+    const quotes = await getQuotes(uncached);
+    
+    for (const [ticker, quote] of Object.entries(quotes)) {
+      if (!quote) continue;
       const data = {
-        name: (q.longName as string) || (q.shortName as string) || undefined,
-        price: (q.regularMarketPrice as number) ?? undefined,
-        dayChangePercent: (q.regularMarketChangePercent as number) ?? undefined,
-        marketCap: (q.marketCap as number) ?? undefined,
+        name: undefined, // Name not available from getQuotes, would need quoteSummary
+        price: quote.price,
+        dayChangePercent: quote.changePercent,
+        marketCap: undefined, // Market cap not available from getQuotes
       };
-      result[q.symbol as string] = data;
+      result[ticker] = data;
 
       // Cache in Redis
       if (redis) {
-        await redis.set(`collection:quote:${q.symbol as string}`, JSON.stringify(data), { ex: CACHE_TTL });
+        await redis.set(`collection:quote:${ticker}`, JSON.stringify(data), { ex: CACHE_TTL });
       }
     }
   } catch (err) {
