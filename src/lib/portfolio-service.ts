@@ -200,7 +200,7 @@ export async function calculateHistoricalETFPrices(
     });
     
     // Only include if we have data for most stocks
-    if (validStocks >= holdings.length * 0.7) {
+    if (validStocks >= staticHoldings.length * 0.7) {
       if (baselineValue === null) {
         baselineValue = portfolioValue;
       }

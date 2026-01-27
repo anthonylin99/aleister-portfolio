@@ -264,22 +264,6 @@ export default function AssetDetailPage() {
                 </div>
               </div>
               
-              {/* Already in portfolio warning */}
-              {alreadyInPortfolio && holding && (
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-amber-500/20 border border-amber-500/30 mb-4">
-                  <AlertCircle className="w-5 h-5 text-amber-400" />
-                  <div className="flex-1">
-                    <p className="text-amber-400 font-medium">{ticker} is already in your portfolio</p>
-                    <p className="text-amber-400/70 text-sm">
-                      Current: {holding.shares.toFixed(4)} shares @ ${holding.currentPrice ? holding.currentPrice.toFixed(2) : 'N/A'}
-                    </p>
-                    <p className="text-amber-400/70 text-sm mt-1">
-                      Click "Add to Portfolio" below to add more shares
-                    </p>
-                  </div>
-                </div>
-              )}
-
               {/* Success message */}
               {addSuccess && (
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/30 mb-4">
