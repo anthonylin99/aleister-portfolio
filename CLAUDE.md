@@ -4,6 +4,19 @@ Personal portfolio tracker for **Prometheus ETF ($ALIN)**. Next.js 16 (App Route
 
 **Live:** https://prometheus-personal-portfolio.vercel.app/
 
+**Philosophy & standards:** All code, refactors, and design decisions must align with **[bible.md](./bible.md)**. Read it first. Architecture over expediency, radical reliability, documentation as code, and the "Considerate Coworker" protocol apply to every change.
+
+---
+
+## Cross-editor sync (Cursor ↔ Claude Code)
+
+This repo may be edited in **Cursor** or **Claude Code** (or elsewhere). The single source of truth is the **git remote** (`origin`). To see changes made in the other editor:
+
+- **After editing in Claude Code:** In Cursor, run `git pull` (or use Source Control → Pull) so this workspace has the latest from `origin`.
+- **After editing in Cursor:** Push from here; Claude Code will see updates after you pull there (or clone/fetch).
+
+There is no automatic live sync between editors — both stay in sync by **push** from the editor you used and **pull** in the one you’re switching to. Run `git pull` when opening the repo in a different environment.
+
 ---
 
 ## Recent changes (this session)

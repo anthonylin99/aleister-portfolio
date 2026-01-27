@@ -1,0 +1,18 @@
+---
+description: Project philosophy and engineering standards — align all code with bible.md
+alwaysApply: true
+---
+
+# Bible philosophy
+
+All code, refactors, and design decisions in this repo must align with **[bible.md](../../bible.md)**.
+
+Before proposing changes:
+
+1. **Read bible.md** — it defines the Prime Directive (long-term stewardship), Core Engineering Pillars (architecture over expediency, radical reliability, documentation as code), the Considerate Coworker protocol, the tactical checklist, and how we fight entropy.
+
+2. **Apply it** — no quick fixes that violate architecture; fail loudly (no empty catches); immutable-by-default in financial logic; strict typing; document the "why"; leave the campsite cleaner; consider ripple effects; preserve tests and safety checks.
+
+3. **Filter every change** by idempotency, observability, separation of concerns, and edge-case resilience (see Tactical Implementation Checklist in bible.md).
+
+If a suggestion conflicts with bible.md, reject or revise the suggestion.
