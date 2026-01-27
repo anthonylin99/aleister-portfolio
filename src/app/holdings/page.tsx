@@ -132,6 +132,8 @@ export default function HoldingsPage() {
             searchResults={searchResults}
             searching={searching}
             adding={adding}
+            existingTickers={holdings.map(h => h.ticker.toUpperCase())}
+            portfolioName={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio'}
             onSearch={handleSearch}
             onAdd={handleAddTicker}
             onClose={() => {
@@ -210,6 +212,8 @@ export default function HoldingsPage() {
           searchResults={searchResults}
           searching={searching}
           adding={adding}
+          existingTickers={holdings.map(h => h.ticker.toUpperCase())}
+          portfolioName={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio'}
           onSearch={handleSearch}
           onAdd={handleAddTicker}
           onClose={() => {
@@ -228,6 +232,8 @@ interface AddTickerModalProps {
   searchResults: Array<{ ticker: string; name: string }>;
   searching: boolean;
   adding: string | null;
+  existingTickers: string[];
+  portfolioName: string;
   onSearch: (query: string) => void;
   onAdd: (ticker: string) => void;
   onClose: () => void;
@@ -238,6 +244,8 @@ function AddTickerModal({
   searchResults,
   searching,
   adding,
+  existingTickers,
+  portfolioName,
   onSearch,
   onAdd,
   onClose,
@@ -253,7 +261,8 @@ function AddTickerModal({
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-bold text-white mb-4">Add Holding</h2>
+        <h2 className="text-xl font-bold text-white mb-2">Add Holding</h2>
+        <p className="text-sm text-slate-400 mb-4">Adding to: <span className="text-violet-400">{portfolioName}</span></p>
         
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
@@ -278,28 +287,44 @@ function AddTickerModal({
             <p className="text-center text-slate-500 py-8">No results found</p>
           )}
 
-          {!searching && searchResults.map((result) => (
-            <button
-              key={result.ticker}
-              onClick={() => onAdd(result.ticker)}
-              disabled={adding === result.ticker}
-              className={cn(
-                "w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left",
-                "hover:bg-slate-700/50 disabled:opacity-50"
-              )}
-            >
-              <CompanyLogo ticker={result.ticker} size="sm" />
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-white">{result.ticker}</p>
-                <p className="text-sm text-slate-400 truncate">{result.name}</p>
-              </div>
-              {adding === result.ticker ? (
-                <Loader2 className="w-5 h-5 text-violet-500 animate-spin" />
-              ) : (
-                <Plus className="w-5 h-5 text-violet-400" />
-              )}
-            </button>
-          ))}
+          {!searching && searchResults.map((result) => {
+            const isInPortfolio = existingTickers.includes(result.ticker.toUpperCase());
+            
+            return (
+              <button
+                key={result.ticker}
+                onClick={() => onAdd(result.ticker)}
+                disabled={adding === result.ticker}
+                className={cn(
+                  "w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left",
+                  isInPortfolio 
+                    ? "bg-violet-500/10 border border-violet-500/30" 
+                    : "hover:bg-slate-700/50 disabled:opacity-50"
+                )}
+              >
+                <CompanyLogo ticker={result.ticker} size="sm" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-white">{result.ticker}</p>
+                    {isInPortfolio && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-400">
+                        In Portfolio
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-slate-400 truncate">{result.name}</p>
+                  {isInPortfolio && (
+                    <p className="text-xs text-amber-400 mt-1">Click to add more shares</p>
+                  )}
+                </div>
+                {adding === result.ticker ? (
+                  <Loader2 className="w-5 h-5 text-violet-500 animate-spin" />
+                ) : (
+                  <Plus className="w-5 h-5 text-violet-400" />
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {searchQuery.length === 0 && (

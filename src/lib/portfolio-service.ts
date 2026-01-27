@@ -1,4 +1,5 @@
 import { getQuotes, getHistoricalData, HistoricalData } from './yahoo-finance';
+import { getHoldings } from './holdings-service';
 import portfolioData from '@/data/portfolio.json';
 import { 
   Holding, 
@@ -11,12 +12,13 @@ import {
   TimeRange
 } from '@/types/portfolio';
 
-const holdings = portfolioData.holdings as Holding[];
+// Static fallback holdings from JSON
+const staticHoldings = portfolioData.holdings as Holding[];
 const etfConfig = portfolioData.etf;
 
-// Get all tickers that need price fetching
+// Get all tickers that need price fetching (used for historical calculations)
 export function getTradableTickers(): string[] {
-  return holdings.map(h => h.ticker);
+  return staticHoldings.map(h => h.ticker);
 }
 
 // Calculate portfolio with live prices
@@ -25,7 +27,9 @@ export async function getPortfolioWithPrices(): Promise<{
   summary: PortfolioSummary;
   categories: CategoryData[];
 }> {
-  const tickers = getTradableTickers();
+  // Get holdings from Redis (falls back to JSON if Redis empty)
+  const holdings = await getHoldings();
+  const tickers = holdings.map(h => h.ticker);
   const quotes = await getQuotes(tickers);
   
   // Calculate holdings with prices
@@ -184,7 +188,7 @@ export async function calculateHistoricalETFPrices(
     let portfolioValue = 0;
     let validStocks = 0;
     
-    holdings.forEach(holding => {
+    staticHoldings.forEach(holding => {
       const stockData = historicalDataMap[holding.ticker];
       if (stockData) {
         const dayData = stockData.find(d => d.date.toISOString().split('T')[0] === dateStr);

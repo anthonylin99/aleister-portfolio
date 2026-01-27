@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { usePortfolio, useEarnings } from '@/lib/hooks';
+import { usePortfolio, useUserPortfolio, useEarnings, useAuth, useUserProfile } from '@/lib/hooks';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { SocialFeed } from '@/components/social/SocialFeed';
 import { HoldingsPriceChart } from '@/components/charts/HoldingsPriceChart';
@@ -25,7 +25,9 @@ import {
   MessageSquare,
   Clock,
   Plus,
-  Loader2
+  Loader2,
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 
 interface QuoteData {
@@ -42,7 +44,16 @@ export default function AssetDetailPage() {
   const params = useParams();
   const router = useRouter();
   const ticker = (params.ticker as string).toUpperCase();
-  const { holdings, loading: portfolioLoading } = usePortfolio();
+  
+  // Auth and user state
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { profile } = useUserProfile();
+  
+  // Use user portfolio for authenticated users, public for guests
+  const publicPortfolio = usePortfolio();
+  const userPortfolio = useUserPortfolio();
+  const { holdings, loading: portfolioLoading, refresh } = isAuthenticated ? userPortfolio : publicPortfolio;
+  
   const { earnings } = useEarnings(ticker);
   const { isVisible } = useVisibility();
 
@@ -51,6 +62,8 @@ export default function AssetDetailPage() {
   const [loadingQuote, setLoadingQuote] = useState(false);
   const [addingToPortfolio, setAddingToPortfolio] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [addSuccess, setAddSuccess] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
   const [addFormData, setAddFormData] = useState({
     shares: 1,
     category: 'Big Tech' as Category,
@@ -58,6 +71,7 @@ export default function AssetDetailPage() {
   });
 
   const holding = holdings.find(h => h.ticker.toUpperCase() === ticker.toUpperCase());
+  const alreadyInPortfolio = !!holding;
   
   // Fetch quote data if not in portfolio (static once loaded)
   useEffect(() => {
@@ -92,9 +106,19 @@ export default function AssetDetailPage() {
   const handleAddToPortfolio = async () => {
     if (!quoteData) return;
     
+    // Must be authenticated to add to portfolio
+    if (!isAuthenticated) {
+      setAddError('Please sign in to add stocks to your portfolio');
+      return;
+    }
+    
     setAddingToPortfolio(true);
+    setAddError(null);
+    setAddSuccess(false);
+    
     try {
-      const response = await fetch('/api/holdings', {
+      // Use user holdings API for authenticated users
+      const response = await fetch('/api/user/holdings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -108,21 +132,33 @@ export default function AssetDetailPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add holding');
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to add holding');
       }
 
-      // Refresh and redirect
-      router.refresh();
-      window.location.reload();
+      // Success!
+      setAddSuccess(true);
+      setShowAddForm(false);
+      
+      // Refresh portfolio data
+      if (refresh) {
+        await refresh();
+      }
+      
+      // Redirect to holdings page after short delay
+      setTimeout(() => {
+        router.push('/holdings');
+      }, 1500);
     } catch (error) {
       console.error('Failed to add holding:', error);
-      alert('Failed to add holding. Please try again.');
+      setAddError(error instanceof Error ? error.message : 'Failed to add holding. Please try again.');
     } finally {
       setAddingToPortfolio(false);
     }
   };
 
-  if (portfolioLoading && !holding && !quoteData) {
+  // Show loading while auth or portfolio is loading
+  if ((authLoading || portfolioLoading) && !holding && !quoteData) {
     return (
       <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -199,19 +235,59 @@ export default function AssetDetailPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-white">Add to Portfolio</h2>
-                  <p className="text-slate-400">This asset is not in your portfolio. Add it to start tracking.</p>
+                  {isAuthenticated ? (
+                    <p className="text-slate-400">
+                      Add to: <span className="text-violet-400 font-medium">${profile?.etfTicker || 'My Portfolio'}</span>
+                    </p>
+                  ) : (
+                    <p className="text-amber-400">Sign in to add stocks to your portfolio</p>
+                  )}
                 </div>
               </div>
 
-              {!showAddForm ? (
+              {/* Success message */}
+              {addSuccess && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/30 mb-4">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <p className="text-emerald-400 font-medium">Successfully added {ticker} to your portfolio!</p>
+                    <p className="text-emerald-400/70 text-sm">Redirecting to holdings...</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error message */}
+              {addError && (
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/20 border border-red-500/30 mb-4">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <p className="text-red-400">{addError}</p>
+                </div>
+              )}
+
+              {!isAuthenticated ? (
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50"
+                >
+                  Sign In to Add
+                </Link>
+              ) : !showAddForm && !addSuccess ? (
                 <button
                   onClick={() => setShowAddForm(true)}
                   className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/50"
                 >
                   Add to Portfolio
                 </button>
-              ) : (
+              ) : !addSuccess ? (
                 <div className="space-y-4">
+                  {/* Portfolio indicator */}
+                  <div className="p-3 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                    <p className="text-sm text-slate-400">
+                      Adding to: <span className="text-white font-medium">${profile?.etfTicker || 'My Portfolio'}</span>
+                      {profile?.etfName && <span className="text-slate-500"> ({profile.etfName})</span>}
+                    </p>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-400 mb-2">Shares</label>
@@ -272,7 +348,7 @@ export default function AssetDetailPage() {
                     </button>
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
 
             {/* Price Chart */}

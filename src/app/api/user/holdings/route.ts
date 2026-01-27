@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { addUserHolding, type UserHolding } from '@/lib/user-portfolio-service';
-import { getAppUser } from '@/lib/user-service';
+import { getAppUser, isOwnerEmail } from '@/lib/user-service';
 import { logActivity } from '@/lib/circle-service';
+import { upsertHolding } from '@/lib/holdings-service';
 import { Category } from '@/types/portfolio';
 
 export async function POST(request: Request) {
@@ -22,6 +23,30 @@ export async function POST(request: Request) {
       );
     }
 
+    const isOwner = session.user.email && isOwnerEmail(session.user.email);
+
+    if (isOwner) {
+      // Owner adds to the main Prometheus ETF portfolio
+      const success = await upsertHolding({
+        ticker: ticker.toUpperCase(),
+        name: name || ticker.toUpperCase(),
+        shares: Number(shares),
+        costBasis: costBasis ? Number(costBasis) : undefined,
+        category: (category as Category) || 'Big Tech',
+        description: description || '',
+      });
+
+      if (!success) {
+        return NextResponse.json(
+          { error: 'Failed to add to main portfolio. Redis may not be configured.' },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ success: true, isOwner: true });
+    }
+
+    // Regular user adds to their own portfolio
     const holding: UserHolding = {
       ticker: ticker.toUpperCase(),
       name: name || ticker.toUpperCase(),
@@ -50,6 +75,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, holding });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Failed to add holding:', err);
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
