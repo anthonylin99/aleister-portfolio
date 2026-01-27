@@ -234,11 +234,24 @@ export function Sidebar() {
           <div className="glass-card p-3 rounded-xl">
             <div className="flex items-center gap-3">
               {isAuthenticated && session?.user ? (
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 border-2 border-violet-500/30"
-                  style={{ backgroundColor: '#8b5cf6' }}
-                >
-                  {(session.user.name || session.user.email || '?').charAt(0).toUpperCase()}
-                </div>
+                // Owner gets the profile picture, others get initial
+                session.user.email?.toLowerCase() === 'anthonylin99@gmail.com' ? (
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-500/30 flex-shrink-0">
+                    <Image
+                      src="/profile.png"
+                      alt="Anthony"
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 border-2 border-violet-500/30"
+                    style={{ backgroundColor: '#8b5cf6' }}
+                  >
+                    {(session.user.name || session.user.email || '?').charAt(0).toUpperCase()}
+                  </div>
+                )
               ) : (
                 <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-500/30 flex-shrink-0">
                   <Image

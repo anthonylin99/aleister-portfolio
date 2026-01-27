@@ -1,9 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-// PIN for unlocking visibility - stored here for simplicity
+// PIN for unlocking visibility - stored here for simplicity (only for main ETF values)
 const UNLOCK_PIN = '2119';
 
 interface VisibilityContextType {
@@ -20,19 +19,10 @@ interface VisibilityContextType {
 const VisibilityContext = createContext<VisibilityContextType | undefined>(undefined);
 
 export function VisibilityProvider({ children }: { children: ReactNode }) {
-  const { status } = useSession();
-  const isAuthenticated = status === 'authenticated';
-  
-  // Default to visible for authenticated users, hidden for guests
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  // Default to VISIBLE - everyone can see portfolio values at all times
+  // The PIN is only for extra-sensitive main ETF $ amounts if needed
+  const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isPINModalOpen, setIsPINModalOpen] = useState(false);
-  
-  // Auto-unlock for authenticated users
-  useEffect(() => {
-    if (isAuthenticated) {
-      setIsVisible(true);
-    }
-  }, [isAuthenticated]);
 
   const openPINModal = useCallback(() => {
     setIsPINModalOpen(true);
