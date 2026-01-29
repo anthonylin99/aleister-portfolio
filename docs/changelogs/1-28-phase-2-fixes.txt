@@ -1,0 +1,303 @@
+================================================================================
+PROMETHEUS ETF - PHASE 2 FIXES & REFINEMENTS CHANGELOG
+Date: January 28, 2026 (Evening Session)
+================================================================================
+
+OVERVIEW
+--------
+This session addressed bugs discovered after Phase 2 deployment and added UI
+refinements based on user feedback. Focus areas: Vercel build fixes, lavender
+theme visibility, Insights page crash, UI positioning, and data management.
+
+Design Philosophy: Luma-inspired elegance + Robinhood data density
+Theme: Yankee Candle Lavender - deeper, more visible purple tones
+
+================================================================================
+FIX 1 - VERCEL BUILD FAILURES (Critical)
+================================================================================
+
+Problem: Vercel deployment failed with "module not found" errors
+
+Root Cause: 25 files existed locally but were NEVER committed to git:
+- src/types/sma.ts
+- src/lib/sma-service.ts
+- src/components/charts/DispersionChart.tsx
+- src/components/collections/AddCollectionModal.tsx
+- Multiple UI components and services
+
+Files Added (25 total):
+- src/types/sma.ts - SMA types for client components
+- src/lib/sma-service.ts - SMA calculation service
+- src/components/charts/DispersionChart.tsx - Dip Finder visualization
+- src/components/collections/AddCollectionModal.tsx
+- src/components/ui/Skeleton.tsx
+- src/components/ui/WatchlistButton.tsx
+- src/components/ui/AvatarPicker.tsx
+- src/components/ui/GhostBentoGrid.tsx
+- src/components/layout/BentoGrid.tsx
+- src/lib/chart-colors.ts
+- src/lib/portfolio-aggregation-service.ts
+- src/lib/portfolio-selection-context.tsx
+- src/lib/use-clear-on-leave.ts
+- src/lib/virtual-portfolio-service.ts
+- src/app/api/collections/category/[category]/analytics/route.ts
+- src/app/api/user/holdings/batch/route.ts
+- src/app/api/user/portfolio/aggregate/route.ts
+- src/components/portfolio/PortfolioSelector.tsx
+
+Commit: 49f614c
+
+================================================================================
+FIX 2 - INSIGHTS PAGE CRASH (Critical)
+================================================================================
+
+Problem: /insights page threw client-side exception
+
+Root Cause: TechnicalMetrics.tsx imported types from server module
+  BEFORE: import type { TechnicalSignal } from '@/lib/technical-analysis';
+  AFTER:  import type { TechnicalSignal } from '@/types/insights';
+
+Also Fixed:
+- src/types/insights.ts - Moved type definitions locally instead of
+  re-exporting from @/lib/technical-analysis (avoids server/client boundary)
+
+Files Modified:
+- src/components/insights/TechnicalMetrics.tsx (line 5)
+- src/types/insights.ts (lines 1-50)
+- src/app/api/insights/portfolio/route.ts (imports)
+
+Commits: a64b59c, 441da3c
+
+================================================================================
+FIX 3 - LAVENDER THEME NOT VISIBLE
+================================================================================
+
+Problem: Background appeared nearly black, not lavender
+
+Root Cause: ThemeProvider was overriding CSS variables with old colors
+
+Changes to src/lib/theme-context.tsx:
+  BEFORE:
+    root.style.setProperty('--bg-primary', '#050510');
+    root.style.setProperty('--bg-secondary', '#0a0a1a');
+    root.style.setProperty('--bg-tertiary', '#12122a');
+
+  AFTER:
+    root.style.setProperty('--bg-primary', '#0d0a14');
+    root.style.setProperty('--bg-secondary', '#110e1a');
+    root.style.setProperty('--bg-tertiary', '#16122a');
+
+Accent Colors Updated:
+  violet: { primary: '#9b8ac4', secondary: '#7c6baa', glow: 'rgba(155, 138, 196, 0.15)' }
+
+Changes to src/app/globals.css:
+  Enhanced .bg-gradient-radial with more visible purple:
+  ```css
+  .bg-gradient-radial {
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -20%, rgba(155, 138, 196, 0.25) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 60% at 0% 50%, rgba(124, 107, 170, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 60% at 100% 50%, rgba(196, 168, 184, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 100% at 50% 100%, rgba(124, 107, 170, 0.08) 0%, transparent 60%),
+      linear-gradient(180deg, #0d0a14 0%, #0f0c18 50%, #12101c 100%);
+  }
+  ```
+
+Commit: 330a9c6, 441da3c
+
+================================================================================
+FIX 4 - EXPLORE PLUS BUTTON POSITIONING
+================================================================================
+
+Problem: Plus button in top-right corner blended with risk badges
+
+Solution: Moved button to bottom row next to tags
+
+File: src/components/collections/CollectionCard.tsx
+
+BEFORE (top-right absolute):
+  <button className="absolute top-4 right-4 p-2.5 rounded-xl...">
+    <Plus className="w-4 h-4" />
+  </button>
+
+AFTER (bottom row with tags):
+  <div className="flex items-center justify-between">
+    <div className="flex flex-wrap gap-1.5">
+      {/* Tags */}
+    </div>
+    {isAuthenticated && (
+      <button className="p-2 rounded-lg bg-[#9b8ac4]/10...">
+        <Plus className="w-4 h-4" />
+      </button>
+    )}
+  </div>
+
+Commit: 441da3c
+
+================================================================================
+FIX 5 - DIP FINDER PORTFOLIO DROPDOWN
+================================================================================
+
+Problem:
+1. Dropdown was inline with other controls (cluttered)
+2. Circle members showed as "Circle Member 1, 2..." instead of names
+3. "My Portfolio" naming inconsistent
+
+Solution:
+
+1. Moved dropdown to header right side:
+   ```tsx
+   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-8">
+     <Header title="Dip Finder" subtitle="..." />
+     {/* Portfolio Selector */}
+     <div className="relative flex-shrink-0">
+       <button className="glass-card border border-[#9b8ac4]/20...">
+         <Briefcase className="w-4 h-4 text-[#9b8ac4]" />
+         <span>{selectedPortfolio.label}</span>
+       </button>
+     </div>
+   </div>
+   ```
+
+2. Fetch circle member names:
+   ```tsx
+   const [circleMemberNames, setCircleMemberNames] = useState<Record<string, string>>({});
+
+   useEffect(() => {
+     async function fetchMemberNames() {
+       const res = await fetch('/api/circle/portfolios');
+       const data = await res.json();
+       const names: Record<string, string> = {};
+       data.portfolios?.forEach((p) => {
+         names[p.id] = p.name || p.email?.split('@')[0] || p.etfTicker;
+       });
+       setCircleMemberNames(names);
+     }
+     fetchMemberNames();
+   }, [circle?.members]);
+   ```
+
+3. Updated labels:
+   - "My Portfolio" → "Prometheus Portfolio"
+   - "Circle Member X" → "{memberName}'s Portfolio"
+
+File: src/app/dip-finder/page.tsx
+Commit: 441da3c
+
+================================================================================
+FIX 6 - DATA MANAGEMENT (Admin Page)
+================================================================================
+
+Problem: No way to clear duplicate portfolio data
+
+Solution: Added Data Management section to /admin
+
+New Features:
+1. Clear User Portfolio button - Deletes all holdings (fixes duplicates)
+2. Clear Local Storage button - Resets watchlist, theme, cached data
+
+New API Endpoint:
+  DELETE /api/user/portfolio
+  - Clears user's portfolio by setting empty holdings array
+  - Returns { success: true, message: 'Portfolio cleared' }
+
+Files Modified:
+- src/app/admin/page.tsx (added Data Management section)
+- src/app/api/user/portfolio/route.ts (added DELETE handler)
+
+Commit: 441da3c
+
+================================================================================
+REFACTOR - CODE SIMPLIFICATION
+================================================================================
+
+Applied code-simplifier to recently modified files:
+
+1. src/app/api/insights/portfolio/route.ts
+   - Extracted getHealthAssessment() helper function
+   - Eliminates mutable let declarations
+   - Cleaner early returns instead of else-if chains
+
+2. src/components/collections/CollectionCard.tsx
+   - Created riskLevelStyles lookup table
+   - Added formatRiskLevel() helper
+   - Extracted RiskBadge component
+   - Provides fallback for unknown risk levels
+
+Files NOT changed (already clean):
+- src/app/admin/page.tsx
+- src/app/api/user/portfolio/route.ts
+- src/app/dip-finder/page.tsx
+- src/app/globals.css
+- src/lib/theme-context.tsx
+
+Commit: dd6ca7b
+
+================================================================================
+BUILD VERIFICATION
+================================================================================
+
+TypeScript Check: PASSED (npx tsc --noEmit)
+Production Build: PASSED (npm run build)
+
+All routes compile:
+- /insights (static)
+- /dip-finder (static)
+- /admin (static)
+- /api/insights/portfolio (dynamic)
+- /api/user/portfolio (dynamic)
+
+================================================================================
+COMMITS SUMMARY
+================================================================================
+
+49f614c - fix: add missing files for Vercel build (25 files)
+a64b59c - fix: import TechnicalSignal from types instead of lib
+330a9c6 - fix: apply lavender theme colors in ThemeProvider
+441da3c - fix: UI improvements and data management features
+dd6ca7b - refactor: simplify insights API and CollectionCard
+
+================================================================================
+TESTING RECOMMENDATIONS
+================================================================================
+
+1. Theme: Verify lavender purple gradient visible on all pages
+2. Insights: Login and verify /insights loads without crash
+3. Explore: Check + button is at bottom of collection cards
+4. Dip Finder: Verify portfolio dropdown is in header right
+5. Dip Finder: Check circle member names display correctly
+6. Admin: Test Clear Portfolio and Clear Local Storage buttons
+7. Mobile: Test responsive layouts on all modified pages
+
+================================================================================
+KNOWN ISSUES / LIMITATIONS
+================================================================================
+
+1. Circle member names require an extra API call to /api/circle/portfolios
+2. Clear Portfolio is destructive - no undo capability
+3. Insights analyzes max 10 holdings for performance
+
+================================================================================
+FILES MODIFIED THIS SESSION
+================================================================================
+
+Created:
+- docs/changelogs/1-28-phase-2-fixes.txt (this file)
+
+Modified:
+- src/app/admin/page.tsx
+- src/app/api/insights/portfolio/route.ts
+- src/app/api/user/portfolio/route.ts
+- src/app/dip-finder/page.tsx
+- src/app/globals.css
+- src/components/collections/CollectionCard.tsx
+- src/lib/theme-context.tsx
+- src/components/insights/TechnicalMetrics.tsx
+- src/types/insights.ts
+
+Previously Untracked (now committed):
+- 25 files including sma-service, DispersionChart, AddCollectionModal, etc.
+
+================================================================================
+END OF CHANGELOG
+================================================================================
