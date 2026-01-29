@@ -24,6 +24,31 @@ const categoryBorderColors: Record<string, string> = {
   'healthcare-biotech': 'border-l-emerald-500',
 };
 
+const riskLevelStyles: Record<string, string> = {
+  low: 'bg-emerald-500/20 text-emerald-400',
+  moderate: 'bg-blue-500/20 text-blue-400',
+  high: 'bg-amber-500/20 text-amber-400',
+  'very-high': 'bg-red-500/20 text-red-400',
+};
+
+function formatRiskLevel(level: string): string {
+  if (level === 'very-high') return 'Very High';
+  return level.charAt(0).toUpperCase() + level.slice(1);
+}
+
+function RiskBadge({ riskLevel }: { riskLevel: string }): React.ReactElement {
+  return (
+    <span
+      className={cn(
+        'text-[11px] font-medium px-2 py-0.5 rounded-full flex-shrink-0 ml-2',
+        riskLevelStyles[riskLevel] || riskLevelStyles.moderate
+      )}
+    >
+      {formatRiskLevel(riskLevel)}
+    </span>
+  );
+}
+
 export function CollectionCard({ collection, className, onAddSuccess }: CollectionCardProps) {
   const { status } = useSession();
   const isAuthenticated = status === 'authenticated';
@@ -72,17 +97,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
             {collection.name}
           </h3>
         </div>
-        <span
-          className={cn(
-            'text-[11px] font-medium px-2 py-0.5 rounded-full flex-shrink-0 ml-2',
-            collection.riskLevel === 'low' && 'bg-emerald-500/20 text-emerald-400',
-            collection.riskLevel === 'moderate' && 'bg-blue-500/20 text-blue-400',
-            collection.riskLevel === 'high' && 'bg-amber-500/20 text-amber-400',
-            collection.riskLevel === 'very-high' && 'bg-red-500/20 text-red-400'
-          )}
-        >
-          {collection.riskLevel === 'very-high' ? 'Very High' : collection.riskLevel.charAt(0).toUpperCase() + collection.riskLevel.slice(1)}
-        </span>
+        <RiskBadge riskLevel={collection.riskLevel} />
       </div>
 
       {/* Description */}

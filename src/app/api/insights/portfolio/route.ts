@@ -13,6 +13,19 @@ import type {
   AlertPriority,
 } from '@/types/insights';
 
+function getHealthAssessment(score: number): { assessment: PortfolioHealth['assessment']; summary: string } {
+  if (score >= 75) {
+    return { assessment: 'excellent', summary: 'Portfolio showing strong technicals with good diversification' };
+  }
+  if (score >= 55) {
+    return { assessment: 'good', summary: 'Portfolio in good shape with some areas to monitor' };
+  }
+  if (score >= 35) {
+    return { assessment: 'fair', summary: 'Portfolio has some concerning signals - review recommended' };
+  }
+  return { assessment: 'needs_attention', summary: 'Multiple holdings showing warning signals - review positions' };
+}
+
 export async function GET(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -185,22 +198,7 @@ export async function GET(request: NextRequest) {
 
     const healthScore = Math.round((diversification * 0.3 + momentum * 0.4 + riskBalance * 0.3));
 
-    let assessment: PortfolioHealth['assessment'];
-    let summary: string;
-
-    if (healthScore >= 75) {
-      assessment = 'excellent';
-      summary = 'Portfolio showing strong technicals with good diversification';
-    } else if (healthScore >= 55) {
-      assessment = 'good';
-      summary = 'Portfolio in good shape with some areas to monitor';
-    } else if (healthScore >= 35) {
-      assessment = 'fair';
-      summary = 'Portfolio has some concerning signals - review recommended';
-    } else {
-      assessment = 'needs_attention';
-      summary = 'Multiple holdings showing warning signals - review positions';
-    }
+    const { assessment, summary } = getHealthAssessment(healthScore);
 
     const health: PortfolioHealth = {
       score: healthScore,
