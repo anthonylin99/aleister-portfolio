@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { SMAData } from '@/types/sma';
 import { cn } from '@/lib/utils';
-import { Plus, Eye, Loader2, Check } from 'lucide-react';
+import { Plus, Eye, Loader2, Check, Pencil } from 'lucide-react';
 
 interface DispersionChartProps {
   data: SMAData[];
@@ -88,10 +89,13 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
 
   return (
     <div className="flex items-center gap-3 group hover:bg-slate-800/30 rounded-lg p-2 -mx-2 transition-colors">
-      {/* Ticker */}
-      <div className="w-16 text-sm font-mono font-semibold text-white shrink-0">
+      {/* Ticker - clickable to view/edit */}
+      <Link
+        href={`/holdings/${item.ticker}`}
+        className="w-16 text-sm font-mono font-semibold text-white shrink-0 hover:text-violet-400 transition-colors"
+      >
         {item.ticker}
-      </div>
+      </Link>
 
       {/* Bar chart centered at 0 */}
       <div className="flex-1 flex items-center h-8">
@@ -135,53 +139,59 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
         ${item.currentPrice.toFixed(2)} / ${item.sma.toFixed(2)}
       </div>
 
-      {/* Quick-Add Buttons */}
-      {(onAddToPortfolio || onAddToWatchlist) && (
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-          {onAddToPortfolio && (
-            <button
-              onClick={handleAddToPortfolio}
-              disabled={portfolioState !== 'idle'}
-              className={cn(
-                'p-1.5 rounded-md text-xs font-medium transition-all',
-                portfolioState === 'success'
-                  ? 'bg-emerald-500/20 text-emerald-400'
-                  : 'bg-violet-400/20 text-violet-400 hover:bg-violet-400/30'
-              )}
-              title="Add to Portfolio"
-            >
-              {portfolioState === 'loading' ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : portfolioState === 'success' ? (
-                <Check className="w-3.5 h-3.5" />
-              ) : (
-                <Plus className="w-3.5 h-3.5" />
-              )}
-            </button>
-          )}
-          {onAddToWatchlist && (
-            <button
-              onClick={handleAddToWatchlist}
-              disabled={watchlistState !== 'idle'}
-              className={cn(
-                'p-1.5 rounded-md text-xs font-medium transition-all',
-                watchlistState === 'success'
-                  ? 'bg-emerald-500/20 text-emerald-400'
-                  : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
-              )}
-              title="Add to Watchlist"
-            >
-              {watchlistState === 'loading' ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : watchlistState === 'success' ? (
-                <Check className="w-3.5 h-3.5" />
-              ) : (
-                <Eye className="w-3.5 h-3.5" />
-              )}
-            </button>
-          )}
-        </div>
-      )}
+      {/* Action Buttons */}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        {/* Edit button - always shown */}
+        <Link
+          href={`/holdings/${item.ticker}`}
+          className="p-1.5 rounded-md text-xs font-medium transition-all bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 hover:text-white"
+          title="View & Edit"
+        >
+          <Pencil className="w-3.5 h-3.5" />
+        </Link>
+        {onAddToPortfolio && (
+          <button
+            onClick={handleAddToPortfolio}
+            disabled={portfolioState !== 'idle'}
+            className={cn(
+              'p-1.5 rounded-md text-xs font-medium transition-all',
+              portfolioState === 'success'
+                ? 'bg-emerald-500/20 text-emerald-400'
+                : 'bg-violet-400/20 text-violet-400 hover:bg-violet-400/30'
+            )}
+            title="Add to Portfolio"
+          >
+            {portfolioState === 'loading' ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : portfolioState === 'success' ? (
+              <Check className="w-3.5 h-3.5" />
+            ) : (
+              <Plus className="w-3.5 h-3.5" />
+            )}
+          </button>
+        )}
+        {onAddToWatchlist && (
+          <button
+            onClick={handleAddToWatchlist}
+            disabled={watchlistState !== 'idle'}
+            className={cn(
+              'p-1.5 rounded-md text-xs font-medium transition-all',
+              watchlistState === 'success'
+                ? 'bg-emerald-500/20 text-emerald-400'
+                : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
+            )}
+            title="Add to Watchlist"
+          >
+            {watchlistState === 'loading' ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : watchlistState === 'success' ? (
+              <Check className="w-3.5 h-3.5" />
+            ) : (
+              <Eye className="w-3.5 h-3.5" />
+            )}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

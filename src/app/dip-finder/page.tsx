@@ -5,25 +5,10 @@ import { Header } from '@/components/layout/Header';
 import { DispersionChart, DispersionChartHeader } from '@/components/charts/DispersionChart';
 import { SMAData, SMAPeriod, SMA_PERIODS } from '@/types/sma';
 import { cn } from '@/lib/utils';
-import { TrendingDown, Loader2, RefreshCw, BarChart3, ChevronDown, Briefcase } from 'lucide-react';
-import { useCircle, useUserPortfolio } from '@/lib/hooks';
+import { TrendingDown, Loader2, RefreshCw, BarChart3 } from 'lucide-react';
+import { useUserPortfolio } from '@/lib/hooks';
 
 type DataSource = 'portfolio' | 'watchlist';
-type PortfolioType = 'personal' | 'sample' | 'friend';
-
-interface CircleMember {
-  id: string;
-  name?: string;
-  email: string;
-  etfTicker: string;
-}
-
-interface PortfolioOption {
-  id: string;
-  type: PortfolioType;
-  label: string;
-  userId?: string;
-}
 
 interface SMAResponse {
   data: SMAData[];
@@ -35,20 +20,12 @@ interface SMAResponse {
 
 export default function DipFinderPage() {
   const [source, setSource] = useState<DataSource>('portfolio');
-  const [selectedPortfolio, setSelectedPortfolio] = useState<PortfolioOption>({
-    id: 'personal',
-    type: 'personal',
-    label: 'Prometheus Portfolio',
-  });
   const [period, setPeriod] = useState<SMAPeriod>(50);
   const [data, setData] = useState<SMAData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
-  const [showPortfolioDropdown, setShowPortfolioDropdown] = useState(false);
-  const [circleMemberNames, setCircleMemberNames] = useState<Record<string, string>>({});
 
-  const { circle } = useCircle();
   const { refresh: refreshPortfolio } = useUserPortfolio();
 
   // Handler to add a ticker to the user's portfolio
@@ -58,8 +35,8 @@ export default function DipFinderPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ticker,
-        shares: 0, // User can edit later
-        costBasis: 0, // Will use current price
+        shares: 0,
+        costBasis: 0,
       }),
     });
     if (!res.ok) {
@@ -82,57 +59,11 @@ export default function DipFinderPage() {
     }
   }, []);
 
-  // Fetch circle member names
-  useEffect(() => {
-    async function fetchMemberNames() {
-      if (!circle?.members || circle.members.length === 0) return;
-      try {
-        const res = await fetch('/api/circle/portfolios');
-        if (res.ok) {
-          const data = await res.json();
-          const names: Record<string, string> = {};
-          data.portfolios?.forEach((p: CircleMember) => {
-            names[p.id] = p.name || p.email?.split('@')[0] || p.etfTicker;
-          });
-          setCircleMemberNames(names);
-        }
-      } catch (err) {
-        console.warn('Failed to fetch circle member names:', err);
-      }
-    }
-    fetchMemberNames();
-  }, [circle?.members]);
-
-  // Build portfolio options
-  const portfolioOptions: PortfolioOption[] = [
-    { id: 'personal', type: 'personal', label: 'Prometheus Portfolio' },
-    { id: 'sample', type: 'sample', label: 'Sample ETF ($ALIN)' },
-  ];
-
-  // Add circle members if available
-  if (circle?.members) {
-    circle.members.forEach((memberId) => {
-      const memberName = circleMemberNames[memberId] || 'Loading...';
-      portfolioOptions.push({
-        id: `friend-${memberId}`,
-        type: 'friend',
-        label: `${memberName}'s Portfolio`,
-        userId: memberId,
-      });
-    });
-  }
-
-  const fetchSMAData = async () => {
+  const fetchSMAData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      let url = `/api/sma?source=${source}&period=${period}`;
-      if (source === 'portfolio') {
-        url += `&portfolioType=${selectedPortfolio.type}`;
-        if (selectedPortfolio.userId) {
-          url += `&userId=${selectedPortfolio.userId}`;
-        }
-      }
+      const url = `/api/sma?source=${source}&period=${period}&portfolioType=personal`;
       const res = await fetch(url);
       if (!res.ok) {
         const errData = await res.json();
@@ -146,12 +77,11 @@ export default function DipFinderPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [source, period]);
 
   useEffect(() => {
     fetchSMAData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [source, period, selectedPortfolio]);
+  }, [fetchSMAData]);
 
   const maxDeviation = data.length > 0
     ? Math.max(...data.map((d) => Math.abs(d.deviation)), 10)
@@ -163,50 +93,11 @@ export default function DipFinderPage() {
 
   return (
     <div className="p-6 lg:p-8 min-h-screen">
-      {/* Header with Portfolio Selector */}
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-8">
-        <Header
-          title="Dip Finder"
-          subtitle="Find stocks trading below their moving average"
-        />
-
-        {/* Portfolio Selector - Right side of header */}
-        {source === 'portfolio' && (
-          <div className="relative flex-shrink-0">
-            <button
-              onClick={() => setShowPortfolioDropdown(!showPortfolioDropdown)}
-              className="flex items-center gap-3 px-4 py-2.5 rounded-xl glass-card border border-[#9b8ac4]/20 text-white text-sm hover:border-[#9b8ac4]/40 transition-all min-w-[200px] justify-between"
-            >
-              <div className="flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-[#9b8ac4]" />
-                <span className="truncate font-medium">{selectedPortfolio.label}</span>
-              </div>
-              <ChevronDown className={cn('w-4 h-4 text-[#9b8ac4] transition-transform', showPortfolioDropdown && 'rotate-180')} />
-            </button>
-            {showPortfolioDropdown && (
-              <div className="absolute z-50 right-0 w-full mt-2 bg-[#16122a] border border-[#9b8ac4]/20 rounded-xl shadow-xl shadow-black/30 max-h-64 overflow-y-auto">
-                {portfolioOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => {
-                      setSelectedPortfolio(option);
-                      setShowPortfolioDropdown(false);
-                    }}
-                    className={cn(
-                      'w-full text-left px-4 py-3 text-sm hover:bg-[#9b8ac4]/10 transition-colors first:rounded-t-xl last:rounded-b-xl',
-                      option.id === selectedPortfolio.id
-                        ? 'text-[#9b8ac4] bg-[#9b8ac4]/5'
-                        : 'text-slate-300'
-                    )}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      {/* Header */}
+      <Header
+        title="Dip Finder"
+        subtitle="Find stocks trading below their moving average"
+      />
 
       {/* Controls */}
       <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">

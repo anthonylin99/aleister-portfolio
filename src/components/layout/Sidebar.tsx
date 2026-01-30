@@ -16,7 +16,6 @@ import {
   LogOut,
   TrendingDown,
   Star,
-  Sparkles,
 } from 'lucide-react';
 import { cn, formatCurrency, formatPercentagePrecise } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -43,7 +42,6 @@ const publicNav = [
 const authNav = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Holdings', href: '/holdings', icon: Wallet },
-  { name: 'Insights', href: '/insights', icon: Sparkles },
   { name: 'Dip Finder', href: '/dip-finder', icon: TrendingDown },
   { name: 'Explore', href: '/explore', icon: Compass },
   { name: 'Watchlist', href: '/watchlist', icon: Star },

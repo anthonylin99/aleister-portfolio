@@ -3,8 +3,7 @@
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { useVisibility } from '@/lib/visibility-context';
 import { usePortfolioViewing } from '@/lib/portfolio-context';
-import { PortfolioSwitcher } from '@/components/layout/PortfolioSwitcher';
-import { TrendingUp, TrendingDown, Clock, Sparkles } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 /**
  * Header - Stripe-inspired portfolio header with gradient accents
@@ -44,12 +43,9 @@ export function Header({
       <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         {/* Title Section */}
         <div className="animate-fade-in-up">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight hover:glow-text-stripe transition-all cursor-default">
-              {title}
-            </h1>
-            <PortfolioSwitcher />
-          </div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight hover:glow-text-stripe transition-all cursor-default">
+            {title}
+          </h1>
           {subtitle && (
             <p className="text-[#a1a1aa] text-lg mt-1 font-medium">{subtitle}</p>
           )}
