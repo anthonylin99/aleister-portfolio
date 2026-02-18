@@ -6,12 +6,13 @@ import { usePortfolioViewing } from '@/lib/portfolio-context';
 import { TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 /**
- * Header - Stripe-inspired portfolio header with gradient accents
+ * Header - Granblue Skyfarer portfolio header
  *
- * Design Philosophy:
- * - Clean, bold typography with gradient text on hover
- * - Pill badges for performance indicators
- * - Subtle animations and premium feel
+ * Design:
+ * - Cinzel serif for title and value (like a ship's nameplate)
+ * - Gold gradient text on hover
+ * - Parchment-colored text hierarchy
+ * - Crystal blue/gold glow accents
  */
 
 interface HeaderProps {
@@ -37,17 +38,17 @@ export function Header({
 
   return (
     <header className="mb-8 relative">
-      {/* Subtle gradient glow behind header */}
-      <div className="absolute -top-20 -left-20 w-60 h-60 bg-[#A78BFA]/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Subtle gold glow behind header */}
+      <div className="absolute -top-20 -left-20 w-60 h-60 bg-[var(--gb-gold)]/8 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         {/* Title Section */}
         <div className="animate-fade-in-up">
-          <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight hover:glow-text-stripe transition-all cursor-default">
+          <h1 className="text-3xl lg:text-4xl font-bold text-[var(--gb-parchment)] tracking-tight hover:glow-text-stripe transition-all cursor-default font-cinzel">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-[#a1a1aa] text-lg mt-1 font-medium">{subtitle}</p>
+            <p className="text-[var(--text-secondary)] text-lg mt-1 font-medium font-cinzel">{subtitle}</p>
           )}
         </div>
 
@@ -56,21 +57,21 @@ export function Header({
           <div className="flex flex-col lg:items-end gap-3 animate-fade-in-up delay-100">
             <div className="flex items-baseline gap-4">
               {isViewingOther ? (
-                <span className="text-2xl lg:text-3xl font-bold text-[#52525b] italic">
+                <span className="text-2xl lg:text-3xl font-bold text-[var(--text-subtle)] italic font-cinzel">
                   Percentages only
                 </span>
               ) : (
-                <span className="text-4xl lg:text-5xl font-bold text-white tabular-nums tracking-tight">
-                  {isVisible ? formatCurrency(totalValue) : '$••••••'}
+                <span className="text-4xl lg:text-5xl font-bold text-[var(--gb-parchment)] tabular-nums tracking-tight font-cinzel">
+                  {isVisible ? formatCurrency(totalValue) : '$------'}
                 </span>
               )}
 
-              {/* Performance Badge - Stripe style */}
+              {/* Performance Badge - Ornate pill */}
               <div className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold
+                flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border
                 ${isPositive
-                  ? 'bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/20'
-                  : 'bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/20'
+                  ? 'bg-[var(--positive)]/12 text-[var(--positive)] border-[var(--positive)]/25'
+                  : 'bg-[var(--negative)]/12 text-[var(--negative)] border-[var(--negative)]/25'
                 }
               `}>
                 {isPositive ? (
@@ -88,13 +89,13 @@ export function Header({
             {!isViewingOther && change !== 0 && (
               <div className={`
                 text-sm font-medium flex items-center gap-1
-                ${isPositive ? 'text-[#10b981]' : 'text-[#ef4444]'}
+                ${isPositive ? 'text-[var(--positive)]' : 'text-[var(--negative)]'}
               `}>
-                <span className="text-[#52525b]">Today:</span>
+                <span className="text-[var(--text-subtle)]">Today:</span>
                 <span className="tabular-nums">
                   {isVisible
                     ? `${isPositive ? '+' : ''}${formatCurrency(change)}`
-                    : '••••'
+                    : '------'
                   }
                 </span>
               </div>
@@ -102,13 +103,13 @@ export function Header({
 
             {/* Last Updated */}
             {lastUpdated && (
-              <div className="flex items-center gap-2 text-[#52525b] text-sm">
+              <div className="flex items-center gap-2 text-[var(--text-subtle)] text-sm">
                 <div className="flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5" />
                   <span>Updated {formatDate(lastUpdated)}</span>
                 </div>
-                <span className="w-1 h-1 rounded-full bg-[#10b981] animate-pulse" />
-                <span className="text-[#10b981] text-xs font-medium">Live</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--gb-gold)] animate-pulse" />
+                <span className="text-[var(--gb-gold)] text-xs font-medium font-cinzel">Scrying</span>
               </div>
             )}
           </div>

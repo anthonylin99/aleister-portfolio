@@ -14,10 +14,10 @@ export function OpportunityCard({ opportunities }: OpportunityCardProps) {
     return (
       <div className="glass-card p-6 rounded-2xl">
         <div className="flex items-center gap-2 mb-4">
-          <Lightbulb className="w-5 h-5 text-[#9b8ac4]" />
-          <h3 className="text-lg font-semibold text-white">Opportunities</h3>
+          <Lightbulb className="w-5 h-5 text-[#D4AF37]" />
+          <h3 className="text-lg font-semibold text-[var(--gb-parchment)]">Opportunities</h3>
         </div>
-        <p className="text-slate-400 text-sm">No clear opportunities detected right now. Check back later.</p>
+        <p className="text-[var(--text-muted)] text-sm">No clear opportunities detected right now. Check back later.</p>
       </div>
     );
   }
@@ -29,7 +29,7 @@ export function OpportunityCard({ opportunities }: OpportunityCardProps) {
       case 'take_profit':
         return <TrendingUp className="w-5 h-5 text-amber-400" />;
       case 'rebalance':
-        return <Percent className="w-5 h-5 text-[#9b8ac4]" />;
+        return <Percent className="w-5 h-5 text-[#D4AF37]" />;
       case 'momentum_entry':
         return <Zap className="w-5 h-5 text-cyan-400" />;
     }
@@ -55,7 +55,7 @@ export function OpportunityCard({ opportunities }: OpportunityCardProps) {
       case 'take_profit':
         return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
       case 'rebalance':
-        return 'bg-[#9b8ac4]/20 text-[#9b8ac4] border-[#9b8ac4]/30';
+        return 'bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]/30';
       case 'momentum_entry':
         return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
     }
@@ -64,8 +64,8 @@ export function OpportunityCard({ opportunities }: OpportunityCardProps) {
   return (
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center gap-2 mb-4">
-        <Lightbulb className="w-5 h-5 text-[#9b8ac4]" />
-        <h3 className="text-lg font-semibold text-white">Opportunities</h3>
+        <Lightbulb className="w-5 h-5 text-[#D4AF37]" />
+        <h3 className="text-lg font-semibold text-[var(--gb-parchment)]">Opportunities</h3>
       </div>
 
       <div className="space-y-4">
@@ -79,21 +79,21 @@ export function OpportunityCard({ opportunities }: OpportunityCardProps) {
           >
             <div className="flex items-center gap-3 mb-2">
               {getOpportunityIcon(opp.type)}
-              <span className="font-semibold text-white">{getTypeLabel(opp.type)}</span>
+              <span className="font-semibold text-[var(--gb-parchment)]">{getTypeLabel(opp.type)}</span>
             </div>
-            <p className="text-sm text-slate-300 mb-3">{opp.rationale}</p>
+            <p className="text-sm text-[var(--text-secondary)] mb-3">{opp.rationale}</p>
             <div className="flex flex-wrap gap-2">
               {opp.tickers.slice(0, 5).map(ticker => (
                 <Link
                   key={ticker}
                   href={`/holdings/${ticker}`}
-                  className="px-2.5 py-1 rounded-md bg-slate-800/80 text-sm font-medium text-white hover:bg-slate-700/80 transition-colors"
+                  className="px-2.5 py-1 rounded-md bg-[var(--gb-azure-deep)]/80 text-sm font-medium text-[var(--gb-parchment)] hover:bg-[var(--gb-azure)]/80 transition-colors"
                 >
                   {ticker}
                 </Link>
               ))}
               {opp.tickers.length > 5 && (
-                <span className="px-2.5 py-1 rounded-md bg-slate-800/50 text-sm text-slate-400">
+                <span className="px-2.5 py-1 rounded-md bg-[var(--gb-azure-deep)]/50 text-sm text-[var(--text-muted)]">
                   +{opp.tickers.length - 5} more
                 </span>
               )}

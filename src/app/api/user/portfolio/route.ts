@@ -15,7 +15,7 @@ export async function GET() {
   }
 
   try {
-    // If the user is the owner, return the main Prometheus ETF portfolio
+    // If the user is the owner, return the main Aleister portfolio
     if (session.user.email && isOwnerEmail(session.user.email)) {
       const data = await getPortfolioWithPrices();
       return NextResponse.json({ ...data, isOwner: true });

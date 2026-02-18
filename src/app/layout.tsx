@@ -10,16 +10,16 @@ import { ThemeSettings } from "@/components/ui/ThemeSettings";
 import { ConditionalEffects } from "@/components/layout/ConditionalEffects";
 
 export const metadata: Metadata = {
-  title: "Prometheus ETF | Personal Portfolio Tracker",
+  title: "Aleister | Personal Portfolio Tracker",
   description: "A hypothetical ETF showcasing my personal investment thesis across Space, Crypto, Fintech, and AI sectors.",
   keywords: ["portfolio", "ETF", "investing", "crypto", "fintech", "AI", "space"],
-  authors: [{ name: "Prometheus" }],
+  authors: [{ name: "Aleister" }],
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "Prometheus ETF",
+    title: "Aleister",
     description: "Personal Investment Portfolio Tracker",
     type: "website",
   },

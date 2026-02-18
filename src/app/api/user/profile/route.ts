@@ -20,7 +20,7 @@ export async function GET() {
       name: isOwner ? 'Anthony' : '',
       etfTicker: isOwner ? etfConfig.ticker : '',
       etfName: isOwner ? etfConfig.name : '',
-      avatarColor: '#8b5cf6',
+      avatarColor: '#D4AF37',
       onboarded: isOwner, // Owner is pre-onboarded
     });
   }
@@ -51,7 +51,7 @@ export async function PUT(request: Request) {
         name: name || '',
         etfTicker: etfTicker || '',
         etfName: etfName || '',
-        avatarColor: avatarColor || '#8b5cf6',
+        avatarColor: avatarColor || '#D4AF37',
         onboarded: onboarded ?? false,
       });
       return NextResponse.json(created);

@@ -95,14 +95,14 @@ export function AddCollectionModal({
       <div className="relative glass-card p-6 rounded-2xl w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-bold text-white mb-1">Add to Portfolio</h2>
-        <p className="text-sm text-slate-400 mb-4">
-          Add stocks from <span className="text-violet-400">{collectionName}</span>
+        <h2 className="text-xl font-bold text-[var(--gb-parchment)] mb-1">Add to Portfolio</h2>
+        <p className="text-sm text-[var(--text-muted)] mb-4">
+          Add stocks from <span className="text-[var(--gb-gold)]">{collectionName}</span>
         </p>
 
         {result ? (
@@ -111,7 +111,7 @@ export function AddCollectionModal({
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
               <Check className="w-8 h-8 text-emerald-400" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">
+            <h3 className="text-lg font-bold text-[var(--gb-parchment)] mb-2">
               Added {result.added} stocks
             </h3>
             {result.failed > 0 && (
@@ -121,7 +121,7 @@ export function AddCollectionModal({
             )}
             <button
               onClick={onClose}
-              className="mt-6 px-6 py-2 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors"
+              className="mt-6 px-6 py-2 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] font-medium rounded-xl transition-colors"
             >
               Done
             </button>
@@ -130,7 +130,7 @@ export function AddCollectionModal({
           <>
             {/* Shares input */}
             <div className="mb-4">
-              <label className="block text-sm text-slate-400 mb-1">
+              <label className="block text-sm text-[var(--text-muted)] mb-1">
                 Shares per stock
               </label>
               <input
@@ -139,26 +139,26 @@ export function AddCollectionModal({
                 onChange={(e) => setShares(e.target.value)}
                 min="0.01"
                 step="any"
-                className="w-32 px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:border-violet-400/50"
+                className="w-32 px-4 py-2 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] focus:outline-none focus:border-[var(--gb-gold-border-strong)]"
               />
             </div>
 
             {/* Selection controls */}
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-[var(--text-muted)]">
                 {selectedTickers.length} of {tickers.length} selected
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={selectAll}
-                  className="text-xs text-violet-400 hover:text-violet-300"
+                  className="text-xs text-[var(--gb-gold)] hover:text-[var(--gb-gold-light)]"
                 >
                   Select All
                 </button>
-                <span className="text-slate-600">|</span>
+                <span className="text-[var(--text-subtle)]">|</span>
                 <button
                   onClick={selectNone}
-                  className="text-xs text-slate-400 hover:text-slate-300"
+                  className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                 >
                   Clear
                 </button>
@@ -174,23 +174,23 @@ export function AddCollectionModal({
                   className={cn(
                     'w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left',
                     selectedTickers.includes(t.ticker)
-                      ? 'bg-violet-400/10 border border-violet-400/30'
-                      : 'bg-slate-800/30 border border-transparent hover:bg-slate-700/30'
+                      ? 'bg-[var(--gb-gold)]/10 border border-[var(--gb-gold-border)]'
+                      : 'bg-[var(--gb-azure-deep)]/30 border border-transparent hover:bg-[var(--gb-azure)]/30'
                   )}
                 >
                   <div
                     className={cn(
                       'w-5 h-5 rounded flex items-center justify-center',
                       selectedTickers.includes(t.ticker)
-                        ? 'bg-violet-400 text-white'
-                        : 'bg-slate-700 text-transparent'
+                        ? 'bg-[var(--gb-gold)] text-[var(--gb-parchment)]'
+                        : 'bg-[var(--gb-azure)] text-transparent'
                     )}
                   >
                     <Check className="w-3 h-3" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-white">{t.ticker}</p>
-                    <p className="text-sm text-slate-400 truncate">{t.name}</p>
+                    <p className="font-semibold text-[var(--gb-parchment)]">{t.ticker}</p>
+                    <p className="text-sm text-[var(--text-muted)] truncate">{t.name}</p>
                   </div>
                 </button>
               ))}
@@ -202,14 +202,14 @@ export function AddCollectionModal({
             <div className="flex gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 py-3 bg-slate-800/50 border border-slate-700/50 text-slate-300 font-medium rounded-xl hover:bg-slate-700/50 transition-colors"
+                className="flex-1 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] text-[var(--text-secondary)] font-medium rounded-xl hover:bg-[var(--gb-azure)]/50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAdd}
                 disabled={adding || selectedTickers.length === 0}
-                className="flex-1 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {adding ? (
                   <>

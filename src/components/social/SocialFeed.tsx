@@ -21,16 +21,16 @@ export function SocialFeed({ ticker, className }: SocialFeedProps) {
   const twitterAccounts = tickerTwitterAccounts[ticker.toUpperCase()] || [];
 
   return (
-    <div className={cn("bg-slate-900/50 rounded-2xl border border-slate-800 overflow-hidden", className)}>
+    <div className={cn("bg-[var(--gb-azure-deep)]/50 rounded-2xl border border-[var(--gb-gold-border)] overflow-hidden", className)}>
       {/* Tab Header */}
-      <div className="flex border-b border-slate-800">
+      <div className="flex border-b border-[var(--gb-gold-border)]">
         <button
           onClick={() => setActiveTab('news')}
           className={cn(
             "flex-1 px-4 py-3 text-sm font-medium transition flex items-center justify-center gap-2",
             activeTab === 'news'
-              ? "text-white bg-slate-800/50 border-b-2 border-violet-400"
-              : "text-gray-400 hover:text-white"
+              ? "text-[var(--gb-parchment)] bg-[var(--gb-azure-deep)]/50 border-b-2 border-[var(--gb-gold)]"
+              : "text-gray-400 hover:text-[var(--gb-parchment)]"
           )}
         >
           <Newspaper className="w-4 h-4" />
@@ -41,8 +41,8 @@ export function SocialFeed({ ticker, className }: SocialFeedProps) {
           className={cn(
             "flex-1 px-4 py-3 text-sm font-medium transition flex items-center justify-center gap-2",
             activeTab === 'stocktwits'
-              ? "text-white bg-slate-800/50 border-b-2 border-violet-400"
-              : "text-gray-400 hover:text-white"
+              ? "text-[var(--gb-parchment)] bg-[var(--gb-azure-deep)]/50 border-b-2 border-[var(--gb-gold)]"
+              : "text-gray-400 hover:text-[var(--gb-parchment)]"
           )}
         >
           <MessageCircle className="w-4 h-4" />
@@ -62,7 +62,7 @@ export function SocialFeed({ ticker, className }: SocialFeedProps) {
       
       {/* Twitter/X Links for specific tickers */}
       {twitterAccounts.length > 0 && (
-        <div className="px-4 py-3 border-t border-slate-800 bg-slate-900/30">
+        <div className="px-4 py-3 border-t border-[var(--gb-gold-border)] bg-[var(--gb-azure-deep)]/30">
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
             <Twitter className="w-3.5 h-3.5" />
             <span>Community on X</span>
@@ -74,7 +74,7 @@ export function SocialFeed({ ticker, className }: SocialFeedProps) {
                 href={`https://x.com/${account}`} 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1.5 bg-slate-800 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-slate-700 transition flex items-center gap-1"
+                className="px-3 py-1.5 bg-[var(--gb-azure-deep)] rounded-lg text-sm text-gray-300 hover:text-[var(--gb-parchment)] hover:bg-[var(--gb-azure)] transition flex items-center gap-1"
               >
                 @{account}
                 <ExternalLink className="w-3 h-3" />
@@ -104,7 +104,7 @@ function NewsFeed({ articles, isLoading }: NewsFeedProps) {
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block p-4 hover:bg-slate-800/50 transition"
+          className="block p-4 hover:bg-[var(--gb-azure-deep)]/50 transition"
         >
           <div className="flex gap-4">
             {article.image && (
@@ -116,7 +116,7 @@ function NewsFeed({ articles, isLoading }: NewsFeedProps) {
               />
             )}
             <div className="flex-1 min-w-0">
-              <h4 className="text-white font-medium line-clamp-2 mb-1">
+              <h4 className="text-[var(--gb-parchment)] font-medium line-clamp-2 mb-1">
                 {article.headline}
               </h4>
               {article.summary && (
@@ -149,21 +149,21 @@ function StockTwitsFeed({ messages, isLoading }: StockTwitsFeedProps) {
   return (
     <div className="divide-y divide-slate-800">
       {messages.map((msg) => (
-        <div key={msg.id} className="p-4 hover:bg-slate-800/30 transition">
+        <div key={msg.id} className="p-4 hover:bg-[var(--gb-azure-deep)]/30 transition">
           <div className="flex items-start gap-3">
             <img 
               src={msg.user.avatarUrl} 
               alt={msg.user.username}
-              className="w-10 h-10 rounded-full bg-slate-700"
+              className="w-10 h-10 rounded-full bg-[var(--gb-azure)]"
               onError={(e) => { 
                 (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${msg.user.username}`;
               }}
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <span className="font-medium text-white">{msg.user.name}</span>
+                <span className="font-medium text-[var(--gb-parchment)]">{msg.user.name}</span>
                 {msg.user.official && (
-                  <span className="px-1.5 py-0.5 bg-violet-400/20 text-violet-400 text-xs rounded">Official</span>
+                  <span className="px-1.5 py-0.5 bg-[var(--gb-gold)]/20 text-[var(--gb-gold)] text-xs rounded">Official</span>
                 )}
                 <span className="text-gray-500 text-sm">@{msg.user.username}</span>
               </div>
@@ -194,8 +194,8 @@ function LoadingState() {
   return (
     <div className="flex items-center justify-center h-full">
       <div className="flex items-center gap-3">
-        <div className="w-5 h-5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
-        <span className="text-slate-400 text-sm">Loading...</span>
+        <div className="w-5 h-5 border-2 border-[var(--gb-gold)] border-t-transparent rounded-full animate-spin" />
+        <span className="text-[var(--text-muted)] text-sm">Loading...</span>
       </div>
     </div>
   );
@@ -204,7 +204,7 @@ function LoadingState() {
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex items-center justify-center h-full">
-      <p className="text-slate-500 text-sm">{message}</p>
+      <p className="text-[var(--text-subtle)] text-sm">{message}</p>
     </div>
   );
 }

@@ -24,10 +24,10 @@ export function StepIndicator({ currentStep, totalSteps, labels }: StepIndicator
                 className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300',
                   isCompleted
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-emerald-500 text-[var(--gb-parchment)]'
                     : isCurrent
-                      ? 'bg-violet-400 text-white shadow-lg shadow-violet-400/30'
-                      : 'bg-slate-800 text-slate-500 border border-slate-700'
+                      ? 'bg-[var(--gb-gold)] text-[var(--gb-parchment)] shadow-lg shadow-[var(--gb-gold)]/30'
+                      : 'bg-[var(--gb-azure-deep)] text-[var(--text-subtle)] border border-[var(--gb-gold-border)]'
                 )}
               >
                 {isCompleted ? <Check className="w-4 h-4" /> : stepNum}
@@ -35,7 +35,7 @@ export function StepIndicator({ currentStep, totalSteps, labels }: StepIndicator
               <span
                 className={cn(
                   'text-xs font-medium whitespace-nowrap',
-                  isCurrent ? 'text-white' : isCompleted ? 'text-emerald-400' : 'text-slate-500'
+                  isCurrent ? 'text-[var(--gb-parchment)]' : isCompleted ? 'text-emerald-400' : 'text-[var(--text-subtle)]'
                 )}
               >
                 {labels[i]}
@@ -45,7 +45,7 @@ export function StepIndicator({ currentStep, totalSteps, labels }: StepIndicator
               <div
                 className={cn(
                   'w-12 h-0.5 rounded-full mb-5',
-                  isCompleted ? 'bg-emerald-500' : 'bg-slate-700'
+                  isCompleted ? 'bg-emerald-500' : 'bg-[var(--gb-azure)]'
                 )}
               />
             )}

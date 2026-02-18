@@ -32,8 +32,8 @@ export function LeaderboardRow({ member, isCurrentUser }: LeaderboardRowProps) {
       className={cn(
         'flex items-center gap-4 p-4 rounded-xl transition-colors',
         isCurrentUser
-          ? 'bg-violet-400/10 border border-violet-400/20'
-          : 'bg-slate-800/20 border border-slate-700/20 hover:bg-slate-800/40'
+          ? 'bg-[var(--gb-gold)]/10 border border-[var(--gb-gold-border)]'
+          : 'bg-[var(--gb-azure-deep)]/20 border border-[var(--gb-gold-border)]/20 hover:bg-[var(--gb-azure-deep)]/40'
       )}
     >
       {/* Rank */}
@@ -45,12 +45,12 @@ export function LeaderboardRow({ member, isCurrentUser }: LeaderboardRowProps) {
               member.rank === 1
                 ? 'text-amber-400'
                 : member.rank === 2
-                  ? 'text-slate-300'
+                  ? 'text-[var(--text-secondary)]'
                   : 'text-amber-700'
             )}
           />
         ) : (
-          <span className="text-slate-500 font-mono text-sm">
+          <span className="text-[var(--text-subtle)] font-mono text-sm">
             {member.rank}
           </span>
         )}
@@ -58,7 +58,7 @@ export function LeaderboardRow({ member, isCurrentUser }: LeaderboardRowProps) {
 
       {/* Avatar */}
       <div
-        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+        className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--gb-parchment)] font-bold text-xs flex-shrink-0"
         style={{ backgroundColor: member.avatarColor }}
       >
         {initials}
@@ -66,13 +66,13 @@ export function LeaderboardRow({ member, isCurrentUser }: LeaderboardRowProps) {
 
       {/* Name & Ticker */}
       <div className="flex-1 min-w-0">
-        <p className="text-white font-medium text-sm truncate">
+        <p className="text-[var(--gb-parchment)] font-medium text-sm truncate">
           {member.name}
           {isCurrentUser && (
-            <span className="text-violet-400 text-xs ml-2">(you)</span>
+            <span className="text-[var(--gb-gold)] text-xs ml-2">(you)</span>
           )}
         </p>
-        <p className="text-slate-500 text-xs font-mono">
+        <p className="text-[var(--text-subtle)] text-xs font-mono">
           ${member.etfTicker} · {member.holdingsCount} holdings
         </p>
       </div>

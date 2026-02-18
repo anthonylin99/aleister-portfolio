@@ -24,7 +24,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        'shimmer bg-slate-800/50',
+        'shimmer bg-[var(--gb-azure-deep)]/50',
         variantClasses[variant],
         className
       )}

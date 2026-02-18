@@ -23,12 +23,12 @@ export function Leaderboard() {
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <BarChart3 className="w-5 h-5 text-violet-400" />
-          <h2 className="text-lg font-bold text-white">Leaderboard</h2>
+          <BarChart3 className="w-5 h-5 text-[var(--gb-gold)]" />
+          <h2 className="text-lg font-bold text-[var(--gb-parchment)] font-cinzel">Guild Rankings</h2>
         </div>
 
         {/* Range Toggle */}
-        <div className="flex bg-slate-800/50 rounded-lg p-1">
+        <div className="flex bg-[var(--gb-azure-deep)]/50 rounded-lg p-1">
           {RANGES.map((r) => (
             <button
               key={r.value}
@@ -36,8 +36,8 @@ export function Leaderboard() {
               className={cn(
                 'px-3 py-1.5 text-xs font-medium rounded-md transition-all',
                 range === r.value
-                  ? 'bg-violet-400 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[var(--gb-gold)] text-[var(--gb-parchment)] shadow-sm'
+                  : 'text-[var(--text-muted)] hover:text-[var(--gb-parchment)]'
               )}
             >
               {r.label}
@@ -48,13 +48,13 @@ export function Leaderboard() {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+          <Loader2 className="w-6 h-6 text-[var(--gb-gold)] animate-spin" />
         </div>
       ) : error ? (
         <p className="text-red-400 text-sm text-center py-8">{error}</p>
       ) : rankings.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-slate-400 text-sm">
+          <p className="text-[var(--text-muted)] text-sm">
             No members with portfolio data yet.
           </p>
         </div>

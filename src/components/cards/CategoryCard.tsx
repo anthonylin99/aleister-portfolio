@@ -19,27 +19,27 @@ export function CategoryCard({ category, index }: CategoryCardProps) {
           )}
           style={{ backgroundColor: category.color }}
         />
-        <h4 className="text-sm font-medium text-white truncate">
+        <h4 className="text-sm font-medium text-[var(--gb-parchment)] truncate">
           {category.name}
         </h4>
       </div>
       
       <div className="space-y-1">
-        <p className="text-xl font-bold text-white tabular-nums">
+        <p className="text-xl font-bold text-[var(--gb-parchment)] tabular-nums">
           {formatCurrency(category.value)}
         </p>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-400">
+          <span className="text-sm text-[var(--text-muted)]">
             {formatPercentage(category.percentage)}
           </span>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-[var(--text-subtle)]">
             {category.holdings.length} holding{category.holdings.length > 1 ? 's' : ''}
           </span>
         </div>
       </div>
       
       {/* Progress indicator */}
-      <div className="mt-3 h-1 bg-slate-800 rounded-full overflow-hidden">
+      <div className="mt-3 h-1 bg-[var(--gb-azure-deep)] rounded-full overflow-hidden">
         <div 
           className="h-full rounded-full transition-all duration-700"
           style={{ 

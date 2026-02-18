@@ -164,26 +164,26 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
           <Sparkles className="w-5 h-5 text-cyan-400" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white">AI Analysis</h2>
-          <p className="text-sm text-slate-400">Claude-generated research • Expand or refine as needed</p>
+          <h2 className="text-xl font-bold text-[var(--gb-parchment)]">AI Analysis</h2>
+          <p className="text-sm text-[var(--text-muted)]">Claude-generated research • Expand or refine as needed</p>
         </div>
       </div>
 
       {checkingCache && !analysis && (
-        <div className="bg-slate-900/50 rounded-xl p-6 border border-dashed border-slate-700 text-center text-slate-500">
+        <div className="bg-[var(--gb-azure-deep)]/50 rounded-xl p-6 border border-dashed border-[var(--gb-gold-border)] text-center text-[var(--text-subtle)]">
           Checking for cached analysis...
         </div>
       )}
 
       {!checkingCache && !analysis && !loading && (
-        <div className="bg-slate-900/50 rounded-xl p-6 border border-dashed border-slate-700">
+        <div className="bg-[var(--gb-azure-deep)]/50 rounded-xl p-6 border border-dashed border-[var(--gb-gold-border)]">
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-900/30 border border-red-800/50 flex items-start gap-2">
               <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
               <p className="text-red-300 text-sm">{error}</p>
             </div>
           )}
-          <p className="text-slate-500 text-center mb-4">
+          <p className="text-[var(--text-subtle)] text-center mb-4">
             No AI analysis yet. Generate one to get an independent research report.
           </p>
           <div className="flex justify-center">
@@ -192,19 +192,19 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
               disabled={!thesisData}
               className={cn(
                 'inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
-                thesisData ? 'bg-violet-400 text-white hover:bg-violet-400' : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                thesisData ? 'bg-[var(--gb-gold)] text-[var(--gb-parchment)] hover:bg-[var(--gb-gold)]/80' : 'bg-[var(--gb-azure)] text-[var(--text-muted)] cursor-not-allowed'
               )}
             >
               <Sparkles className="w-4 h-4" />
               Generate AI Analysis
             </button>
           </div>
-          {!thesisData && <p className="text-slate-600 text-sm text-center mt-2">Add thesis data for {ticker} to enable.</p>}
+          {!thesisData && <p className="text-[var(--text-subtle)] text-sm text-center mt-2">Add thesis data for {ticker} to enable.</p>}
         </div>
       )}
 
       {loading && (
-        <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 flex items-center justify-center gap-3 text-slate-400">
+        <div className="bg-[var(--gb-azure-deep)]/50 rounded-xl p-6 border border-[var(--gb-gold-border)] flex items-center justify-center gap-3 text-[var(--text-muted)]">
           <Loader2 className="w-5 h-5 animate-spin" />
           <span>Generating analysis...</span>
         </div>
@@ -223,7 +223,7 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-[var(--gb-azure-deep)] text-[var(--text-secondary)] hover:bg-[var(--gb-azure)] transition-colors"
             >
               {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               {expanded ? 'Show less' : 'Read full report'}
@@ -231,7 +231,7 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
             <button
               onClick={() => handleGenerate(true)}
               disabled={loading}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm bg-[var(--gb-azure-deep)] text-[var(--text-secondary)] hover:bg-[var(--gb-azure)] transition-colors disabled:opacity-50"
             >
               <RefreshCw className="w-4 h-4" />
               Regenerate
@@ -240,7 +240,7 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
               onClick={() => { setRefineOpen(!refineOpen); setRefineError(null); setRefineSuccess(false); }}
               className={cn(
                 'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors',
-                refineOpen ? 'bg-cyan-900/40 text-cyan-300' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                refineOpen ? 'bg-cyan-900/40 text-cyan-300' : 'bg-[var(--gb-azure-deep)] text-[var(--text-secondary)] hover:bg-[var(--gb-azure)]'
               )}
             >
               <MessageSquarePlus className="w-4 h-4" />
@@ -250,16 +250,16 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
 
           {/* Compact: bullet summary only (capped height, scannable) */}
           {!expanded && (
-            <div className="bg-slate-900/50 rounded-xl p-5 border border-slate-700/50 max-h-[220px] overflow-hidden">
+            <div className="bg-[var(--gb-azure-deep)]/50 rounded-xl p-5 border border-[var(--gb-gold-border)] max-h-[220px] overflow-hidden">
               {summary.headline && (
                 <p className="text-sm font-semibold text-cyan-300/90 mb-3">{summary.headline}</p>
               )}
-              <ul className="space-y-1.5 text-sm text-slate-300">
+              <ul className="space-y-1.5 text-sm text-[var(--text-secondary)]">
                 {summary.bullets.slice(0, COMPACT_BULLETS).map((b, i) => {
                   const t = b.length > BULLET_TRUNCATE ? `${b.slice(0, BULLET_TRUNCATE)}…` : b;
                   return (
                     <li key={i} className="flex gap-2">
-                      <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
+                      <span className="text-[var(--text-subtle)] mt-0.5 flex-shrink-0">•</span>
                       <span>{t}</span>
                     </li>
                   );
@@ -272,10 +272,10 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
           {expanded && (
             <div
               className={cn(
-                'bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 max-h-[60vh] overflow-y-auto',
+                'bg-[var(--gb-azure-deep)]/50 rounded-xl p-6 border border-[var(--gb-gold-border)] max-h-[60vh] overflow-y-auto',
                 'prose prose-invert prose-sm max-w-none',
-                'prose-headings:text-white prose-p:text-slate-300 prose-li:text-slate-300',
-                'prose-table:text-slate-300 prose-th:border-slate-600 prose-td:border-slate-700'
+                'prose-headings:text-[var(--gb-parchment)] prose-p:text-[var(--text-secondary)] prose-li:text-[var(--text-secondary)]',
+                'prose-table:text-[var(--text-secondary)] prose-th:border-[var(--gb-gold-border)] prose-td:border-[var(--gb-gold-border)]'
               )}
             >
               <ReactMarkdown>{analysis}</ReactMarkdown>
@@ -284,26 +284,26 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
 
           {/* Refine: optional chat-style panel to fine-tune analysis */}
           {refineOpen && (
-            <div className="bg-slate-900/60 rounded-xl border border-slate-700/50 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700/50">
-                <span className="text-sm font-medium text-slate-200">Refine with AI</span>
+            <div className="bg-[var(--gb-azure-deep)]/60 rounded-xl border border-[var(--gb-gold-border)] overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--gb-gold-border)]">
+                <span className="text-sm font-medium text-[var(--gb-parchment)]">Refine with AI</span>
                 <button
                   onClick={() => { setRefineOpen(false); setRefineError(null); setRefineSuccess(false); }}
-                  className="p-1 rounded text-slate-500 hover:text-white hover:bg-slate-700/50 transition-colors"
+                  className="p-1 rounded text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] hover:bg-[var(--gb-azure)]/50 transition-colors"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
               <div className="p-4 space-y-3">
-                <p className="text-xs text-slate-400">e.g. Factor in the new FDA approval; What are the risks of China exposure?; Add more on margins.</p>
+                <p className="text-xs text-[var(--text-muted)]">e.g. Factor in the new FDA approval; What are the risks of China exposure?; Add more on margins.</p>
                 <div className="flex flex-wrap gap-2">
                   {REFINE_CHIPS.map((label) => (
                     <button
                       key={label}
                       type="button"
                       onClick={() => setRefineInput(label)}
-                      className="px-3 py-1.5 rounded-lg text-xs bg-slate-800/80 text-slate-400 hover:text-cyan-300 hover:bg-slate-700/80 border border-slate-700 transition-colors"
+                      className="px-3 py-1.5 rounded-lg text-xs bg-[var(--gb-azure-deep)]/80 text-[var(--text-muted)] hover:text-cyan-300 hover:bg-[var(--gb-azure)]/80 border border-[var(--gb-gold-border)] transition-colors"
                     >
                       {label}
                     </button>
@@ -318,13 +318,13 @@ export function AIAnalysisSection({ ticker, companyName }: AIAnalysisSectionProp
                     onChange={(e) => setRefineInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleRefine()}
                     placeholder="Ask a follow-up to refine the analysis…"
-                    className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 text-sm"
+                    className="flex-1 px-3 py-2 rounded-lg bg-[var(--gb-azure-deep)] border border-[var(--gb-gold-border)] text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-cyan-500 text-sm"
                     disabled={refineLoading}
                   />
                   <button
                     onClick={handleRefine}
                     disabled={refineLoading || !refineInput.trim()}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-500 disabled:opacity-50 text-sm font-medium"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600 text-[var(--gb-parchment)] hover:bg-cyan-500 disabled:opacity-50 text-sm font-medium"
                   >
                     {refineLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     Send

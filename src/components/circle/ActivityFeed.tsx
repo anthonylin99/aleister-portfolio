@@ -10,16 +10,16 @@ export function ActivityFeed() {
   return (
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center gap-3 mb-4">
-        <Activity className="w-5 h-5 text-violet-400" />
-        <h2 className="text-lg font-bold text-white">Activity</h2>
+        <Activity className="w-5 h-5 text-[var(--gb-gold)]" />
+        <h2 className="text-lg font-bold text-[var(--gb-parchment)]">Activity</h2>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-5 h-5 text-violet-400 animate-spin" />
+          <Loader2 className="w-5 h-5 text-[var(--gb-gold)] animate-spin" />
         </div>
       ) : events.length === 0 ? (
-        <p className="text-slate-500 text-sm text-center py-6">
+        <p className="text-[var(--text-subtle)] text-sm text-center py-6">
           No activity yet. Changes will appear here.
         </p>
       ) : (

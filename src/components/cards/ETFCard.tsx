@@ -21,7 +21,7 @@ export function ETFCard({ etf, className }: ETFCardProps) {
     <Link 
       href="/etf"
       className={cn(
-        "glass-card p-5 rounded-2xl group hover:border-violet-400/40 transition-all block",
+        "glass-card p-5 rounded-2xl group hover:border-[var(--gb-gold-border-strong)] transition-all block",
         className
       )}
     >
@@ -31,8 +31,8 @@ export function ETFCard({ etf, className }: ETFCardProps) {
           <div className="relative">
             <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg shadow-purple-500/25">
               <Image 
-                src="/prometheus.png" 
-                alt="Prometheus ETF" 
+                src="/aleister.png"
+                alt="Aleister" 
                 width={56} 
                 height={56}
                 className="w-full h-full object-cover"
@@ -43,11 +43,11 @@ export function ETFCard({ etf, className }: ETFCardProps) {
           {/* Info */}
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-white">${etf.ticker}</span>
-              <span className="text-sm text-slate-400">{etf.name}</span>
+              <span className="text-xl font-bold text-[var(--gb-parchment)]">${etf.ticker}</span>
+              <span className="text-sm text-[var(--text-muted)]">{etf.name}</span>
             </div>
             <div className="flex items-baseline gap-3 mt-1">
-              <span className="text-2xl font-bold text-white tabular-nums">
+              <span className="text-2xl font-bold text-[var(--gb-parchment)] tabular-nums">
                 {isVisible && Number.isFinite(etf.currentPrice) ? `$${etf.currentPrice.toFixed(2)}` : '$••••••'}
               </span>
               <span className={cn(
@@ -63,21 +63,21 @@ export function ETFCard({ etf, className }: ETFCardProps) {
 
         {/* Total Return */}
         <div className="text-right hidden sm:block">
-          <p className="text-sm text-slate-400">Since Inception</p>
+          <p className="text-sm text-[var(--text-muted)]">Since Inception</p>
           <p className={cn(
             "text-lg font-bold tabular-nums",
             totalPositive ? "text-emerald-400" : "text-red-400"
           )}>
             {formatPercentagePrecise(etf.totalReturnPercent)}
           </p>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[var(--text-subtle)]">
             {isVisible ? `${totalPositive ? '+' : ''}${formatCurrencyPrecise(etf.totalReturn)}` : '$••••'}
           </p>
         </div>
 
         {/* Arrow */}
         <div className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <ArrowRight className="w-5 h-5 text-violet-400" />
+          <ArrowRight className="w-5 h-5 text-[var(--gb-gold)]" />
         </div>
       </div>
     </Link>

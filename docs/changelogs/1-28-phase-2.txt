@@ -1,5 +1,5 @@
 ================================================================================
-PROMETHEUS ETF - PHASE 2 IMPLEMENTATION CHANGELOG
+ALEISTER - PHASE 2 IMPLEMENTATION CHANGELOG
 Date: January 28, 2026
 ================================================================================
 

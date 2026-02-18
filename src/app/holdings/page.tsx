@@ -76,10 +76,16 @@ export default function HoldingsPage() {
 
   if (loading && holdings.length === 0) {
     return (
-      <div className="p-6 lg:p-8 min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-3 border-violet-400 border-t-transparent rounded-full animate-spin" />
-          <p className="text-slate-400">Loading holdings...</p>
+      <div className="p-6 lg:p-8 min-h-screen relative">
+        <div className="stripe-gradient-bg" />
+        <div className="sky-sparkles" />
+        <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
+          <div className="flex flex-col items-center gap-6">
+            <div className="magic-circle-loader">
+              <div className="magic-circle-inner" />
+            </div>
+            <p className="text-[var(--text-secondary)] font-cinzel text-sm tracking-wide">Scrying relics...</p>
+          </div>
         </div>
       </div>
     );
@@ -88,45 +94,52 @@ export default function HoldingsPage() {
   // Empty state for authenticated users with no holdings
   if (isAuthenticated && holdings.length === 0 && !loading) {
     return (
-      <div className="p-6 lg:p-8 min-h-screen">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
-          <Header 
-            title="Holdings"
-            subtitle="Manage and track all portfolio positions"
-          />
-        </div>
+      <div className="p-6 lg:p-8 min-h-screen relative">
+        <div className="stripe-gradient-bg" />
+        <div className="sky-sparkles" />
+        <div className="relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+            <Header
+              title="Armory"
+              subtitle="Manage and track all relics in your fleet"
+            />
+          </div>
 
-        <div className="mt-8 flex flex-col items-center justify-center text-center">
-          <div className="glass-card p-10 rounded-2xl max-w-lg">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-400/20 flex items-center justify-center">
-              <Wallet className="w-8 h-8 text-violet-400" />
-            </div>
-            <h2 className="text-xl font-bold text-white mb-2">
-              Your portfolio is empty
-            </h2>
-            <p className="text-slate-400 text-sm mb-6">
-              Add your first holding to start tracking your portfolio performance and compete with your circle.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-400 to-violet-400 text-white font-medium rounded-xl shadow-lg shadow-violet-400/25 hover:from-violet-400 hover:to-purple-500 transition-all"
-              >
-                <Plus className="w-4 h-4" />
-                Add Your First Holding
-              </button>
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 glass-card text-slate-300 font-medium rounded-xl hover:text-white hover:border-violet-400/40 transition-all"
-              >
-                <Flame className="w-4 h-4 text-orange-400" />
-                View Prometheus ETF
-              </Link>
+          <div className="mt-8 flex flex-col items-center justify-center text-center">
+            <div className="gradient-card p-10 rounded-2xl max-w-lg filigree-corners">
+              <div className="card-gradient-animated opacity-10" />
+              <div className="relative z-10">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full border-2 border-[var(--gb-gold)] bg-gradient-to-br from-[var(--gb-gold)]/20 to-[var(--gb-crystal-blue)]/15 flex items-center justify-center shadow-lg shadow-[var(--gb-gold)]/20">
+                  <Wallet className="w-8 h-8 text-[var(--gb-gold)]" />
+                </div>
+                <h2 className="text-2xl font-bold text-[var(--gb-parchment)] mb-2 font-cinzel">
+                  Your armory is empty
+                </h2>
+                <p className="text-[var(--text-secondary)] mb-8">
+                  Acquire your first relic to begin tracking your fleet&apos;s fortune.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="btn-primary"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Acquire First Relic
+                  </button>
+                  <Link
+                    href="/"
+                    className="btn-secondary"
+                  >
+                    <Flame className="w-4 h-4" />
+                    View Aleister
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Add Ticker Modal */}
+        {/* Add Relic Modal */}
         {showAddModal && (
           <AddTickerModal
             searchQuery={searchQuery}
@@ -134,7 +147,7 @@ export default function HoldingsPage() {
             searching={searching}
             adding={adding}
             existingTickers={holdings.map(h => h.ticker.toUpperCase())}
-            portfolioName={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio'}
+            portfolioName={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Fleet'}
             onSearch={handleSearch}
             onAdd={handleAddTicker}
             onClose={() => {
@@ -149,64 +162,70 @@ export default function HoldingsPage() {
   }
 
   return (
-    <div className="p-6 lg:p-8 min-h-screen">
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
-        <Header 
-          title="Holdings"
-          subtitle={isAuthenticated && profile?.etfTicker ? `$${profile.etfTicker} Portfolio` : "Manage and track all portfolio positions"}
-        />
-        
-        <div className="flex flex-wrap gap-2 self-start">
-          {isAuthenticated && (
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-violet-400 hover:text-white hover:border-violet-400/40 transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="text-sm">Add Ticker</span>
-            </button>
-          )}
-          
-          {!isAuthenticated && (
-            <Link
-              href="/"
-              className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-orange-400 hover:text-white hover:border-orange-500/40 transition-all"
-            >
-              <Flame className="w-4 h-4" />
-              <span className="text-sm">Prometheus ETF</span>
-            </Link>
-          )}
-          
-          <button
-            onClick={refresh}
-            disabled={loading}
-            className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-slate-400 hover:text-white hover:border-violet-400/40 transition-all disabled:opacity-50"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            <span className="text-sm">
-              {loading ? 'Refreshing...' : 'Refresh'}
-            </span>
-            {cached && summary.lastUpdated && (
-              <span className="text-xs text-slate-500">
-                ({getRelativeTime(summary.lastUpdated)})
-              </span>
+    <div className="p-6 lg:p-8 min-h-screen relative">
+      {/* Granblue sky background */}
+      <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
+
+      <div className="relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+          <Header
+            title="Armory"
+            subtitle={isAuthenticated && profile?.etfTicker ? `$${profile.etfTicker} Fleet` : "Manage and track all relics in your fleet"}
+          />
+
+          <div className="flex flex-wrap gap-2 self-start">
+            {isAuthenticated && (
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-[var(--gb-gold)] hover:text-[var(--gb-parchment)] hover:border-[var(--gb-gold-border-strong)] transition-all font-cinzel"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="text-sm">Add Relic</span>
+              </button>
             )}
-          </button>
+
+            {!isAuthenticated && (
+              <Link
+                href="/"
+                className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-[var(--gb-gold)] hover:text-[var(--gb-parchment)] hover:border-[var(--gb-gold-border-strong)] transition-all font-cinzel"
+              >
+                <Flame className="w-4 h-4" />
+                <span className="text-sm">Aleister</span>
+              </Link>
+            )}
+
+            <button
+              onClick={refresh}
+              disabled={loading}
+              className="glass-card px-4 py-3 rounded-xl flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--gb-parchment)] hover:border-[var(--gb-gold-border-strong)] transition-all disabled:opacity-50 font-cinzel"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <span className="text-sm">
+                {loading ? 'Scrying...' : 'Re-scry'}
+              </span>
+              {cached && summary.lastUpdated && (
+                <span className="text-xs text-[var(--text-subtle)]">
+                  ({getRelativeTime(summary.lastUpdated)})
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Individual Holdings Table */}
+        <div className="mb-8">
+          <h3 className="text-xl font-bold text-[var(--gb-parchment)] mb-4 font-cinzel">All Relics</h3>
+          <HoldingsTable holdings={holdings} totalValue={summary.totalValue} onRefresh={refresh} />
+        </div>
+
+        {/* Category Overview with Pie Chart */}
+        <div>
+          <CategoryHoldingsSection data={categories} totalValue={summary.totalValue} />
         </div>
       </div>
 
-      {/* Individual Holdings Table */}
-      <div className="mb-8">
-        <h3 className="text-xl font-bold text-white mb-4">All Holdings</h3>
-        <HoldingsTable holdings={holdings} totalValue={summary.totalValue} onRefresh={refresh} />
-      </div>
-
-      {/* Category Overview with Pie Chart */}
-      <div>
-        <CategoryHoldingsSection data={categories} totalValue={summary.totalValue} />
-      </div>
-
-      {/* Add Ticker Modal */}
+      {/* Add Relic Modal */}
       {showAddModal && (
         <AddTickerModal
           searchQuery={searchQuery}
@@ -214,7 +233,7 @@ export default function HoldingsPage() {
           searching={searching}
           adding={adding}
           existingTickers={holdings.map(h => h.ticker.toUpperCase())}
-          portfolioName={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio'}
+          portfolioName={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Fleet'}
           onSearch={handleSearch}
           onAdd={handleAddTicker}
           onClose={() => {
@@ -254,43 +273,46 @@ function AddTickerModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative glass-card p-6 rounded-2xl w-full max-w-md">
+      <div className="relative gradient-card p-6 rounded-2xl w-full max-w-md filigree-corners">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] transition-colors z-10"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-bold text-white mb-2">Add Holding</h2>
-        <p className="text-sm text-slate-400 mb-4">Adding to: <span className="text-violet-400">{portfolioName}</span></p>
-        
+        <h2 className="text-xl font-bold text-[var(--gb-parchment)] mb-2 font-cinzel">Add Relic</h2>
+        <p className="text-sm text-[var(--text-muted)] mb-4">Adding to: <span className="text-[var(--gb-gold)] font-cinzel">{portfolioName}</span></p>
+
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-subtle)]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearch(e.target.value)}
-            placeholder="Search by ticker or company name..."
+            placeholder="Search by ticker or relic name..."
             autoFocus
-            className="w-full pl-11 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors"
+            className="w-full pl-11 pr-4 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] focus:ring-1 focus:ring-[var(--gb-gold)]/25 transition-colors font-cinzel"
           />
         </div>
 
         <div className="max-h-64 overflow-y-auto space-y-2">
           {searching && (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+            <div className="flex flex-col items-center justify-center py-8 gap-3">
+              <div className="magic-circle-loader" style={{ width: '48px', height: '48px' }}>
+                <div className="magic-circle-inner" />
+              </div>
+              <p className="text-[var(--text-secondary)] font-cinzel text-xs tracking-wide">Consulting the Oracle...</p>
             </div>
           )}
 
           {!searching && searchResults.length === 0 && searchQuery.length > 0 && (
-            <p className="text-center text-slate-500 py-8">No results found</p>
+            <p className="text-center text-[var(--text-subtle)] py-8 font-cinzel text-sm">No relics found in the archives</p>
           )}
 
           {!searching && searchResults.map((result) => {
             const isInPortfolio = existingTickers.includes(result.ticker.toUpperCase());
-            
+
             return (
               <button
                 key={result.ticker}
@@ -298,30 +320,30 @@ function AddTickerModal({
                 disabled={adding === result.ticker}
                 className={cn(
                   "w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left",
-                  isInPortfolio 
-                    ? "bg-violet-400/10 border border-violet-400/30" 
-                    : "hover:bg-slate-700/50 disabled:opacity-50"
+                  isInPortfolio
+                    ? "bg-[var(--gb-gold)]/10 border border-[var(--gb-gold-border)]"
+                    : "hover:bg-[var(--gb-azure)]/50 disabled:opacity-50"
                 )}
               >
                 <CompanyLogo ticker={result.ticker} size="sm" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-white">{result.ticker}</p>
+                    <p className="font-semibold text-[var(--gb-parchment)] font-cinzel">{result.ticker}</p>
                     {isInPortfolio && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-violet-400/20 text-violet-400">
-                        In Portfolio
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--gb-gold)]/20 text-[var(--gb-gold)] font-cinzel">
+                        In Armory
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-400 truncate">{result.name}</p>
+                  <p className="text-sm text-[var(--text-muted)] truncate">{result.name}</p>
                   {isInPortfolio && (
-                    <p className="text-xs text-amber-400 mt-1">Click to add more shares</p>
+                    <p className="text-xs text-[var(--gb-gold)] mt-1">Click to reinforce this relic</p>
                   )}
                 </div>
                 {adding === result.ticker ? (
-                  <Loader2 className="w-5 h-5 text-violet-400 animate-spin" />
+                  <Loader2 className="w-5 h-5 text-[var(--gb-gold)] animate-spin" />
                 ) : (
-                  <Plus className="w-5 h-5 text-violet-400" />
+                  <Plus className="w-5 h-5 text-[var(--gb-gold)]" />
                 )}
               </button>
             );
@@ -329,8 +351,8 @@ function AddTickerModal({
         </div>
 
         {searchQuery.length === 0 && (
-          <p className="text-center text-slate-500 text-sm py-4">
-            Type a ticker symbol or company name to search
+          <p className="text-center text-[var(--text-subtle)] text-sm py-4 font-cinzel">
+            Speak a ticker symbol or relic name to scry the archives
           </p>
         )}
       </div>

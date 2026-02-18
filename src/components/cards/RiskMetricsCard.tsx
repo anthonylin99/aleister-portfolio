@@ -12,7 +12,7 @@ interface RiskMetricsCardProps {
 export function RiskMetricsCard({ metrics, className }: RiskMetricsCardProps) {
   return (
     <div className={cn("glass-card p-6 rounded-2xl", className)}>
-      <h3 className="text-lg font-semibold text-white mb-4">Risk Metrics</h3>
+      <h3 className="text-lg font-semibold text-[var(--gb-parchment)] mb-4">Risk Metrics</h3>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <MetricBox 
           label="Volatility (Ann.)" 
@@ -64,18 +64,18 @@ function MetricBox({ label, value, tooltip, status }: MetricBoxProps) {
       case 'high': return 'text-amber-400';
       case 'negative': return 'text-red-400';
       case 'low': return 'text-blue-400';
-      default: return 'text-white';
+      default: return 'text-[var(--gb-parchment)]';
     }
   };
 
   return (
-    <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 group relative">
+    <div className="bg-[var(--gb-azure-deep)]/50 rounded-xl p-4 border border-[var(--gb-gold-border)] group relative">
       <div className="flex items-center gap-1 text-sm text-gray-400 mb-1">
         {label}
         <div className="relative">
-          <Info className="w-3.5 h-3.5 text-slate-500 cursor-help" />
+          <Info className="w-3.5 h-3.5 text-[var(--text-subtle)] cursor-help" />
           {/* Tooltip on hover */}
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-900 text-xs text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-slate-700 shadow-xl pointer-events-none max-w-[200px] text-wrap">
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[var(--gb-azure-deep)] text-xs text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-[var(--gb-gold-border)] shadow-xl pointer-events-none max-w-[200px] text-wrap">
             {tooltip}
           </div>
         </div>

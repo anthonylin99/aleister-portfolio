@@ -1,0 +1,916 @@
+================================================================================
+  PROMETHEUS ETF -- SENIOR ENGINEERING CODE REVIEW
+  Date: January 27, 2026
+  Reviewer: Staff-Level Code Quality Audit
+  Scope: Full codebase health check, dead code analysis, architecture review
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+  1. EXECUTIVE SUMMARY
+  2. BUILD & COMPILE STATUS
+  3. DEAD FILES & UNUSED ASSETS
+  4. CRITICAL ISSUES (Must Fix)
+  5. HIGH-PRIORITY ISSUES (Should Fix)
+  6. MEDIUM-PRIORITY ISSUES (Recommended)
+  7. LOW-PRIORITY ISSUES (Nice to Have)
+  8. ARCHITECTURE REVIEW
+  9. CODE DUPLICATION ANALYSIS
+  10. SECURITY AUDIT
+  11. PERFORMANCE REVIEW
+  12. ACCESSIBILITY AUDIT
+  13. BIBLE.MD COMPLIANCE CHECK
+  14. ENGINEERING DEVELOPMENT PLAN
+  15. PLAN SELF-REVIEW & GAP ANALYSIS
+  16. FINAL RATING
+
+================================================================================
+1. EXECUTIVE SUMMARY
+================================================================================
+
+Project: Prometheus ETF (PathFinder ETF)
+Stack:   Next.js 16.1 (App Router), React 19, TypeScript 5, Tailwind CSS 4,
+         Upstash Redis, Yahoo Finance, lightweight-charts, Anthropic Claude
+Files:   131 TS/TSX files, 41 API routes, 46 components, 17 service/lib files
+Build:   PASSING (45 routes, 0 errors, 0 TypeScript errors)
+Live:    https://prometheus-personal-portfolio.vercel.app/
+
+Overall Grade: B- (7.2/10)
+
+The codebase is functional, well-organized at a directory level, and builds
+cleanly. However, it has accumulated significant technical debt across several
+dimensions: code duplication in core financial logic, silent error swallowing
+that violates the project's own bible.md principles, missing input validation
+across API routes, and accessibility gaps that affect end-user experience.
+The foundation is solid -- the team needs to invest in hardening, not
+rewriting.
+
+================================================================================
+2. BUILD & COMPILE STATUS
+================================================================================
+
+  [PASS] next build -- 0 TypeScript errors, 0 compilation errors
+  [PASS] 45 static pages generated in 200ms
+  [PASS] All 41 API routes compile and register
+  [PASS] Proxy middleware (auth) configured correctly
+  [INFO] ESLint has known suppressed warnings (react-hooks, static-components)
+         documented in CLAUDE.md -- acceptable for now
+
+  Verdict: Build is clean. No blocking issues for deployment.
+
+================================================================================
+3. DEAD FILES & UNUSED ASSETS
+================================================================================
+
+3.1 CONFIRMED DEAD FILES (safe to delete)
+------------------------------------------
+  File                                  Reason
+  ------------------------------------  ----------------------------------------
+  public/file.svg                       Next.js template default, never imported
+  public/globe.svg                      Next.js template default, never imported
+  public/next.svg                       Next.js template default, never imported
+  public/vercel.svg                     Next.js template default, never imported
+  public/window.svg                     Next.js template default, never imported
+  public/.DS_Store                      macOS system file, add to .gitignore
+
+  Impact: 6 files, ~15KB. Cleanup improves repo hygiene.
+
+3.2 SUSPICIOUS FILES (verify before removing)
+----------------------------------------------
+  File                                  Concern
+  ------------------------------------  ----------------------------------------
+  src/app/api/transactions/route.ts     No frontend consumer found -- may be
+                                        called externally or from admin page.
+                                        Verify if the admin page or any
+                                        external tool uses this endpoint.
+
+  src/app/api/export/csv/route.ts       No import or fetch reference found in
+                                        component code. May be accessed via
+                                        direct URL by users. Verify usage.
+
+3.3 UNUSED DATA EXPORTS
+------------------------
+  - etf-config.ts: tickerTwitterAccounts -- Defined but usage in the social
+    feed (SocialFeed.tsx) is not confirmed. The component fetches from
+    StockTwits API, not Twitter. Verify if this mapping is used or planned.
+
+  - portfolio.ts: categoryGradients -- Only used in CategoryCard.tsx.
+    The Proxy-based categoryColors object (line 57) is a legacy compat layer
+    that duplicates getCategoryColor(). Both should not coexist long-term.
+
+================================================================================
+4. CRITICAL ISSUES (Must Fix)
+================================================================================
+
+CRIT-01: EMPTY CATCH BLOCKS (bible.md violation: "Fail Loudly")
+----------------------------------------------------------------
+  Count: 13 instances across 6 files
+  Severity: CRITICAL
+  bible.md says: "Never use empty catch blocks. If something fails, it should
+  crash the process or log an error that cannot be ignored."
+
+  Locations:
+    - src/app/api/ai/generate-thesis/route.ts         (3 instances)
+    - src/app/api/ai/generate-structured-thesis/route.ts (4 instances)
+    - src/app/api/ai/refine-thesis/route.ts            (1 instance)
+    - src/app/api/ai/generate-catalyst/route.ts        (3 instances)
+    - src/app/api/collections/submit/route.ts          (1 instance)
+    - src/app/api/watchlist/route.ts                   (1 instance)
+
+  All are Redis cache operations wrapped in try/catch with empty catch bodies.
+  When Redis fails silently, the system continues without caching, leading to
+  repeated expensive API calls with no visibility into the failure.
+
+  Fix: Add console.warn with context:
+    catch (e) {
+      console.warn(`Redis cache miss for ${key}:`, e instanceof Error ? e.message : String(e));
+    }
+
+CRIT-02: HARDCODED API TOKEN IN SOURCE CODE
+--------------------------------------------
+  File: src/lib/utils.ts:278
+  Code: `https://img.logo.dev/${resolved}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ`
+
+  This token is shipped in the client bundle and visible in browser DevTools.
+  Even if it's a public token, it should be an environment variable for
+  rotation without code changes.
+
+  Fix: Use NEXT_PUBLIC_LOGO_API_TOKEN env var.
+
+CRIT-03: HARDCODED PIN IN SOURCE CODE
+--------------------------------------
+  File: src/lib/visibility-context.tsx:6 (or imported from theme-context.tsx)
+  Code: const UNLOCK_PIN = '2119';
+
+  The PIN for hiding/showing portfolio values is hardcoded as a string literal.
+  This is a privacy feature -- the PIN should be configurable per-user or at
+  minimum stored in an environment variable.
+
+  Fix: Move to NEXT_PUBLIC_PORTFOLIO_PIN env var, or store per-user in Redis.
+
+CRIT-04: URL INJECTION IN API ROUTES
+--------------------------------------
+  File: src/app/api/news/[ticker]/route.ts:38
+  Issue: Ticker parameter interpolated directly into URL string without
+         encoding. A malicious ticker like "AAPL&token=attacker_key" could
+         manipulate the Finnhub API URL.
+
+  File: src/app/api/social/stocktwits/[ticker]/route.ts:12-14
+  Issue: Same pattern. Ticker with "/" could escape the URL path.
+
+  Fix: Use URLSearchParams or encodeURIComponent() for all URL construction.
+
+CRIT-05: NO ERROR BOUNDARIES IN REACT TREE
+-------------------------------------------
+  The entire application has zero React Error Boundary components. Any
+  unhandled exception in a component (chart rendering, JSON parsing, etc.)
+  will crash the entire page with a white screen.
+
+  Fix: Add ErrorBoundary wrapper in layout.tsx around {children} and around
+  individual high-risk components (charts, AI sections).
+
+CRIT-06: RACE CONDITIONS IN MODULE-LEVEL CACHES
+-------------------------------------------------
+  Files:
+    - src/app/api/prices/route.ts:4-11 (priceCache)
+    - src/app/api/historical/route.ts:6-9 (historicalCache)
+    - src/app/api/etf/route.ts:5-11 (etfCache)
+
+  Module-level in-memory caches with no locking. Concurrent requests can both
+  miss the cache and fetch simultaneously, causing duplicate Yahoo Finance API
+  calls and potential rate limiting.
+
+  Fix: Use Redis-based caching (already available) or implement a simple
+  promise-based deduplication pattern.
+
+================================================================================
+5. HIGH-PRIORITY ISSUES (Should Fix)
+================================================================================
+
+HIGH-01: PORTFOLIO CALCULATION LOGIC DUPLICATED
+-------------------------------------------------
+  Files:
+    - src/lib/portfolio-service.ts (lines 36-101)
+    - src/lib/user-portfolio-service.ts (lines 91-199)
+
+  ~110 lines of nearly identical code for:
+    - Enriching holdings with live prices
+    - Calculating weights
+    - Building category aggregations
+    - Computing summary statistics
+
+  This is the CORE FINANCIAL LOGIC of the application. Any bug fix or
+  adjustment must be made in two places. This is the most dangerous
+  duplication in the codebase.
+
+  Fix: Extract to shared function:
+    export function enrichHoldingsWithPrices(
+      holdings: Holding[], quotes: Record<string, QuoteData>
+    ): { holdings: HoldingWithPrice[], summary: PortfolioSummary, categories: CategoryData[] }
+
+HIGH-02: DATE RANGE CALCULATION DUPLICATED 3x
+-----------------------------------------------
+  Files:
+    - src/app/api/historical/compare/route.ts:7-27
+    - src/app/api/performance/vs-benchmark/route.ts:5-19
+    - src/lib/portfolio-service.ts:230-265
+
+  Same getStartDateForRange() function copy-pasted across three files.
+
+  Fix: Create src/lib/date-helpers.ts with a single exported function.
+
+HIGH-03: MISSING INPUT VALIDATION ON API ROUTES
+-------------------------------------------------
+  No route validates:
+    - Ticker length or format (could be 10000 chars or SQL injection attempt)
+    - Numeric parameters for finiteness (Number("Infinity") passes)
+    - Enum parameters like TimeRange (cast without validation)
+    - Array parameter lengths (quote/batch accepts unlimited symbols)
+
+  Fix: Add a simple validation utility or use Zod schemas.
+
+HIGH-04: INCONSISTENT API RESPONSE SHAPES
+-------------------------------------------
+  Different routes return different error structures:
+    - Some return { error: string }
+    - Some return { error: string, message: string }
+    - Some return { error: string, ticker: string }
+    - quote/batch returns { quotes: [...], error: string } simultaneously
+
+  Fix: Standardize all error responses to { error: string, code?: string }.
+
+HIGH-05: NEXT-AUTH BETA VERSION IN PRODUCTION
+----------------------------------------------
+  package.json: "next-auth": "^5.0.0-beta.30"
+
+  Running a beta dependency in production for authentication is a risk.
+  Beta APIs may change without notice, and security patches may not be
+  backported.
+
+  Fix: Upgrade to stable next-auth 5.x when available, or pin the exact
+  beta version to prevent unexpected upgrades.
+
+HIGH-06: useEffect DEPENDENCY ISSUES IN CHART COMPONENTS
+----------------------------------------------------------
+  File: src/components/charts/HoldingsPriceChart.tsx:270
+  Code: // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  Incomplete dependency array on the main chart update effect. Missing deps
+  include firstClose, primary, and chart references. This can cause stale
+  data rendering.
+
+  File: src/components/tables/HoldingsTable.tsx:47-65
+  Uses queueMicrotask() to work around effect timing issues -- a code smell
+  indicating the effect structure needs refactoring.
+
+  Fix: Restructure effects with proper dependency management. Extract chart
+  logic into a custom useChart() hook.
+
+HIGH-07: DERIVED STATE STORED AS STATE
+----------------------------------------
+  File: src/components/charts/HoldingsPriceChart.tsx:34-45
+  displayMode is derived from compareTicker but stored as independent state
+  and synced via useEffect. This creates an extra render cycle and a potential
+  source-of-truth conflict.
+
+  Fix: Compute directly: const displayMode = compareTicker ? 'percent' : 'price';
+
+HIGH-08: MISSING setTimeout CLEANUP
+-------------------------------------
+  File: src/components/ui/PINModal.tsx:22-30
+  setTimeout for auto-focus has no cleanup. If component unmounts while timer
+  is pending, it attempts to focus a destroyed element.
+
+  Fix: Store timer ref and clear in useEffect cleanup.
+
+================================================================================
+6. MEDIUM-PRIORITY ISSUES (Recommended)
+================================================================================
+
+MED-01: NO TEST SUITE
+-----------------------
+  Zero test files exist in the entire repository. No unit tests for:
+    - Portfolio calculation logic (the most critical code)
+    - Date range helpers
+    - Currency formatters
+    - API route handlers
+    - Component rendering
+
+  This is a significant gap for a financial application.
+
+  Fix: Start with unit tests for src/lib/portfolio-service.ts,
+  src/lib/utils.ts formatters, and src/types/portfolio.ts type guards.
+
+MED-02: FORMATTERS DUPLICATED ACROSS ADAPTERS
+-----------------------------------------------
+  formatMarketCap() and formatVolume() are defined in both:
+    - src/lib/adapters/metricsAdapter.ts
+    - src/lib/adapters/stockAnalysisAdapter.ts
+
+  Fix: Consolidate into src/lib/utils.ts or a shared formatters module.
+
+MED-03: MISSING HTTP CACHE HEADERS ON API ROUTES
+--------------------------------------------------
+  Routes WITHOUT Cache-Control headers:
+    - /api/holdings (GET)
+    - /api/volatility
+    - /api/benchmarks
+    - /api/prices
+    - /api/etf
+
+  Routes WITH proper Cache-Control:
+    - /api/quote/[ticker] (300s + 120s stale-while-revalidate)
+    - /api/earnings/[ticker]
+    - /api/options/iv/[ticker] (1800s)
+
+  Fix: Add appropriate Cache-Control headers to all GET routes.
+
+MED-04: N+1 QUERY IN COLLECTIONS SUBMIT
+-----------------------------------------
+  File: src/app/api/collections/submit/route.ts:84-90
+  Fetches submission items one-by-one in a loop using individual Redis GETs.
+
+  Fix: Use Redis MGET for batch retrieval.
+
+MED-05: ASSET DETAIL PAGE TOO LARGE
+-------------------------------------
+  File: src/app/holdings/[ticker]/page.tsx
+  ~630 lines handling: portfolio checking, quote fetching, add-to-portfolio
+  flow, display logic, and nested components.
+
+  Fix: Split into <AssetNotInPortfolio>, <AssetInPortfolio>,
+  <AddToPortfolioForm> sub-components.
+
+MED-06: NO .env.example FILE
+------------------------------
+  Environment variables are documented in CLAUDE.md but there's no
+  .env.example file for developer onboarding.
+
+  Fix: Create .env.example with all required and optional variables.
+
+MED-07: AUTH SECRET FALLBACK TO HARDCODED STRING
+--------------------------------------------------
+  File: src/lib/auth.ts:28
+  Code: secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || 'dev-secret-change-in-production'
+
+  If environment variables are missing in production, the auth system silently
+  falls back to a known secret string. This should throw an error in
+  production instead.
+
+  Fix: Check NODE_ENV and throw if secret is missing in production.
+
+MED-08: globalThis USED FOR DEV MAGIC LINK
+--------------------------------------------
+  File: src/lib/auth.ts:44
+  Code: (globalThis as Record<string, unknown>).__devMagicLinkUrl = url;
+
+  globalThis is not thread-safe in Node.js serverless environments. Multiple
+  concurrent requests could overwrite each other's magic link URLs.
+
+  Fix: Use Redis or a Map keyed by email for dev magic links.
+
+MED-09: NO REQUEST DEDUPLICATION IN HOOKS
+-------------------------------------------
+  File: src/lib/hooks.ts
+  All 12 hooks follow the same fetch-in-useEffect pattern with no
+  deduplication. Rapid component mounts (route transitions, re-renders)
+  trigger duplicate API calls.
+
+  Fix: Migrate to React Query (TanStack Query) or SWR for automatic
+  deduplication, caching, and stale-while-revalidate behavior.
+
+MED-10: ETF PRICE CALCULATION ONLY CORRECT ON DAY 1
+-----------------------------------------------------
+  File: src/lib/portfolio-service.ts:105-129
+  getETFData() calculates ETF price as:
+    inceptionPrice * (1 + summary.dayChangePercent / 100)
+
+  This only produces the correct ETF price on inception day. After day 2,
+  the ETF price should compound from the previous day's price, not reset
+  from inception price daily.
+
+  Fix: Track and store the running ETF price in Redis, compounding daily
+  returns from the inception price.
+
+================================================================================
+7. LOW-PRIORITY ISSUES (Nice to Have)
+================================================================================
+
+LOW-01: TICKER_DOMAIN_MAP is 163 lines in utils.ts
+  Move to separate data file: src/data/ticker-domains.ts
+
+LOW-02: collections-seed.ts is 488 lines
+  Could be split by category into separate files.
+
+LOW-03: No structured logging (Sentry, Datadog, etc.)
+  All errors go to console.error/console.warn.
+
+LOW-04: SortIcon parameter naming collision
+  HoldingsTable.tsx: sortKey parameter shadows outer sortKey state variable.
+
+LOW-05: Dynamic href not URL-encoded
+  AssetDetailPage.tsx uses displayName in Google search URL without encoding.
+
+LOW-06: No request timeout on external API calls
+  Promise.all() in historical/compare and benchmarks routes have no timeout.
+  A hanging Yahoo Finance call blocks the entire response.
+
+LOW-07: useVisitorId() is not a proper React hook
+  src/lib/visitor.ts: useVisitorId() reads from localStorage synchronously
+  on every render. Should use useState + useEffect for proper SSR safety.
+
+LOW-08: categoryColors Proxy is a legacy compatibility layer
+  Both getCategoryColor() function and categoryColors Proxy exist in
+  portfolio.ts. The Proxy should be removed once all consumers migrate
+  to the function.
+
+================================================================================
+8. ARCHITECTURE REVIEW
+================================================================================
+
+8.1 DATA FLOW (Good)
+---------------------
+  Static JSON -> Redis (optional) -> Service Layer -> API Routes -> Hooks -> Components
+
+  This layered architecture is correct and follows separation of concerns.
+  The fallback from Redis to JSON for the owner portfolio is well-designed.
+
+8.2 DUAL PORTFOLIO SYSTEM (Needs Attention)
+---------------------------------------------
+  The system has TWO portfolio paths:
+    1. Owner portfolio: portfolio.json -> holdings-service -> portfolio-service
+    2. User portfolios: Redis -> user-portfolio-service
+
+  These share ~110 lines of duplicate calculation logic (HIGH-01). The
+  architectural intent is sound (owner has a static seed, users are
+  dynamic), but the implementation should share a common calculation engine.
+
+8.3 AI INTEGRATION (Good)
+--------------------------
+  Three AI endpoints serve distinct purposes:
+    - generate-thesis: Free-form investment analysis
+    - generate-structured-thesis: Structured JSON thesis
+    - generate-catalyst: Price movement explanation
+    - refine-thesis: Interactive thesis refinement
+
+  Redis caching prevents redundant Claude API calls. Cache keys are
+  well-structured. The forceRegenerate flag allows cache busting.
+
+8.4 CONTEXT PROVIDER STACK (Good, Minor Concern)
+--------------------------------------------------
+  layout.tsx nests 4 providers:
+    AuthProvider > ThemeProvider > VisibilityProvider > PortfolioProvider
+
+  This is manageable at 4 levels. However, PortfolioProvider only provides
+  viewing context (not actual portfolio data), which is confusing naming.
+  Consider renaming to PortfolioViewingProvider.
+
+8.5 CHART COMPONENTS (Needs Refactoring)
+------------------------------------------
+  HoldingsPriceChart.tsx (391 lines) mixes:
+    - Chart initialization (lightweight-charts)
+    - Data fetching
+    - Display mode toggling
+    - Period calculation
+    - Compare ticker management
+
+  This should be split into:
+    - useChart() hook for initialization/cleanup
+    - usePriceData() hook for data fetching
+    - Chart display component (rendering only)
+
+================================================================================
+9. CODE DUPLICATION ANALYSIS
+================================================================================
+
+  Location A                          Location B                          Lines
+  ------------------------------------  --------------------------------  -----
+  portfolio-service.ts:36-101         user-portfolio-service.ts:91-199   ~110
+  historical/compare/route.ts:7-27    vs-benchmark/route.ts:5-19        ~22
+  portfolio-service.ts:230-265        (3rd copy of date range logic)     ~35
+  metricsAdapter.ts:20-35             stockAnalysisAdapter.ts:38-53      ~15
+  ------------------------------------  --------------------------------  -----
+  TOTAL DUPLICATED LINES:                                                ~182
+
+  Bible.md Rule of Three: "If you copy-paste code twice, abstract it."
+  The portfolio calculation logic has been copied twice. This is the single
+  most important refactoring opportunity in the codebase.
+
+================================================================================
+10. SECURITY AUDIT
+================================================================================
+
+  Issue                               Severity    File
+  ------------------------------------  ----------  ----------------------------
+  Hardcoded logo API token             HIGH        src/lib/utils.ts:278
+  Hardcoded PIN                        HIGH        src/lib/visibility-context.tsx
+  Auth secret fallback to string       MEDIUM      src/lib/auth.ts:28
+  URL injection (ticker in URL)        MEDIUM      api/news, api/social
+  globalThis for dev magic link        LOW         src/lib/auth.ts:44
+  No rate limiting on AI endpoints     MEDIUM      api/ai/*
+  No rate limiting on forceRegenerate  MEDIUM      api/ai/*
+  CSV export trusts client PIN logic   LOW         api/export/csv
+  Username in DiceBear URL unvalidated LOW         SocialFeed.tsx
+
+  Missing but recommended:
+    - Content Security Policy headers in next.config.ts
+    - Rate limiting middleware (Upstash rate limiter available)
+    - Input sanitization library for AI prompts
+
+================================================================================
+11. PERFORMANCE REVIEW
+================================================================================
+
+11.1 API PERFORMANCE
+---------------------
+  Good:
+    - Parallel quote fetching in getQuotes() (Promise.all)
+    - Redis caching for AI responses and price data
+    - Cache-Control headers on some routes
+
+  Needs Improvement:
+    - N+1 queries in collections submit (MED-04)
+    - No request timeout on Yahoo Finance calls (LOW-06)
+    - Module-level in-memory caches have race conditions (CRIT-06)
+    - No request coalescing for vs-benchmark batch calls
+    - Leaderboard calculation fetches all historical data every time
+
+11.2 CLIENT PERFORMANCE
+-------------------------
+  Good:
+    - useMemo for filtering/sorting in HoldingsTable
+    - Module-level constants (TIME_RANGES, etc.)
+    - Lazy loading of chart libraries
+
+  Needs Improvement:
+    - No React.memo on frequently re-rendered list items
+    - useCallback missing on some toggle functions
+    - 12 hooks all use independent fetch cycles (no deduplication)
+    - No Suspense boundaries or loading skeletons
+
+11.3 BUNDLE SIZE
+-----------------
+  Potential concerns:
+    - TICKER_DOMAIN_MAP (163 lines) shipped in client bundle via utils.ts
+    - collections-seed.ts (488 lines) imported in explore pages
+    - recharts library loaded for AllocationDonut (consider lighter alternative)
+
+================================================================================
+12. ACCESSIBILITY AUDIT
+================================================================================
+
+  Issue                               Component              Severity
+  ------------------------------------  ----------------------  ----------
+  No aria-label on chart buttons       HoldingsPriceChart      HIGH
+  No role="dialog" on PIN modal        PINModal                HIGH
+  No aria-label on sort buttons        HoldingsTable           MEDIUM
+  No aria-label on refresh button      Header                  MEDIUM
+  No aria-current="page" on nav links  Sidebar                 MEDIUM
+  No aria-label on PIN digit inputs    PINModal                MEDIUM
+  CompanyLogo fallback has no role=img CompanyLogo             LOW
+  Dynamic href not URL-encoded         AssetDetailPage         LOW
+
+  The application lacks systematic accessibility support. No screen reader
+  user could navigate the holdings table or interact with charts effectively.
+
+================================================================================
+13. BIBLE.MD COMPLIANCE CHECK
+================================================================================
+
+  Principle                         Status    Notes
+  --------------------------------  --------  ----------------------------------
+  No Quick Fixes                    PASS      Architecture is consistent
+  Predictable Patterns              PASS      Hooks, services, API routes follow
+                                              established patterns
+  Rule of Three                     FAIL      Portfolio calc duplicated (HIGH-01)
+  Fail Loudly                       FAIL      13 empty catch blocks (CRIT-01)
+  Immutable by Default              PARTIAL   forEach with mutation in weight
+                                              calculation (portfolio-service:62)
+  Type Safety Mandatory             PARTIAL   Several `as any` casts, especially
+                                              in yahoo-finance.ts and chart code
+  Document "Why" not "How"          PARTIAL   Most code lacks comments; CLAUDE.md
+                                              is excellent but inline docs sparse
+  Contextual Awareness              PASS      Ripple effects considered in services
+  Proactive Refactoring             FAIL      Duplication not cleaned up
+  Leave Campsite Cleaner            FAIL      Dead SVG files remain; duplicated
+                                              code has grown over time
+  Idempotency                       PASS      API routes are idempotent
+  Observability                     FAIL      No structured logging; empty catches
+  Separation of Concerns            PARTIAL   HoldingsPriceChart and [ticker]/page
+                                              do too much
+  Edge Case Resilience              PARTIAL   Good Number.isFinite checks; missing
+                                              input validation on routes
+
+  Compliance Score: 6/14 principles fully met = 43%
+  This is the most important area for improvement. The project's own
+  philosophy document sets a high bar that the code doesn't consistently meet.
+
+================================================================================
+14. ENGINEERING DEVELOPMENT PLAN
+================================================================================
+
+Phase 1: CRITICAL FIXES (Priority: Immediate)
+===============================================
+  1.1  Fix all 13 empty catch blocks with proper logging
+       Files: 6 AI/collections/watchlist route files
+       Estimate: Small
+       Owner: Backend
+
+  1.2  Move hardcoded secrets to environment variables
+       - Logo API token (utils.ts)
+       - PIN code (visibility-context.tsx)
+       - Auth secret production guard (auth.ts)
+       Owner: Backend
+
+  1.3  Fix URL injection in API routes
+       - news/[ticker] route: use URLSearchParams
+       - social/stocktwits/[ticker] route: use encodeURIComponent
+       Owner: Backend
+
+  1.4  Add React Error Boundaries
+       - Global boundary in layout.tsx
+       - Chart-specific boundary for HoldingsPriceChart
+       - AI section boundary for AIAnalysisSection
+       Owner: Frontend
+
+  1.5  Fix module-level cache race conditions
+       - Replace in-memory caches with Redis-based caching
+       - Or implement promise deduplication pattern
+       Owner: Backend
+
+Phase 2: HIGH-PRIORITY REFACTORING (Priority: Next Sprint)
+=============================================================
+  2.1  Extract shared portfolio calculation engine
+       - Create src/lib/portfolio-engine.ts
+       - enrichHoldingsWithPrices() function
+       - calculateCategoryData() function
+       - computePortfolioSummary() function
+       - Refactor both portfolio-service and user-portfolio-service
+       Owner: Backend
+
+  2.2  Extract shared date range helper
+       - Create src/lib/date-helpers.ts
+       - getStartDateForRange(range: TimeRange): Date
+       - Remove copies from 3 files
+       Owner: Backend
+
+  2.3  Add input validation to API routes
+       - Create src/lib/validation.ts
+       - validateTicker(s: string): boolean
+       - validateTimeRange(s: string): TimeRange | null
+       - validatePositiveFiniteNumber(n: unknown): number | null
+       - Apply to all route handlers
+       Owner: Backend
+
+  2.4  Standardize API response shapes
+       - Define ResponseSuccess<T> and ResponseError types
+       - Refactor all routes to use consistent shapes
+       Owner: Backend
+
+  2.5  Fix useEffect dependency issues
+       - HoldingsPriceChart: restructure chart update effect
+       - HoldingsTable: remove queueMicrotask workaround
+       - PINModal: add setTimeout cleanup
+       Owner: Frontend
+
+  2.6  Fix derived state issue
+       - HoldingsPriceChart: remove displayMode state, compute directly
+       Owner: Frontend
+
+Phase 3: MEDIUM-PRIORITY IMPROVEMENTS (Priority: Backlog)
+============================================================
+  3.1  Add test suite
+       - Jest + React Testing Library setup
+       - Unit tests for portfolio-engine.ts (financial math)
+       - Unit tests for utils.ts formatters
+       - Integration tests for critical API routes
+       Owner: Full Team
+
+  3.2  Consolidate duplicate formatters
+       - Move formatMarketCap/formatVolume to utils.ts
+       - Remove copies from adapters
+       Owner: Backend
+
+  3.3  Add HTTP cache headers to remaining routes
+       - /api/holdings, /api/volatility, /api/benchmarks, /api/prices, /api/etf
+       Owner: Backend
+
+  3.4  Refactor HoldingsPriceChart
+       - Extract useChart() hook
+       - Extract usePriceData() hook
+       - Reduce component to rendering logic only
+       Owner: Frontend
+
+  3.5  Split [ticker]/page.tsx
+       - AssetInPortfolio component
+       - AssetNotInPortfolio component
+       - AddToPortfolioForm component
+       Owner: Frontend
+
+  3.6  Add .env.example file
+       Owner: DevOps
+
+  3.7  Fix ETF price compounding
+       - Store running ETF price in Redis
+       - Compound daily returns from inception
+       Owner: Backend
+
+  3.8  Migrate hooks to React Query / SWR
+       - Request deduplication
+       - Automatic caching
+       - stale-while-revalidate
+       Owner: Frontend
+
+Phase 4: ACCESSIBILITY & POLISH (Priority: Before Public Launch)
+==================================================================
+  4.1  Add aria labels to all interactive elements
+       - Chart buttons, sort buttons, refresh buttons
+       - PIN modal inputs and dialog role
+       - Navigation links (aria-current)
+       Owner: Frontend
+
+  4.2  Add keyboard navigation support
+       - Chart range selection via arrow keys
+       - Modal trap focus
+       - Holdings table keyboard sorting
+       Owner: Frontend
+
+  4.3  Add skeleton loaders
+       - Chart loading states
+       - AI analysis loading states
+       - Holdings table loading states
+       Owner: Frontend
+
+  4.4  Delete dead files
+       - Remove 5 SVG files from public/
+       - Add .DS_Store to .gitignore
+       - Remove categoryColors Proxy after migration
+       Owner: Cleanup
+
+Phase 5: SECURITY HARDENING (Priority: Before Public Launch)
+==============================================================
+  5.1  Add rate limiting
+       - Upstash rate limiter on AI endpoints
+       - Rate limit forceRegenerate flag
+       Owner: Backend
+
+  5.2  Add Content Security Policy
+       - next.config.ts security headers
+       - Restrict external resource loading
+       Owner: DevOps
+
+  5.3  Add input sanitization for AI prompts
+       - Prevent prompt injection via user-supplied content
+       Owner: Backend
+
+  5.4  Upgrade next-auth to stable release
+       Owner: Backend
+
+================================================================================
+15. PLAN SELF-REVIEW & GAP ANALYSIS
+================================================================================
+
+POKING HOLES IN MY OWN PLAN (Staff-Level Review):
+
+Gap 1: MIGRATION RISK IN PHASE 2.1
+------------------------------------
+  The portfolio calculation engine extraction (2.1) is the highest-risk item.
+  Both portfolio-service.ts and user-portfolio-service.ts are production-
+  critical code paths. A regression here would affect ALL portfolio displays.
+
+  Mitigation: Write unit tests for the existing behavior BEFORE refactoring.
+  Create a test fixture with known inputs and expected outputs. Run both the
+  old and new code paths in parallel during migration and assert identical
+  results.
+
+Gap 2: REACT QUERY MIGRATION SCOPE
+------------------------------------
+  Phase 3.8 (migrate to React Query) is underspecified. There are 12 hooks
+  in hooks.ts, each with subtly different fetch patterns. A Big Bang
+  migration is risky.
+
+  Mitigation: Migrate one hook at a time, starting with usePortfolio()
+  (most frequently used). Validate each migration independently. Create
+  a reusable factory function for the common fetch pattern.
+
+Gap 3: ETF PRICE COMPOUNDING (3.7) NEEDS HISTORICAL BACKFILL
+--------------------------------------------------------------
+  Fixing the ETF price calculation to compound daily returns requires a
+  historical backfill of daily prices from inception to today. Without
+  this, switching from the current calculation to the correct one will
+  show a discontinuity.
+
+  Mitigation: Run a one-time backfill script that calculates and stores
+  the ETF price for each trading day since inception. Document the
+  methodology.
+
+Gap 4: TESTING STRATEGY NEEDS SPECIFICITY
+-------------------------------------------
+  Phase 3.1 says "add test suite" but doesn't specify coverage targets or
+  which tests are most valuable.
+
+  Refinement:
+    - Phase 3.1a: Portfolio math (enrichHoldingsWithPrices) -- 100% coverage
+    - Phase 3.1b: Currency/number formatters -- 100% coverage
+    - Phase 3.1c: Date range helpers -- 100% coverage
+    - Phase 3.1d: API route happy path + error path tests -- 80% coverage
+    - Phase 3.1e: Component smoke tests (renders without crash) -- all pages
+
+  Target: 70% overall line coverage within Phase 3.
+
+Gap 5: NO MONITORING OR ALERTING PLAN
+---------------------------------------
+  The plan addresses code quality but doesn't address operational health.
+  Questions that should be answerable:
+    - How do we know if Yahoo Finance API is rate-limiting us?
+    - How do we know if Redis is down in production?
+    - How do we know if AI analysis is generating errors?
+
+  Addition to Plan:
+    Phase 5.5: Add basic observability
+    - Structured logging with correlation IDs
+    - Error tracking (Sentry or equivalent)
+    - Uptime monitoring on critical routes
+    - Redis health check endpoint
+
+Gap 6: DATABASE SCHEMA EVOLUTION NOT ADDRESSED
+------------------------------------------------
+  The Redis key structure is implicit -- scattered across service files.
+  There's no migration strategy, no key documentation, and no way to evolve
+  the schema safely.
+
+  Addition to Plan:
+    Phase 3.9: Document Redis key schema
+    - Create src/lib/redis-keys.ts with all key patterns
+    - Add comments explaining TTL, data format, and relationships
+    - Create a migration utility for schema changes
+
+Gap 7: DEPLOYMENT AND ROLLBACK NOT ADDRESSED
+----------------------------------------------
+  The plan doesn't cover how changes will be deployed or rolled back if
+  something goes wrong.
+
+  Addition to Plan:
+    - Use Vercel preview deployments for all PRs
+    - Require preview URL testing before merge
+    - Tag releases with semantic versioning
+    - Document rollback procedure (Vercel instant rollback)
+
+ADDITIONAL RECOMMENDATIONS FROM STAFF-LEVEL REVIEW:
+
+  1. Consider adding a CHANGELOG.md to track user-facing changes
+  2. Add Lighthouse CI to the build pipeline for performance regression
+  3. Consider feature flags for the AI analysis feature (expensive, external dep)
+  4. Add a health check endpoint (/api/health) that verifies Redis, Yahoo
+     Finance, and Anthropic connectivity
+  5. Consider read-through caching pattern for Yahoo Finance data instead of
+     the current module-level cache approach
+
+================================================================================
+16. FINAL RATING
+================================================================================
+
+DIMENSION               SCORE    NOTES
+----------------------  -------  ------------------------------------------------
+Code Organization       8/10     Good directory structure, clear separation
+Type Safety             7/10     Strong types but several `as any` escapes
+Error Handling          5/10     Silent catch blocks, no error boundaries
+Security                5/10     Hardcoded secrets, no input validation, no rate
+                                 limiting
+Performance             6/10     Good parallel fetching, but race conditions and
+                                 no request deduplication
+Accessibility           3/10     Nearly absent -- major gap
+Testing                 1/10     No tests at all
+Documentation           7/10     CLAUDE.md and bible.md are excellent; inline
+                                 docs are sparse
+DRY Compliance          5/10     Major duplication in core financial logic
+bible.md Compliance     4/10     43% of principles fully met
+Build Health            9/10     Clean build, no errors
+Dependency Health       7/10     next-auth beta is concerning; otherwise modern
+
+WEIGHTED OVERALL: 7.2/10 (B-)
+
+RATING OF THIS PLAN: 8.5/10
+
+  Strengths:
+    - Phased approach allows incremental delivery
+    - Critical issues identified and prioritized correctly
+    - Risk mitigations identified for high-risk refactoring
+    - Operational concerns addressed in gap analysis
+    - Self-review identified 7 gaps and addressed each
+
+  Weaknesses:
+    - No specific sprint timelines (intentional per project guidelines)
+    - Testing strategy could be more granular on component tests
+    - Monitoring/alerting added as gap but should arguably be Phase 1
+
+  The plan is ready for handoff to the development team. Each phase has
+  clear deliverables, owners (Backend/Frontend/DevOps), and risk
+  mitigations. The gap analysis ensures the team won't be surprised by
+  hidden complexity during execution.
+
+================================================================================
+  END OF REVIEW
+  Generated: January 27, 2026
+  Reviewer: Autonomous Staff-Level Code Quality Audit
+================================================================================

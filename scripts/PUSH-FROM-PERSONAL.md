@@ -1,6 +1,6 @@
 # Push from Personal Account (anthonylin99)
 
-This repo is **anthonylin99/prometheus-portfolio**. Your work account (anthonylinartemis) does not have push access. Use your **personal** account.
+This repo is **anthonylin99/aleister-portfolio**. Your work account (anthonylinartemis) does not have push access. Use your **personal** account.
 
 ---
 
@@ -12,9 +12,9 @@ Run in a terminal from the **pathfinder-etf** folder:
 cd "/Users/anthony_lin_99/Desktop/Personal Vibe Code/Website Portfolio/pathfinder-etf"
 
 # 1) Point origin at your personal user so Git uses anthonylin99, not work
-git remote set-url origin "https://anthonylin99@github.com/anthonylin99/prometheus-portfolio.git"
+git remote set-url origin "https://anthonylin99@github.com/anthonylin99/aleister-portfolio.git"
 git remote -v
-# Should show: origin  https://anthonylin99@github.com/anthonylin99/prometheus-portfolio.git (fetch and push)
+# Should show: origin  https://anthonylin99@github.com/anthonylin99/aleister-portfolio.git (fetch and push)
 ```
 
 ---
@@ -25,7 +25,7 @@ GitHub no longer accepts account passwords for `git push`. Use a **Personal Acce
 
 1. In a browser, log into **GitHub as anthonylin99** (personal).
 2. Go to: **https://github.com/settings/tokens**
-3. **Generate new token (classic)** → name it e.g. `prometheus-portfolio` → enable **repo** → Generate.
+3. **Generate new token (classic)** → name it e.g. `aleister-portfolio` → enable **repo** → Generate.
 4. Copy the token (starts with `ghp_...`). You’ll paste it when Git asks for a “password”.
 
 ---
@@ -82,8 +82,8 @@ Then run `git push -u origin main` again. When asked for password, paste the **a
 ## Verify after push
 
 ```bash
-gh repo clone anthonylin99/prometheus-portfolio /tmp/pp-verify
-git -C /tmp/prometheus-verify log --oneline -5
+gh repo clone anthonylin99/aleister-portfolio /tmp/pp-verify
+git -C /tmp/pp-verify log --oneline -5
 ```
 
 You should see your latest commits (e.g. `5faad1a`, `c06ca9e`, `03780da`, …).

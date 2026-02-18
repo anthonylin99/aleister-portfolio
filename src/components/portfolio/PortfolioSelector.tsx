@@ -34,7 +34,7 @@ export function PortfolioSelector({
       id: 'public',
       label: '$ALIN',
       icon: Flame,
-      description: 'Prometheus ETF',
+      description: 'Aleister',
     },
     {
       id: 'combined',
@@ -46,7 +46,7 @@ export function PortfolioSelector({
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <span className="text-xs text-slate-500 mr-1">View:</span>
+      <span className="text-xs text-[var(--text-subtle)] mr-1">View:</span>
       {options.map((opt) => {
         const isActive = selected === opt.id;
         return (
@@ -57,8 +57,8 @@ export function PortfolioSelector({
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all luma-button',
               isActive
-                ? 'bg-violet-400 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                ? 'bg-[var(--gb-gold)] text-[var(--gb-parchment)]'
+                : 'bg-[var(--gb-azure-deep)] text-[var(--text-muted)] hover:text-[var(--gb-parchment)] hover:bg-[var(--gb-azure)]'
             )}
           >
             <opt.icon className="w-3.5 h-3.5" />

@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     const today = new Date().toISOString().split('T')[0];
     
     // Header section
-    lines.push('Prometheus ETF ($ALIN) Export');
+    lines.push('Aleister ($ALIN) Export');
     lines.push(`Generated: ${new Date().toLocaleString()}`);
     lines.push('');
     
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
     return new Response(csvContent, {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename=prometheus-etf-${today}${includeValues ? '-full' : ''}.csv`,
+        'Content-Disposition': `attachment; filename=aleister-${today}${includeValues ? '-full' : ''}.csv`,
       },
     });
   } catch (error) {

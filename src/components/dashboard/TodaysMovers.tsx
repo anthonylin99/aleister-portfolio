@@ -25,23 +25,23 @@ export function TodaysMovers({ holdings, maxItems = 3 }: TodaysMoversProps) {
 
   if (gainers.length === 0 && losers.length === 0) {
     return (
-      <div className="glass-card p-5 rounded-2xl">
-        <h3 className="text-sm font-medium text-slate-400 mb-3">Today's Movers</h3>
-        <p className="text-sm text-slate-500">No significant movement today</p>
+      <div className="glass-card p-5 rounded-2xl filigree-corners">
+        <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-3 font-cinzel">Wind Report</h3>
+        <p className="text-sm text-[var(--text-muted)]">Calm skies - no significant movement</p>
       </div>
     );
   }
 
   return (
-    <div className="glass-card p-5 rounded-2xl">
-      <h3 className="text-sm font-medium text-slate-400 mb-4">Today's Movers</h3>
+    <div className="glass-card p-5 rounded-2xl filigree-corners">
+      <h3 className="text-sm font-medium text-[var(--gb-gold)] mb-4 font-cinzel">Wind Report</h3>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* Gainers */}
+        {/* Gainers - Tailwinds */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs font-medium text-emerald-400">Top Gainers</span>
+            <TrendingUp className="w-4 h-4 text-[var(--positive)]" />
+            <span className="text-xs font-medium text-[var(--positive)] font-cinzel">Tailwinds</span>
           </div>
           <div className="space-y-2">
             {gainers.length > 0 ? (
@@ -49,26 +49,26 @@ export function TodaysMovers({ holdings, maxItems = 3 }: TodaysMoversProps) {
                 <Link
                   key={h.ticker}
                   href={`/holdings/${h.ticker}`}
-                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800/50 transition-colors"
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--gb-gold)]/5 transition-colors"
                 >
                   <CompanyLogo ticker={h.ticker} domain={h.logoDomain} size="xs" />
-                  <span className="text-sm font-medium text-white flex-1">{h.ticker}</span>
-                  <span className="text-sm text-emerald-400 tabular-nums">
+                  <span className="text-sm font-medium text-[var(--gb-parchment)] flex-1 font-cinzel">{h.ticker}</span>
+                  <span className="text-sm text-[var(--positive)] tabular-nums">
                     {formatPercentagePrecise(h.dayChangePercent)}
                   </span>
                 </Link>
               ))
             ) : (
-              <p className="text-xs text-slate-500">No gainers today</p>
+              <p className="text-xs text-[var(--text-muted)]">No tailwinds today</p>
             )}
           </div>
         </div>
 
-        {/* Losers */}
+        {/* Losers - Headwinds */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <TrendingDown className="w-4 h-4 text-red-400" />
-            <span className="text-xs font-medium text-red-400">Top Losers</span>
+            <TrendingDown className="w-4 h-4 text-[var(--negative)]" />
+            <span className="text-xs font-medium text-[var(--negative)] font-cinzel">Headwinds</span>
           </div>
           <div className="space-y-2">
             {losers.length > 0 ? (
@@ -76,17 +76,17 @@ export function TodaysMovers({ holdings, maxItems = 3 }: TodaysMoversProps) {
                 <Link
                   key={h.ticker}
                   href={`/holdings/${h.ticker}`}
-                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-800/50 transition-colors"
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--negative)]/5 transition-colors"
                 >
                   <CompanyLogo ticker={h.ticker} domain={h.logoDomain} size="xs" />
-                  <span className="text-sm font-medium text-white flex-1">{h.ticker}</span>
-                  <span className="text-sm text-red-400 tabular-nums">
+                  <span className="text-sm font-medium text-[var(--gb-parchment)] flex-1 font-cinzel">{h.ticker}</span>
+                  <span className="text-sm text-[var(--negative)] tabular-nums">
                     {formatPercentagePrecise(h.dayChangePercent)}
                   </span>
                 </Link>
               ))
             ) : (
-              <p className="text-xs text-slate-500">No losers today</p>
+              <p className="text-xs text-[var(--text-muted)]">No headwinds today</p>
             )}
           </div>
         </div>

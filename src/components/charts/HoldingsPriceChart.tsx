@@ -292,13 +292,13 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
   };
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-slate-700/50" style={{ background: '#131722' }}>
+    <div className="rounded-2xl overflow-hidden border border-[var(--gb-gold-border)]" style={{ background: '#131722' }}>
       <div className="p-4 pb-2 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <CompanyLogo ticker={ticker} domain={logoDomain} size="lg" className="flex-shrink-0" />
           <div>
-            <h3 className="text-lg font-bold text-white">{ticker}</h3>
-            <p className="text-sm text-slate-400">{companyName}</p>
+            <h3 className="text-lg font-bold text-[var(--gb-parchment)]">{ticker}</h3>
+            <p className="text-sm text-[var(--text-muted)]">{companyName}</p>
             {displayPrice > 0 && Number.isFinite(displayPrice) && (
               <p className={cn('text-sm font-semibold tabular-nums mt-0.5', periodPct >= 0 ? 'text-emerald-400' : 'text-red-400')}>
                 {displayMode === 'price'
@@ -316,11 +316,11 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
               value={compareInput}
               onChange={(e) => setCompareInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addCompare()}
-              className="w-32 px-2.5 py-1.5 rounded-lg bg-slate-800/80 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 text-sm"
+              className="w-32 px-2.5 py-1.5 rounded-lg bg-[var(--gb-azure-deep)]/80 border border-[var(--gb-gold-border)] text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold)] text-sm"
             />
             <button
               onClick={() => addCompare()}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 text-sm font-medium"
+              className="px-2.5 py-1.5 rounded-lg bg-[var(--gb-azure)] text-[var(--gb-parchment)] hover:bg-slate-600 text-sm font-medium"
             >
               Add
             </button>
@@ -334,7 +334,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
             )}
             {/* Popular comparisons */}
             <div className="hidden md:flex items-center gap-1 ml-1">
-              <span className="text-xs text-slate-500">Quick:</span>
+              <span className="text-xs text-[var(--text-subtle)]">Quick:</span>
               {POPULAR_COMPARISONS.slice(0, 3).map((p) => (
                 <button
                   key={p.ticker}
@@ -343,8 +343,8 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
                   className={cn(
                     'px-2 py-1 rounded text-xs font-medium transition-all',
                     compareTickers.includes(p.ticker) || p.ticker === ticker.toUpperCase()
-                      ? 'bg-slate-800/50 text-slate-500 cursor-not-allowed'
-                      : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
+                      ? 'bg-[var(--gb-azure-deep)]/50 text-[var(--text-subtle)] cursor-not-allowed'
+                      : 'bg-[var(--gb-azure-deep)]/80 text-[var(--text-muted)] hover:text-[var(--gb-parchment)] hover:bg-[var(--gb-azure)]'
                   )}
                   title={p.label}
                 >
@@ -354,22 +354,16 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
             </div>
           </div>
           <div className="flex flex-wrap gap-1 items-center">
-            <span className="text-xs text-slate-500 mr-1">View:</span>
+            <span className="text-xs text-[var(--text-subtle)] mr-1">View:</span>
             <button
               onClick={() => setDisplayMode('price')}
-              className={cn(
-                'px-2.5 py-1 rounded text-sm font-medium transition-all',
-                displayMode === 'price' ? 'bg-violet-400 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
-              )}
+              className={cn('game-toggle', displayMode === 'price' && 'active')}
             >
               $
             </button>
             <button
               onClick={() => setDisplayMode('percent')}
-              className={cn(
-                'px-2.5 py-1 rounded text-sm font-medium transition-all',
-                displayMode === 'percent' ? 'bg-violet-400 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
-              )}
+              className={cn('game-toggle', displayMode === 'percent' && 'active')}
             >
               %
             </button>
@@ -379,8 +373,8 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
                 key={r}
                 onClick={() => setRange(r)}
                 className={cn(
-                  'px-2.5 py-1 rounded text-sm font-medium transition-all',
-                  range === r ? 'bg-violet-400 text-white' : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700'
+                  'game-toggle',
+                  range === r && 'active'
                 )}
               >
                 {r}
@@ -391,7 +385,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
       </div>
 
       <div className="flex flex-wrap gap-2 px-4 pb-1 text-sm">
-        <span className="flex items-center gap-2 text-slate-400">
+        <span className="flex items-center gap-2 text-[var(--text-muted)]">
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           {ticker} ({displayMode === 'price' ? '$' : '%'})
         </span>
@@ -399,15 +393,15 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
           <button
             key={ct}
             onClick={() => removeCompare(ct)}
-            className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800/60 hover:bg-slate-700 transition-colors group"
+            className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[var(--gb-azure-deep)]/60 hover:bg-[var(--gb-azure)] transition-colors group"
             title={`Click to remove ${ct}`}
           >
             <span
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: getChartColor(index) }}
             />
-            <span className="text-slate-400">{ct}</span>
-            <X className="w-3 h-3 text-slate-500 group-hover:text-red-400" />
+            <span className="text-[var(--text-muted)]">{ct}</span>
+            <X className="w-3 h-3 text-[var(--text-subtle)] group-hover:text-red-400" />
           </button>
         ))}
       </div>
@@ -418,7 +412,7 @@ export function HoldingsPriceChart({ ticker, companyName, logoDomain }: Holdings
             className="absolute inset-0 flex items-center justify-center z-10"
             style={{ background: 'rgba(19,23,34,0.9)' }}
           >
-            <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-[var(--gb-gold)] border-t-transparent rounded-full animate-spin" />
           </div>
         )}
         <div ref={containerRef} className="w-full h-[360px]" />

@@ -11,7 +11,7 @@ interface CollectionBadgesProps {
 
 const categoryColors: Record<string, string> = {
   'anchor-sleeves': '#6366f1',
-  'intelligence-compute': '#8b5cf6',
+  'intelligence-compute': '#D4AF37',
   'real-world-scarcity': '#f59e0b',
   'alternative-assets': '#f97316',
   'thematic-frontiers': '#06b6d4',
@@ -29,8 +29,8 @@ export function CollectionBadges({ ticker }: CollectionBadgesProps) {
   return (
     <div className="glass-card p-5 rounded-2xl mb-8">
       <div className="flex items-center gap-2 mb-3">
-        <Layers className="w-4 h-4 text-violet-400" />
-        <span className="text-sm font-medium text-slate-300">
+        <Layers className="w-4 h-4 text-[var(--gb-gold)]" />
+        <span className="text-sm font-medium text-[var(--text-secondary)]">
           Part of {collections.length} Collection{collections.length > 1 ? 's' : ''}
         </span>
       </div>

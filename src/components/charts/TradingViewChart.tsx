@@ -224,11 +224,11 @@ export function TradingViewChart({
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-2xl font-bold text-white">${ticker}</span>
-            <span className="text-sm text-slate-400">Prometheus ETF</span>
+            <span className="text-2xl font-bold text-[var(--gb-parchment)]">${ticker}</span>
+            <span className="text-sm text-[var(--text-muted)]">Aleister</span>
           </div>
           <div className="flex items-baseline gap-3">
-            <span className="text-4xl font-bold text-white tabular-nums">
+            <span className="text-4xl font-bold text-[var(--gb-parchment)] tabular-nums">
               ${displayPrice.toFixed(2)}
             </span>
             <span className={cn(
@@ -239,14 +239,14 @@ export function TradingViewChart({
             </span>
           </div>
           {crosshairData ? (
-            <span className="text-sm text-slate-500">{crosshairData.date}</span>
+            <span className="text-sm text-[var(--text-subtle)]">{crosshairData.date}</span>
           ) : (
-            <span className="text-sm text-slate-500">{chartDisplayState.periodLabel}</span>
+            <span className="text-sm text-[var(--text-subtle)]">{chartDisplayState.periodLabel}</span>
           )}
         </div>
 
         {/* Time Range Selector */}
-        <div className="flex flex-wrap gap-1 bg-slate-900/50 rounded-xl p-1">
+        <div className="flex flex-wrap gap-1 bg-[var(--gb-azure-deep)]/50 rounded-xl p-1">
           {timeRanges.map((r) => (
             <button
               key={r}
@@ -254,8 +254,8 @@ export function TradingViewChart({
               className={cn(
                 "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                 range === r
-                  ? "bg-violet-400 text-white shadow-lg shadow-violet-400/25"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
+                  ? "bg-[var(--gb-gold)] text-[var(--gb-parchment)] shadow-lg shadow-[var(--gb-gold)]/20"
+                  : "text-[var(--text-muted)] hover:text-[var(--gb-parchment)] hover:bg-white/5"
               )}
             >
               {r}
@@ -267,10 +267,10 @@ export function TradingViewChart({
       {/* Chart */}
       <div className="relative">
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-xl z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-[var(--gb-azure-deep)]/50 backdrop-blur-sm rounded-xl z-10">
             <div className="flex items-center gap-3">
-              <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
-              <span className="text-slate-400">Loading chart data...</span>
+              <div className="w-6 h-6 border-2 border-[var(--gb-gold)] border-t-transparent rounded-full animate-spin" />
+              <span className="text-[var(--text-muted)]">Loading chart data...</span>
             </div>
           </div>
         )}
@@ -281,13 +281,13 @@ export function TradingViewChart({
       </div>
 
       {/* Chart Footer */}
-      <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between text-sm">
-        <div className="flex items-center gap-4 text-slate-400">
+      <div className="mt-4 pt-4 border-t border-[var(--gb-gold-border)] flex items-center justify-between text-sm">
+        <div className="flex items-center gap-4 text-[var(--text-muted)]">
           <span>Inception: Jan 24, 2026</span>
           <span>•</span>
           <span>Starting Price: $100.00</span>
         </div>
-        <div className="text-slate-500">
+        <div className="text-[var(--text-subtle)]">
           {data.length > 0 && `${data.length} data points`}
         </div>
       </div>

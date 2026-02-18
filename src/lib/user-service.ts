@@ -20,7 +20,7 @@ export function isOwnerEmail(email: string): boolean {
 }
 
 const AVATAR_COLORS = [
-  '#8b5cf6', '#6366f1', '#22d3ee', '#34d399',
+  '#D4AF37', '#6366f1', '#22d3ee', '#34d399',
   '#f472b6', '#fbbf24', '#f97316', '#60a5fa',
 ];
 

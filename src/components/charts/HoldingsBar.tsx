@@ -34,10 +34,10 @@ export function HoldingsBar({ holdings }: HoldingsBarProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-white group-hover:text-violet-400 transition-colors">
+                    <span className="font-semibold text-[var(--gb-parchment)] group-hover:text-[var(--gb-gold)] transition-colors">
                       {holding.ticker}
                     </span>
-                    <span className="text-sm text-slate-500 hidden sm:inline truncate">
+                    <span className="text-sm text-[var(--text-subtle)] hidden sm:inline truncate">
                       {holding.name}
                     </span>
                     <span className={cn(
@@ -47,7 +47,7 @@ export function HoldingsBar({ holdings }: HoldingsBarProps) {
                       {formatPercentagePrecise(holding.dayChangePercent)}
                     </span>
                   </div>
-                  <span className="font-bold text-white tabular-nums ml-2">
+                  <span className="font-bold text-[var(--gb-parchment)] tabular-nums ml-2">
                     {isVisible ? formatCurrency(holding.value) : '$••••••'}
                   </span>
                 </div>
@@ -55,7 +55,7 @@ export function HoldingsBar({ holdings }: HoldingsBarProps) {
             </div>
             
             {/* Progress Bar */}
-            <div className="h-2 bg-slate-800/50 rounded-full overflow-hidden group-hover:bg-slate-700/50 transition-colors">
+            <div className="h-2 bg-[var(--gb-azure-deep)]/50 rounded-full overflow-hidden group-hover:bg-[var(--gb-azure)]/50 transition-colors">
               <div 
                 className="h-full rounded-full transition-all duration-700 ease-out"
                 style={{ 

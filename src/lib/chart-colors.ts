@@ -1,15 +1,16 @@
-// Color palette for multi-stock chart comparison
+// Granblue Skyfarer color palette for charts
+// Azure, gold, crystal, and mana tones that feel magical yet readable
 export const CHART_COLORS = [
-  '#5C7CFA', // Primary blue
-  '#FF6B6B', // Red
-  '#51CF66', // Green
-  '#FCC419', // Yellow
-  '#845EF7', // Purple
-  '#22B8CF', // Teal
-  '#FF922B', // Orange
-  '#F06595', // Pink
-  '#20C997', // Cyan
-  '#748FFC', // Light blue
+  '#5DADE2', // Crystal Blue
+  '#D4AF37', // Skyfarer Gold
+  '#2ECC71', // Emerald Green
+  '#E74C3C', // Ember Red
+  '#9B59B6', // Mystic Purple
+  '#1ABC9C', // Teal Mana
+  '#F39C12', // Amber
+  '#E67E22', // Copper
+  '#3498DB', // Deep Mana Blue
+  '#E8C84A', // Light Gold
 ];
 
 export function getChartColor(index: number): string {

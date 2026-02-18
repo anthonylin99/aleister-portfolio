@@ -40,7 +40,7 @@ export const collectionCategories: CollectionCategory[] = [
     id: 'intelligence-compute',
     name: 'Intelligence & Compute',
     description: 'AI infrastructure, semiconductors, and cloud platforms powering the next era of computing',
-    color: '#8b5cf6', // violet
+    color: '#D4AF37', // violet
     icon: 'Cpu',
   },
   {

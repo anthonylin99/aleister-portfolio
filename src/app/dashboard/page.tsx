@@ -21,20 +21,18 @@ import {
   RefreshCw,
   Plus,
   Users,
-  Loader2,
   Lock,
   Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ScrollBanner } from '@/components/ui/ScrollBanner';
+import { OrnateDivider } from '@/components/ui/OrnateDivider';
 
 /**
- * UserDashboard - Stripe-inspired portfolio dashboard
+ * UserDashboard - Granblue Skyfarer Bridge
  *
- * Design Philosophy:
- * - Flowing gradient background with subtle animations
- * - Premium card layouts with gradient accents
- * - Clean, Robinhood-style data presentation
- * - Micro-interactions that bring the interface to life
+ * The Captain's Bridge - where the Skyfarer views their fleet status,
+ * holdings (Relics), and market conditions (Scrying data).
  */
 
 export default function UserDashboard() {
@@ -45,68 +43,67 @@ export default function UserDashboard() {
   const { profile, loading: profileLoading } = useUserProfile();
   const [portfolioView, setPortfolioView] = useState<PortfolioView>('personal');
 
-  // Clear sensitive data from browser history on navigation
   useClearSensitiveData();
 
-  // Only fetch portfolio data when authenticated
   const userPortfolio = useUserPortfolio();
   const aggregatedPortfolio = useAggregatedPortfolio(portfolioView);
 
-  // Determine which data to use based on view selection (only for authenticated users)
   const { holdings, summary, categories, loading, error, refresh } =
     portfolioView === 'personal'
       ? userPortfolio
       : aggregatedPortfolio;
 
-  // Redirect to onboarding if authenticated but not onboarded
   useEffect(() => {
     if (isAuthenticated && !profileLoading && profile && !profile.onboarded) {
       router.replace('/onboarding');
     }
   }, [isAuthenticated, profileLoading, profile, router]);
 
-  // Show loading while checking auth status
-  if (isLoading) {
-    return (
-      <div className="p-6 lg:p-8 min-h-screen relative">
-        <div className="stripe-gradient-bg" />
-        <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <Loader2 className="w-12 h-12 text-[#A78BFA] animate-spin" />
-              <div className="absolute inset-0 blur-xl bg-[#A78BFA]/30" />
-            </div>
-            <p className="text-[#a1a1aa]">Checking authentication...</p>
+  // Magic Circle Loader
+  const MagicLoader = ({ message }: { message: string }) => (
+    <div className="p-6 lg:p-8 min-h-screen relative">
+      <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
+      <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
+        <div className="flex flex-col items-center gap-6">
+          <div className="magic-circle-loader">
+            <div className="magic-circle-inner" />
           </div>
+          <p className="text-[var(--text-secondary)] font-cinzel text-sm tracking-wide">{message}</p>
         </div>
       </div>
-    );
+    </div>
+  );
+
+  if (isLoading) {
+    return <MagicLoader message="Attuning to the Aether..." />;
   }
 
-  // SECURITY: Show sign-in prompt when not authenticated
+  // Sign-in prompt
   if (!isAuthenticated) {
     return (
       <div className="p-6 lg:p-8 min-h-screen relative">
         <div className="stripe-gradient-bg" />
+        <div className="sky-sparkles" />
         <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
-          <div className="gradient-card p-10 text-center max-w-md">
+          <div className="gradient-card p-10 text-center max-w-md filigree-corners">
             <div className="card-gradient-animated opacity-10" />
             <div className="relative z-10">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A78BFA]/30">
-                <Lock className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full border-2 border-[var(--gb-gold)] bg-gradient-to-br from-[var(--gb-gold)]/20 to-[var(--gb-crystal-blue)]/15 flex items-center justify-center shadow-lg shadow-[var(--gb-gold)]/20">
+                <Lock className="w-8 h-8 text-[var(--gb-gold)]" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Portfolio Access Required
+              <h2 className="text-2xl font-bold text-[var(--gb-parchment)] mb-2 font-cinzel">
+                Skyfarer Access Required
               </h2>
-              <p className="text-[#a1a1aa] mb-8">
-                Sign in to view your portfolio and track your investments securely.
+              <p className="text-[var(--text-secondary)] mb-8">
+                Board the ship to view your fleet and track your relics across the skies.
               </p>
               <button
                 onClick={() => signIn('google')}
                 className="btn-primary w-full justify-center"
               >
                 <Sparkles className="w-4 h-4" />
-                Sign In to Continue
+                Enter Aleister
               </button>
             </div>
           </div>
@@ -116,52 +113,27 @@ export default function UserDashboard() {
   }
 
   if (profileLoading) {
-    return (
-      <div className="p-6 lg:p-8 min-h-screen relative">
-        <div className="stripe-gradient-bg" />
-        <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <Loader2 className="w-12 h-12 text-[#A78BFA] animate-spin" />
-              <div className="absolute inset-0 blur-xl bg-[#A78BFA]/30" />
-            </div>
-            <p className="text-[#a1a1aa]">Loading your portfolio...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <MagicLoader message="Consulting the Oracle..." />;
   }
 
   if (loading && holdings.length === 0) {
-    return (
-      <div className="p-6 lg:p-8 min-h-screen relative">
-        <div className="stripe-gradient-bg" />
-        <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative">
-              <div className="w-14 h-14 border-3 border-[#A78BFA] border-t-transparent rounded-full animate-spin" />
-              <div className="absolute inset-0 blur-xl bg-[#A78BFA]/30" />
-            </div>
-            <p className="text-[#a1a1aa]">Fetching market data...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <MagicLoader message="Scrying market crystals..." />;
   }
 
   if (error && holdings.length === 0) {
     return (
       <div className="p-6 lg:p-8 min-h-screen relative">
         <div className="stripe-gradient-bg" />
+        <div className="sky-sparkles" />
         <div className="relative z-10 flex items-center justify-center min-h-[80vh]">
-          <div className="gradient-card p-8 text-center max-w-md">
-            <p className="text-[#ef4444] mb-4">Error loading portfolio: {error}</p>
+          <div className="gradient-card p-8 text-center max-w-md filigree-corners">
+            <p className="text-[var(--negative)] mb-4">The crystal has shattered: {error}</p>
             <button
               onClick={refresh}
               className="btn-primary"
             >
               <RefreshCw className="w-4 h-4" />
-              Retry
+              Attune Again
             </button>
           </div>
         </div>
@@ -171,24 +143,24 @@ export default function UserDashboard() {
 
   const topHoldings = holdings.slice(0, 5);
 
-  // Determine header title based on view
   const getHeaderInfo = () => {
     if (portfolioView === 'combined') {
-      return { ticker: 'COMBINED', name: 'Combined Portfolio' };
+      return { ticker: 'COMBINED', name: 'Combined Fleet' };
     }
     return {
       ticker: profile?.etfTicker || 'ETF',
-      name: profile?.etfName || 'My Portfolio',
+      name: profile?.etfName || 'My Fleet',
     };
   };
 
   const { ticker: etfTicker, name: etfName } = getHeaderInfo();
 
-  // Empty portfolio state
+  // Empty portfolio
   if (holdings.length === 0 && !loading) {
     return (
       <div className="p-6 lg:p-8 min-h-screen relative">
         <div className="stripe-gradient-bg" />
+        <div className="sky-sparkles" />
         <div className="relative z-10">
           <Header
             title={`$${etfTicker}`}
@@ -199,21 +171,21 @@ export default function UserDashboard() {
             lastUpdated={new Date().toISOString()}
           />
           <div className="mt-12 flex flex-col items-center justify-center text-center">
-            <div className="gradient-card p-10 max-w-md">
+            <div className="gradient-card p-10 max-w-md filigree-corners">
               <div className="card-gradient-animated opacity-10" />
               <div className="relative z-10">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#A78BFA] to-[#C4B5FD] flex items-center justify-center shadow-lg shadow-[#A78BFA]/30">
-                  <Wallet className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full border-2 border-[var(--gb-gold)] bg-gradient-to-br from-[var(--gb-gold)]/20 to-[var(--gb-crystal-blue)]/15 flex items-center justify-center shadow-lg shadow-[var(--gb-gold)]/20">
+                  <Wallet className="w-8 h-8 text-[var(--gb-gold)]" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  Your portfolio is empty
+                <h2 className="text-2xl font-bold text-[var(--gb-parchment)] mb-2 font-cinzel">
+                  Your armory is empty
                 </h2>
-                <p className="text-[#a1a1aa] mb-8">
-                  Add your first holding to start tracking your portfolio performance.
+                <p className="text-[var(--text-secondary)] mb-8">
+                  Acquire your first relic to begin tracking your fleet&apos;s fortune.
                 </p>
                 <Link href="/holdings" className="btn-primary w-full justify-center">
                   <Plus className="w-4 h-4" />
-                  Add Your First Holding
+                  Acquire First Relic
                 </Link>
               </div>
             </div>
@@ -225,10 +197,18 @@ export default function UserDashboard() {
 
   return (
     <div className="p-6 lg:p-8 min-h-screen relative">
-      {/* Stripe-style flowing gradient background */}
+      {/* Granblue sky background */}
       <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
 
       <div className="relative z-10">
+        {/* Compass Rose */}
+        <div className="flex justify-center mb-2 opacity-40">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10L12 2Z" fill="var(--gb-gold)" opacity="0.8"/>
+            <circle cx="12" cy="12" r="2" fill="var(--gb-gold)" opacity="0.6"/>
+          </svg>
+        </div>
         <Header
           title={`$${etfTicker}`}
           subtitle={etfName}
@@ -240,11 +220,10 @@ export default function UserDashboard() {
 
         {/* Quick Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-8">
-          {/* Portfolio Selector */}
           <PortfolioSelector
             selected={portfolioView}
             onSelect={setPortfolioView}
-            personalLabel={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Portfolio'}
+            personalLabel={profile?.etfTicker ? `$${profile.etfTicker}` : 'My Fleet'}
           />
 
           <div className="flex-1" />
@@ -252,35 +231,37 @@ export default function UserDashboard() {
           <button
             onClick={refresh}
             disabled={loading}
-            className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 text-[#a1a1aa] hover:text-white hover:border-[#A78BFA]/40 transition-all disabled:opacity-50 text-sm font-medium"
+            className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] hover:border-[var(--gb-gold-border-strong)] transition-all disabled:opacity-50 text-sm font-medium"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? 'Refreshing...' : 'Refresh'}
+            <span className="font-cinzel text-xs">{loading ? 'Scrying...' : 'Re-scry'}</span>
           </button>
 
           {profile?.circleId ? (
             <Link
               href="/circle"
-              className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 text-[#a1a1aa] hover:text-white hover:border-[#A78BFA]/40 transition-all text-sm font-medium"
+              className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] hover:border-[var(--gb-gold-border-strong)] transition-all text-sm font-medium"
             >
               <Users className="w-4 h-4" />
-              View Circle
+              <span className="font-cinzel text-xs">View Guild</span>
             </Link>
           ) : (
             <Link
               href="/circle"
-              className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 text-[#A78BFA] hover:text-white hover:border-[#A78BFA]/40 transition-all text-sm font-medium border-[#A78BFA]/20"
+              className="glass-card px-4 py-2.5 rounded-xl flex items-center gap-2 text-[var(--gb-gold)] hover:text-[var(--gb-gold-light)] hover:border-[var(--gb-gold-border-strong)] transition-all text-sm font-medium border-[var(--gb-gold-border)]"
             >
               <Users className="w-4 h-4" />
-              Join a Circle
+              <span className="font-cinzel text-xs">Join Guild</span>
             </Link>
           )}
         </div>
 
-        {/* Stats Row - Bento style with different gradients */}
+        <OrnateDivider />
+
+        {/* Summon Stone Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatCard
-            label="Total Holdings"
+            label="Total Relics"
             value={summary.holdingsCount.toString()}
             icon={Wallet}
             gradient={1}
@@ -292,7 +273,7 @@ export default function UserDashboard() {
             gradient={2}
           />
           <StatCard
-            label="Largest Position"
+            label="Prime Relic"
             value={formatCurrency(topHoldings[0]?.value || 0)}
             change={topHoldings[0]?.ticker}
             changeType="neutral"
@@ -300,7 +281,7 @@ export default function UserDashboard() {
             gradient={3}
           />
           <StatCard
-            label="Avg. Position Size"
+            label="Avg. Position"
             value={formatCurrency(summary.totalValue / summary.holdingsCount || 0)}
             icon={PieChart}
             gradient={4}
@@ -309,27 +290,27 @@ export default function UserDashboard() {
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
-          <div className="xl:col-span-7 gradient-card">
+          <div className="xl:col-span-7 parchment-scroll filigree-corners">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-xl font-bold text-white">Holdings</h3>
-                  <p className="text-sm text-[#71717a]">Sorted by value</p>
+                  <ScrollBanner>Armory</ScrollBanner>
+                  <p className="text-sm text-[var(--text-muted)] mt-2">Relics sorted by value</p>
                 </div>
-                <span className="text-sm text-[#52525b] px-3 py-1 rounded-full bg-white/5">
-                  {holdings.length} positions
+                <span className="text-sm text-[var(--text-subtle)] px-3 py-1 rounded-full bg-[var(--gb-gold)]/5 border border-[var(--gb-gold-border)] font-cinzel">
+                  {holdings.length} relics
                 </span>
               </div>
               <HoldingsBar holdings={holdings} />
             </div>
           </div>
 
-          <div className="xl:col-span-5 gradient-card">
+          <div className="xl:col-span-5 parchment-card filigree-corners p-6">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white">Allocation</h3>
-                  <p className="text-sm text-[#71717a]">By category</p>
+                  <ScrollBanner>Navigator</ScrollBanner>
+                  <p className="text-sm text-[var(--text-muted)] mt-2">By territory</p>
                 </div>
               </div>
               <AllocationDonut data={categories} totalValue={summary.totalValue} />
@@ -337,26 +318,24 @@ export default function UserDashboard() {
           </div>
         </div>
 
-        {/* Today's Movers + Top Holdings Row */}
+        {/* Wind Report + Top Holdings */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
-          {/* Today's Movers */}
           <div className="xl:col-span-4">
             <TodaysMovers holdings={holdings} maxItems={3} />
           </div>
 
-          {/* Top Holdings */}
           {topHoldings.length > 0 && (
             <div className="xl:col-span-8">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white">Top Holdings</h3>
-                  <p className="text-sm text-[#71717a]">Largest positions</p>
+                  <h3 className="text-lg font-bold text-[var(--gb-parchment)] font-cinzel">Prime Relics</h3>
+                  <p className="text-sm text-[var(--text-muted)]">Most valuable holdings</p>
                 </div>
                 <Link
                   href="/holdings"
-                  className="text-sm text-[#A78BFA] hover:text-[#C4B5FD] font-medium transition-colors"
+                  className="text-sm text-[var(--gb-gold)] hover:text-[var(--gb-gold-light)] font-medium transition-colors font-cinzel"
                 >
-                  View all
+                  View armory
                 </Link>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">

@@ -1,62 +1,73 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
   /* ═══════════════════════════════════════════════════════════════════════════
-     STRIPE-INSPIRED COLOR SYSTEM - Prometheus Design Language v3.0
-     Inspired by Stripe's flowing gradients, Robinhood's data density, Luma's elegance
+     GRANBLUE SKYFARER COLOR SYSTEM - Aleister Design Language v4.0
+     Inspired by Granblue Fantasy, JRPG Aesthetics, Airship Adventures
      ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* Core Background - Deep cosmic with subtle warmth */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #0f0f16;
-  --bg-tertiary: #15151f;
-  --bg-elevated: #1a1a26;
+  /* Core Background - Deep Azure Sky, NOT flat black */
+  --bg-primary: #0D1B2A;
+  --bg-secondary: #112240;
+  --bg-tertiary: #1B3B5F;
+  --bg-elevated: #1E4470;
 
-  /* Stripe Gradient Palette - The Heart of Our Design */
-  --stripe-purple: #A78BFA;      /* Lavender violet-400 */
-  --stripe-violet: #C4B5FD;      /* Light lavender violet-300 */
-  --stripe-fuchsia: #c026d3;     /* Vibrant fuchsia */
-  --stripe-pink: #ec4899;        /* Hot pink */
-  --stripe-coral: #f97316;       /* Warm coral/orange */
-  --stripe-amber: #fbbf24;       /* Golden amber */
+  /* Granblue Signature Palette */
+  --gb-azure: #1B3B5F;             /* Deep Azure */
+  --gb-azure-light: #2A5A8F;       /* Medium Azure */
+  --gb-azure-dark: #0D1B2A;        /* Deepest Azure */
+  --gb-gold: #D4AF37;              /* Skyfarer Gold */
+  --gb-gold-light: #E8C84A;        /* Bright Gold */
+  --gb-gold-dark: #B8960C;         /* Antique Gold */
+  --gb-parchment: #FDF5E6;         /* Parchment White */
+  --gb-parchment-dark: #E8D5B7;    /* Aged Parchment */
+  --gb-parchment-warm: #F5E6D0;    /* Warm Parchment */
+  --gb-sky-top: #4A90D9;           /* Sky Gradient Top */
+  --gb-sky-mid: #6BB3E0;           /* Sky Gradient Mid */
+  --gb-sky-bottom: #87CEEB;        /* Sky Gradient Bottom */
+  --gb-crystal-blue: #5DADE2;      /* Crystal Blue for accents */
+  --gb-mana-blue: #3498DB;         /* Mana / Magic Blue */
+  --gb-wood: #5C3D2E;              /* Wood Brown for guild boards */
+  --gb-wood-light: #8B6914;        /* Light Wood */
 
-  /* Gradient Accent Colors - For UI Elements */
-  --accent-primary: #A78BFA;
-  --accent-secondary: #C4B5FD;
-  --accent-tertiary: #8B5CF6;
-  --accent-glow: rgba(167, 139, 250, 0.5);
+  /* Granblue Translucent Tokens */
+  --gb-blue-translucent: rgba(27, 59, 95, 0.65);
+  --gb-gold-border: rgba(212, 175, 55, 0.5);
+  --gb-gold-border-strong: rgba(212, 175, 55, 0.8);
+  --gb-parchment-glow: rgba(253, 245, 230, 0.08);
+  --gb-crystal-glow: rgba(93, 173, 226, 0.3);
 
-  /* Semantic Colors */
-  --positive: #10b981;           /* Emerald green */
-  --positive-glow: rgba(16, 185, 129, 0.2);
-  --negative: #ef4444;           /* Clear red */
-  --negative-glow: rgba(239, 68, 68, 0.2);
-  --warning: #f59e0b;            /* Amber */
-  --info: #3b82f6;               /* Blue */
+  /* Gradient Accent Colors - Granblue Azure-Gold Theme */
+  --accent-primary: #D4AF37;
+  --accent-secondary: #E8C84A;
+  --accent-tertiary: #5DADE2;
+  --accent-glow: rgba(212, 175, 55, 0.5);
 
-  /* Text Hierarchy - Clean and readable */
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  --text-subtle: #52525b;
+  /* Semantic Colors - Kept for data readability */
+  --positive: #2ECC71;              /* Magical Green */
+  --positive-glow: rgba(46, 204, 113, 0.25);
+  --negative: #E74C3C;              /* Ember Red */
+  --negative-glow: rgba(231, 76, 60, 0.25);
+  --warning: #F39C12;               /* Amber Warning */
+  --info: #5DADE2;                  /* Crystal Blue */
 
-  /* Card Backgrounds - Glassmorphism with depth */
-  --card-bg: rgba(20, 20, 30, 0.6);
-  --card-bg-hover: rgba(30, 30, 45, 0.8);
-  --card-border: rgba(167, 139, 250, 0.15);
-  --card-border-hover: rgba(167, 139, 250, 0.35);
+  /* Text Hierarchy - Parchment-aware */
+  --text-primary: #FDF5E6;
+  --text-secondary: #B8C6D4;
+  --text-muted: #7B8DA0;
+  --text-subtle: #5A6B7D;
 
-  /* Stripe-style Gradient Cards */
-  --gradient-card-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f97316 100%);
-  --gradient-card-2: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #ec4899 100%);
-  --gradient-card-3: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #d946ef 100%);
-  --gradient-card-4: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #6366f1 100%);
-  --gradient-card-5: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%);
+  /* Card Backgrounds - Glassmorphism with Azure depth */
+  --card-bg: rgba(17, 34, 64, 0.7);
+  --card-bg-hover: rgba(27, 59, 95, 0.85);
+  --card-border: rgba(212, 175, 55, 0.25);
+  --card-border-hover: rgba(212, 175, 55, 0.55);
 
   /* Animation Timings */
   --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-magic: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   /* Spacing & Layout */
   --grid-gap: 1rem;
@@ -71,6 +82,7 @@
   --color-background: var(--bg-primary);
   --color-foreground: var(--text-primary);
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -92,9 +104,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Granblue heading font class */
+.font-cinzel {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+}
+
+.font-cinzel-decorative {
+  font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
-   STRIPE FLOWING GRADIENT BACKGROUND
-   The signature "stream to the right" effect from Stripe's homepage
+   GRANBLUE SKY BACKGROUND
+   Airy sky gradient with floating islands and parallax clouds
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .stripe-gradient-bg {
@@ -102,87 +123,92 @@ body {
   inset: 0;
   z-index: -1;
   overflow: hidden;
-  background: var(--bg-primary);
+  background: linear-gradient(
+    180deg,
+    #0D1B2A 0%,
+    #112240 15%,
+    #1B3B5F 35%,
+    #2A5A8F 55%,
+    #4A90D9 75%,
+    #6BB3E0 90%,
+    #87CEEB 100%
+  );
 }
 
+/* Floating clouds layer */
 .stripe-gradient-bg::before {
   content: '';
   position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 140%;
-  height: 200%;
+  top: 30%;
+  left: -10%;
+  width: 120%;
+  height: 60%;
   background:
-    conic-gradient(
-      from 90deg at 40% 50%,
-      var(--stripe-purple) 0deg,
-      var(--stripe-violet) 60deg,
-      var(--stripe-fuchsia) 120deg,
-      var(--stripe-pink) 180deg,
-      var(--stripe-coral) 240deg,
-      var(--stripe-amber) 300deg,
-      var(--stripe-purple) 360deg
-    );
-  animation: stripe-flow 20s linear infinite;
-  opacity: 0.4;
-  filter: blur(100px);
+    radial-gradient(ellipse 200px 80px at 15% 40%, rgba(255, 255, 255, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 300px 100px at 45% 60%, rgba(255, 255, 255, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 250px 90px at 75% 35%, rgba(255, 255, 255, 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 180px 70px at 90% 55%, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+  animation: drift-clouds 60s linear infinite;
+  pointer-events: none;
 }
 
+/* Floating islands - blurred distant shapes */
 .stripe-gradient-bg::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 50% at 50% 0%, transparent 0%, var(--bg-primary) 70%);
+  top: 40%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background:
+    radial-gradient(ellipse 120px 60px at 20% 30%, rgba(27, 59, 95, 0.6) 0%, transparent 70%),
+    radial-gradient(ellipse 80px 40px at 70% 50%, rgba(27, 59, 95, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 150px 50px at 85% 25%, rgba(42, 90, 143, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 60px 30px at 40% 60%, rgba(42, 90, 143, 0.3) 0%, transparent 70%);
+  filter: blur(8px);
+  animation: drift-islands 90s linear infinite;
+  pointer-events: none;
 }
 
-@keyframes stripe-flow {
-  0% {
-    transform: rotate(0deg) translateX(0);
-  }
-  100% {
-    transform: rotate(360deg) translateX(0);
-  }
+@keyframes drift-clouds {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-10%); }
 }
 
-/* Stream to the Right - Horizontal flowing gradient */
-.stream-right {
-  position: relative;
-  overflow: hidden;
+@keyframes drift-islands {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(-3%) translateY(-8px); }
+  100% { transform: translateX(0) translateY(0); }
 }
 
-.stream-right::before {
-  content: '';
-  position: absolute;
+/* Stars / sparkle layer for top of sky */
+.sky-sparkles {
+  position: fixed;
   top: 0;
-  left: -100%;
-  width: 300%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--stripe-purple) 15%,
-    var(--stripe-violet) 25%,
-    var(--stripe-fuchsia) 40%,
-    var(--stripe-pink) 55%,
-    var(--stripe-coral) 70%,
-    var(--stripe-amber) 85%,
-    transparent 100%
-  );
-  animation: stream-flow 8s linear infinite;
-  opacity: 0.6;
-  filter: blur(60px);
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background-image:
+    radial-gradient(1px 1px at 10% 10%, rgba(212, 175, 55, 0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 20%, rgba(253, 245, 230, 0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 50% 8%, rgba(212, 175, 55, 0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 15%, rgba(253, 245, 230, 0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 25%, rgba(212, 175, 55, 0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 25% 5%, rgba(232, 200, 74, 0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 18%, rgba(253, 245, 230, 0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 8%, rgba(212, 175, 55, 0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 28%, rgba(232, 200, 74, 0.4) 0%, transparent 100%);
+  animation: twinkle 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
 }
 
-@keyframes stream-flow {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(33.33%);
-  }
+@keyframes twinkle {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 
-/* Hero Gradient - Full page flowing effect */
+/* Hero Gradient - Granblue variant */
 .hero-gradient {
   position: absolute;
   inset: 0;
@@ -194,61 +220,128 @@ body {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.7;
+  opacity: 0.5;
   animation: float-orb 15s ease-in-out infinite;
 }
 
 .hero-gradient .gradient-orb-1 {
   width: 800px;
   height: 800px;
-  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-violet));
+  background: linear-gradient(135deg, var(--gb-azure), var(--gb-crystal-blue));
   top: -20%;
   right: -10%;
-  animation-delay: 0s;
 }
 
 .hero-gradient .gradient-orb-2 {
   width: 600px;
   height: 600px;
-  background: linear-gradient(135deg, var(--stripe-fuchsia), var(--stripe-pink));
+  background: linear-gradient(135deg, var(--gb-gold), var(--gb-gold-light));
   top: 20%;
   right: 20%;
   animation-delay: -5s;
+  opacity: 0.3;
 }
 
 .hero-gradient .gradient-orb-3 {
   width: 500px;
   height: 500px;
-  background: linear-gradient(135deg, var(--stripe-coral), var(--stripe-amber));
+  background: linear-gradient(135deg, var(--gb-mana-blue), var(--gb-sky-top));
   top: 40%;
   right: -5%;
   animation-delay: -10s;
 }
 
 @keyframes float-orb {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(-30px, 30px) scale(1.05);
-  }
-  50% {
-    transform: translate(-60px, 0) scale(0.95);
-  }
-  75% {
-    transform: translate(-30px, -30px) scale(1.02);
-  }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-30px, 30px) scale(1.05); }
+  50% { transform: translate(-60px, 0) scale(0.95); }
+  75% { transform: translate(-30px, -30px) scale(1.02); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PREMIUM GLASS CARDS
-   Stripe-inspired card design with gradient borders and depth
+   CORNER FILIGREE - Ornate Victorian/JRPG corner decorations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.filigree-corners {
+  position: relative;
+}
+
+.filigree-corners::before,
+.filigree-corners::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.filigree-corners::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--gb-gold);
+  border-left: 2px solid var(--gb-gold);
+  border-top-left-radius: 4px;
+  mask-image: radial-gradient(ellipse 70% 70% at 0% 0%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 0% 0%, black 0%, transparent 70%);
+}
+
+.filigree-corners::after {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid var(--gb-gold);
+  border-right: 2px solid var(--gb-gold);
+  border-top-right-radius: 4px;
+  mask-image: radial-gradient(ellipse 70% 70% at 100% 0%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 100% 0%, black 0%, transparent 70%);
+}
+
+/* Bottom corners via a wrapper pseudo-element workaround */
+.filigree-bottom::before,
+.filigree-bottom::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.filigree-bottom::before {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid var(--gb-gold);
+  border-left: 2px solid var(--gb-gold);
+  border-bottom-left-radius: 4px;
+}
+
+.filigree-bottom::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--gb-gold);
+  border-right: 2px solid var(--gb-gold);
+  border-bottom-right-radius: 4px;
+}
+
+/* Full filigree border ornament (all 4 corners via box-shadow trick) */
+.ornate-frame {
+  position: relative;
+  border: 1px solid var(--gb-gold-border);
+  box-shadow:
+    inset 3px 3px 0 -1px var(--gb-gold),
+    inset -3px -3px 0 -1px var(--gb-gold),
+    inset 3px -3px 0 -1px var(--gb-gold),
+    inset -3px 3px 0 -1px var(--gb-gold);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLASS CARDS - Azure Glassmorphism with Gold Borders
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .glass-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--gb-blue-translucent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
   border-radius: var(--border-radius-lg);
   transition: all 0.3s var(--animation-smooth);
@@ -258,17 +351,17 @@ body {
   background: var(--card-bg-hover);
   border-color: var(--card-border-hover);
   box-shadow:
-    0 0 40px rgba(167, 139, 250, 0.1),
-    0 20px 60px rgba(0, 0, 0, 0.3);
+    0 0 30px rgba(212, 175, 55, 0.1),
+    0 15px 50px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
-/* Gradient Border Card - Premium effect */
+/* Gradient Border Card - Gold ornate frame */
 .gradient-card {
   position: relative;
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--gb-blue-translucent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: var(--border-radius-lg);
   padding: 1.5rem;
   transition: all 0.4s var(--animation-smooth);
@@ -282,30 +375,155 @@ body {
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    var(--stripe-purple) 0%,
-    var(--stripe-fuchsia) 50%,
-    var(--stripe-coral) 100%
+    var(--gb-gold) 0%,
+    var(--gb-gold-light) 30%,
+    var(--gb-gold-dark) 60%,
+    var(--gb-gold) 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.4;
   transition: opacity 0.3s ease;
 }
 
 .gradient-card:hover::before {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .gradient-card:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 0 60px rgba(167, 139, 250, 0.15),
-    0 30px 80px rgba(0, 0, 0, 0.4);
+    0 0 40px rgba(212, 175, 55, 0.12),
+    0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
-/* Stripe-style Bento Card with Gradient Fill */
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARCHMENT CARD - For data-heavy lists and scrolls
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.parchment-card {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(253, 245, 230, 0.10) 0%,
+    rgba(232, 213, 183, 0.08) 50%,
+    rgba(245, 230, 208, 0.10) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--gb-gold-border-strong);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+/* Parchment texture overlay */
+.parchment-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.parchment-card:hover {
+  border-color: var(--gb-gold-border-strong);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+}
+
+/* Scroll / parchment header band */
+.parchment-header {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.12) 20%,
+    rgba(212, 175, 55, 0.15) 50%,
+    rgba(212, 175, 55, 0.12) 80%,
+    transparent 100%
+  );
+  border-bottom: 1px solid var(--gb-gold-border);
+  padding: 0.75rem 1.25rem;
+  font-family: 'Cinzel', serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUMMON STONE CARDS - Stat display with magical glow
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stat-card {
+  position: relative;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--border-radius-lg);
+  background: var(--gb-blue-translucent);
+  border: 1px solid var(--gb-gold-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s var(--animation-smooth);
+  overflow: hidden;
+}
+
+/* Top gold accent line */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gb-gold-dark),
+    var(--gb-gold),
+    var(--gb-gold-light),
+    var(--gb-gold),
+    var(--gb-gold-dark),
+    transparent
+  );
+  opacity: 0.7;
+}
+
+.stat-card:hover {
+  border-color: var(--gb-gold-border-strong);
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 20px rgba(93, 173, 226, 0.15),
+    0 0 40px rgba(212, 175, 55, 0.08),
+    inset 0 0 30px rgba(93, 173, 226, 0.05);
+}
+
+.stat-card .stat-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--gb-gold);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(93, 173, 226, 0.15));
+  color: var(--gb-gold);
+  margin-bottom: 0.75rem;
+}
+
+.stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  font-feature-settings: 'tnum' 1;
+  font-family: 'Cinzel', serif;
+}
+
+.stat-card .stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Bento Card variants - Granblue themed */
 .bento-card {
   position: relative;
   overflow: hidden;
@@ -316,59 +534,59 @@ body {
 
 .bento-card.gradient-1 {
   background: linear-gradient(135deg,
-    rgba(167, 139, 250, 0.15) 0%,
-    rgba(196, 181, 253, 0.1) 50%,
-    rgba(192, 38, 211, 0.08) 100%
+    rgba(93, 173, 226, 0.12) 0%,
+    rgba(27, 59, 95, 0.2) 50%,
+    rgba(212, 175, 55, 0.06) 100%
   );
-  border: 1px solid rgba(167, 139, 250, 0.2);
+  border: 1px solid var(--gb-gold-border);
 }
 
 .bento-card.gradient-2 {
   background: linear-gradient(135deg,
-    rgba(192, 38, 211, 0.15) 0%,
-    rgba(236, 72, 153, 0.1) 50%,
-    rgba(249, 115, 22, 0.08) 100%
+    rgba(212, 175, 55, 0.1) 0%,
+    rgba(27, 59, 95, 0.2) 50%,
+    rgba(93, 173, 226, 0.08) 100%
   );
-  border: 1px solid rgba(236, 72, 153, 0.2);
+  border: 1px solid var(--gb-gold-border);
 }
 
 .bento-card.gradient-3 {
   background: linear-gradient(135deg,
-    rgba(59, 130, 246, 0.15) 0%,
-    rgba(139, 92, 246, 0.1) 50%,
-    rgba(217, 70, 239, 0.08) 100%
+    rgba(52, 152, 219, 0.12) 0%,
+    rgba(27, 59, 95, 0.2) 50%,
+    rgba(212, 175, 55, 0.08) 100%
   );
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid var(--gb-gold-border);
 }
 
 .bento-card.gradient-4 {
   background: linear-gradient(135deg,
-    rgba(6, 182, 212, 0.15) 0%,
-    rgba(59, 130, 246, 0.1) 50%,
-    rgba(99, 102, 241, 0.08) 100%
+    rgba(93, 173, 226, 0.12) 0%,
+    rgba(52, 152, 219, 0.1) 50%,
+    rgba(27, 59, 95, 0.15) 100%
   );
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid var(--gb-gold-border);
 }
 
 .bento-card.gradient-5 {
   background: linear-gradient(135deg,
-    rgba(249, 115, 22, 0.15) 0%,
-    rgba(236, 72, 153, 0.1) 50%,
-    rgba(139, 92, 246, 0.08) 100%
+    rgba(232, 200, 74, 0.1) 0%,
+    rgba(212, 175, 55, 0.08) 50%,
+    rgba(27, 59, 95, 0.15) 100%
   );
-  border: 1px solid rgba(249, 115, 22, 0.2);
+  border: 1px solid var(--gb-gold-border);
 }
 
 .bento-card:hover {
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
-/* Animated Gradient Background for Cards */
+/* Animated gradient background for cards */
 .card-gradient-animated {
   position: absolute;
   inset: 0;
-  opacity: 0.5;
+  opacity: 0.3;
   z-index: 0;
   border-radius: inherit;
   overflow: hidden;
@@ -383,107 +601,36 @@ body {
   height: 200%;
   background: conic-gradient(
     from 0deg,
-    var(--stripe-purple),
-    var(--stripe-fuchsia),
-    var(--stripe-pink),
-    var(--stripe-coral),
-    var(--stripe-purple)
+    var(--gb-crystal-blue),
+    var(--gb-gold),
+    var(--gb-mana-blue),
+    var(--gb-gold-light),
+    var(--gb-crystal-blue)
   );
-  animation: rotate-gradient 10s linear infinite;
-  filter: blur(40px);
+  animation: rotate-gradient 12s linear infinite;
+  filter: blur(50px);
 }
 
 @keyframes rotate-gradient {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   STAT CARDS - Stripe-inspired data display
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.stat-card {
-  position: relative;
-  padding: 1.25rem 1.5rem;
-  border-radius: var(--border-radius-lg);
-  background: linear-gradient(
-    135deg,
-    rgba(167, 139, 250, 0.08) 0%,
-    rgba(196, 181, 253, 0.05) 100%
-  );
-  border: 1px solid rgba(167, 139, 250, 0.15);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s var(--animation-smooth);
-  overflow: hidden;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--stripe-purple),
-    var(--stripe-fuchsia),
-    transparent
-  );
-  opacity: 0.5;
-}
-
-.stat-card:hover {
-  border-color: rgba(167, 139, 250, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px rgba(167, 139, 250, 0.1);
-}
-
-.stat-card .stat-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-violet));
-  color: white;
-  margin-bottom: 0.75rem;
-}
-
-.stat-card .stat-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.2;
-  font-feature-settings: 'tnum' 1;
-}
-
-.stat-card .stat-label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-top: 0.25rem;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   HOLDING CARDS - Mini gradient cards for portfolio items
+   HOLDING CARDS - Relic cards with magical aura
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .holding-card {
   position: relative;
   padding: 1rem 1.25rem;
   border-radius: var(--border-radius-md);
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: var(--gb-blue-translucent);
+  border: 1px solid var(--gb-gold-border);
   transition: all 0.3s var(--animation-smooth);
   overflow: hidden;
 }
 
+/* Bottom accent bar */
 .holding-card::after {
   content: '';
   position: absolute;
@@ -491,43 +638,48 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--stripe-purple), var(--stripe-fuchsia), var(--stripe-coral));
+  background: linear-gradient(90deg, var(--gb-gold-dark), var(--gb-gold), var(--gb-gold-light));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s var(--animation-smooth);
 }
 
 .holding-card:hover {
-  border-color: var(--card-border-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-color: var(--gb-gold-border-strong);
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(212, 175, 55, 0.1);
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.15));
 }
 
 .holding-card:hover::after {
   transform: scaleX(1);
 }
 
-/* Positive/Negative holding states */
+/* Positive / Negative holding auras */
 .holding-card.positive {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, var(--card-bg) 100%);
-  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.08) 0%, var(--gb-blue-translucent) 100%);
+  border-color: rgba(46, 204, 113, 0.3);
+  box-shadow: inset 0 0 20px rgba(46, 204, 113, 0.05);
 }
 
 .holding-card.positive::after {
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: linear-gradient(90deg, #2ECC71, #58D68D);
 }
 
 .holding-card.negative {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, var(--card-bg) 100%);
-  border-color: rgba(239, 68, 68, 0.2);
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.08) 0%, var(--gb-blue-translucent) 100%);
+  border-color: rgba(231, 76, 60, 0.3);
+  box-shadow: inset 0 0 20px rgba(231, 76, 60, 0.05);
 }
 
 .holding-card.negative::after {
-  background: linear-gradient(90deg, #ef4444, #f87171);
+  background: linear-gradient(90deg, #E74C3C, #EC7063);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   BUTTONS - Stripe-style with gradient and depth
+   BUTTONS - Granblue styled with gold accents
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .btn-primary {
@@ -538,22 +690,25 @@ body {
   padding: 0.875rem 1.75rem;
   font-weight: 600;
   font-size: 1rem;
-  color: white;
-  background: linear-gradient(135deg, var(--stripe-purple) 0%, var(--stripe-violet) 100%);
-  border: none;
+  font-family: 'Cinzel', serif;
+  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--gb-gold) 0%, var(--gb-gold-light) 50%, var(--gb-gold) 100%);
+  border: 1px solid var(--gb-gold-light);
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.2s var(--animation-smooth);
   box-shadow:
-    0 4px 14px rgba(167, 139, 250, 0.4),
-    0 0 0 0 rgba(167, 139, 250, 0);
+    0 4px 14px rgba(212, 175, 55, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 6px 20px rgba(167, 139, 250, 0.5),
-    0 0 40px rgba(167, 139, 250, 0.2);
+    0 6px 20px rgba(212, 175, 55, 0.4),
+    0 0 30px rgba(212, 175, 55, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary:active {
@@ -568,32 +723,134 @@ body {
   padding: 0.875rem 1.75rem;
   font-weight: 600;
   font-size: 1rem;
-  color: var(--stripe-purple);
+  color: var(--gb-gold);
   background: transparent;
-  border: 2px solid var(--stripe-purple);
+  border: 2px solid var(--gb-gold-border);
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.2s var(--animation-smooth);
 }
 
 .btn-secondary:hover {
-  background: rgba(167, 139, 250, 0.1);
-  border-color: var(--stripe-violet);
-  color: var(--stripe-violet);
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--gb-gold);
+  color: var(--gb-gold-light);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   MICRO-ANIMATIONS - Subtle life and movement
+   SSR SPARKLE EFFECT - Golden shimmer on high-performing stocks
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Shimmer loading effect */
+@keyframes ssr-sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+.ssr-sparkle {
+  position: relative;
+}
+
+.ssr-sparkle::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, var(--gb-gold-light) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: ssr-sparkle 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes golden-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.golden-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.15) 25%,
+    rgba(232, 200, 74, 0.25) 50%,
+    rgba(212, 175, 55, 0.15) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: golden-shimmer 3s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAGIC CIRCLE LOADER - Rotating magical circle animation
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes magic-circle-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes magic-circle-counter {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes magic-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.magic-circle-loader {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.magic-circle-loader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  border-top-color: var(--gb-gold);
+  border-right-color: var(--gb-gold);
+  border-radius: 50%;
+  animation: magic-circle-spin 1.5s linear infinite;
+}
+
+.magic-circle-loader::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 2px solid transparent;
+  border-top-color: var(--gb-crystal-blue);
+  border-left-color: var(--gb-crystal-blue);
+  border-radius: 50%;
+  animation: magic-circle-counter 2s linear infinite;
+}
+
+/* Inner glow of magic circle */
+.magic-circle-inner {
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  animation: magic-pulse 2s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(93, 173, 226, 0.15) 0%, transparent 70%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MICRO-ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .shimmer {
@@ -607,60 +864,29 @@ body {
   animation: shimmer 1.5s infinite;
 }
 
-/* Fade and slide animations */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes fadeInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .animate-fade-in-up {
@@ -683,7 +909,7 @@ body {
   animation: scaleIn 0.5s var(--animation-smooth) forwards;
 }
 
-/* Stagger delays for lists */
+/* Stagger delays */
 .delay-75 { animation-delay: 75ms; }
 .delay-100 { animation-delay: 100ms; }
 .delay-150 { animation-delay: 150ms; }
@@ -692,14 +918,10 @@ body {
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 
-/* Pulse glow effect */
+/* Pulse glow - Gold */
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(167, 139, 250, 0.5);
-  }
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.4); }
 }
 
 .pulse-glow {
@@ -707,7 +929,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   GLOW EFFECTS - Premium light effects
+   GLOW EFFECTS - Magical light effects
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .glow-text {
@@ -717,21 +939,26 @@ body {
 }
 
 .glow-text-stripe {
-  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-fuchsia), var(--stripe-coral));
+  background: linear-gradient(135deg, var(--gb-gold), var(--gb-gold-light), var(--gb-crystal-blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
+  filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
 }
 
 .glow-box {
   box-shadow:
-    0 0 30px rgba(167, 139, 250, 0.2),
-    inset 0 0 30px rgba(167, 139, 250, 0.05);
+    0 0 30px rgba(212, 175, 55, 0.15),
+    inset 0 0 30px rgba(93, 173, 226, 0.05);
+}
+
+/* Mana glow for chart lines */
+.mana-glow {
+  filter: drop-shadow(0 0 6px rgba(93, 173, 226, 0.6)) drop-shadow(0 0 12px rgba(52, 152, 219, 0.3));
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   SCROLLBAR - Minimalist design
+   SCROLLBAR - Gold-themed
    ═══════════════════════════════════════════════════════════════════════════ */
 
 ::-webkit-scrollbar {
@@ -744,16 +971,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--card-border);
+  background: var(--gb-gold-border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--stripe-purple);
+  background: var(--gb-gold);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   TYPOGRAPHY - Clean and professional
+   TYPOGRAPHY - Cinzel headings, Inter body
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .tabular-nums {
@@ -761,19 +988,18 @@ body {
 }
 
 .heading-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+  background: linear-gradient(135deg, var(--gb-parchment) 0%, var(--gb-gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   LEGACY SUPPORT - Maintaining existing class names
+   LEGACY SUPPORT - Maintaining existing class names with new theme
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Luma card backward compatibility */
 .luma-card {
-  background: var(--card-bg);
+  background: var(--gb-blue-translucent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--card-border);
@@ -784,26 +1010,22 @@ body {
 
 .luma-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Background gradient radial - updated */
+/* Background gradient radial - Granblue sky */
 .bg-gradient-radial {
   background:
-    radial-gradient(ellipse 120% 80% at 80% -20%, rgba(167, 139, 250, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse 100% 60% at 100% 30%, rgba(192, 38, 211, 0.2) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 60% 60%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
-    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+    radial-gradient(ellipse 120% 80% at 80% -20%, rgba(93, 173, 226, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 100% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 60% 60%, rgba(52, 152, 219, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 40%, var(--bg-tertiary) 100%);
 }
 
 /* Ticker tape animation */
 @keyframes ticker-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .ticker-scroll {
@@ -825,13 +1047,455 @@ body {
   animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
-/* Noise overlay for texture - subtle */
+/* Noise overlay - subtle parchment texture */
 .noise-overlay::after {
   content: '';
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.015;
+  opacity: 0.02;
   pointer-events: none;
   z-index: 100;
+}
+
+/* Stream animation - kept for compatibility but themed */
+.stream-right {
+  position: relative;
+  overflow: hidden;
+}
+
+.stream-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gb-gold-dark) 15%,
+    var(--gb-gold) 30%,
+    var(--gb-gold-light) 50%,
+    var(--gb-gold) 70%,
+    var(--gb-gold-dark) 85%,
+    transparent 100%
+  );
+  animation: stream-flow 8s linear infinite;
+  opacity: 0.3;
+  filter: blur(40px);
+}
+
+@keyframes stream-flow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(33.33%); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CLOUD WIPE PAGE TRANSITION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes cloud-wipe-in {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+    opacity: 0;
+  }
+  100% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+  }
+}
+
+.cloud-wipe-enter {
+  animation: cloud-wipe-in 0.6s var(--animation-magic) forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLL BANNER - Ornate ribbon header for section titles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.scroll-banner {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 2.5rem;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  color: var(--gb-parchment);
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.18) 0%,
+    rgba(253, 245, 230, 0.12) 40%,
+    rgba(232, 200, 74, 0.15) 100%
+  );
+  border: 1px solid var(--gb-gold-border-strong);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+/* Left ribbon curl */
+.scroll-banner::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.25) 0%,
+    rgba(184, 150, 12, 0.35) 50%,
+    rgba(212, 175, 55, 0.25) 100%
+  );
+  clip-path: polygon(100% 0, 100% 100%, 0 80%, 40% 50%, 0 20%);
+}
+
+/* Right ribbon curl */
+.scroll-banner::after {
+  content: '';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.25) 0%,
+    rgba(184, 150, 12, 0.35) 50%,
+    rgba(212, 175, 55, 0.25) 100%
+  );
+  clip-path: polygon(0 0, 0 100%, 100% 80%, 60% 50%, 100% 20%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARCHMENT SCROLL - Unrolled scroll container for lists
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.parchment-scroll {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(253, 245, 230, 0.10) 0%,
+    rgba(232, 213, 183, 0.07) 5%,
+    rgba(245, 230, 208, 0.05) 50%,
+    rgba(232, 213, 183, 0.07) 95%,
+    rgba(253, 245, 230, 0.10) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--gb-gold-border-strong);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+/* Top rolled edge */
+.parchment-scroll::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(
+    180deg,
+    rgba(212, 175, 55, 0.25) 0%,
+    rgba(253, 245, 230, 0.08) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Bottom rolled edge */
+.parchment-scroll::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(
+    0deg,
+    rgba(212, 175, 55, 0.25) 0%,
+    rgba(253, 245, 230, 0.08) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Noise overlay for parchment-scroll */
+.parchment-scroll > *:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRADING CARD - Physical card for collection items
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.trading-card {
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(253, 245, 230, 0.09) 0%,
+    rgba(232, 213, 183, 0.06) 60%,
+    rgba(245, 230, 208, 0.08) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--gb-gold-border-strong);
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem;
+  transition: all 0.3s var(--animation-smooth);
+  overflow: hidden;
+}
+
+/* Page curl effect */
+.trading-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(
+    225deg,
+    rgba(212, 175, 55, 0.2) 0%,
+    rgba(253, 245, 230, 0.1) 30%,
+    transparent 60%
+  );
+  border-top-left-radius: 8px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Noise texture */
+.trading-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.trading-card:hover {
+  transform: translateY(-3px) rotate(-0.5deg);
+  border-color: var(--gb-gold);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(212, 175, 55, 0.12);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WOODEN FRAME - Strong guild board for quest/dip sections
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.wooden-frame {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(92, 61, 46, 0.35) 0%,
+    rgba(139, 105, 20, 0.20) 50%,
+    rgba(92, 61, 46, 0.30) 100%
+  );
+  border: 3px solid rgba(139, 105, 20, 0.5);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Inner double frame */
+.wooden-frame::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: calc(var(--border-radius-lg) - 5px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Wood grain texture via SVG noise */
+.wooden-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='woodGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.15' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23woodGrain)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GAME TOGGLE - Embossed game-style toggle buttons
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.game-toggle {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  color: var(--text-muted);
+  background: rgba(17, 34, 64, 0.6);
+  border: 1px solid var(--gb-gold-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s var(--animation-smooth);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.game-toggle:hover {
+  color: var(--gb-parchment);
+  border-color: var(--gb-gold-border-strong);
+  background: rgba(27, 59, 95, 0.6);
+}
+
+.game-toggle.active,
+.game-toggle[data-active="true"] {
+  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--gb-gold) 0%, var(--gb-gold-light) 100%);
+  border-color: var(--gb-gold-light);
+  box-shadow:
+    0 0 12px rgba(212, 175, 55, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ORNATE DIVIDER - Gold line with center diamond
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ornate-divider {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 1rem 0;
+}
+
+.ornate-divider::before,
+.ornate-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.4) 50%,
+    transparent 100%
+  );
+}
+
+.ornate-divider-diamond {
+  width: 8px;
+  height: 8px;
+  background: var(--gb-gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  margin: 0 0.75rem;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHART PARCHMENT - Background for chart areas
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.chart-parchment {
+  position: relative;
+  border: 1px solid var(--gb-gold-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.chart-parchment::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARCHMENT ROW - Subtle hover for rows inside scrolls
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.parchment-row {
+  transition: background-color 0.2s ease;
+}
+
+.parchment-row:hover {
+  background-color: rgba(212, 175, 55, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE - Scroll/card mobile adjustments
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .scroll-banner::before,
+  .scroll-banner::after {
+    display: none;
+  }
+
+  .scroll-banner {
+    padding: 0.5rem 1.25rem;
+  }
+
+  .trading-card::before {
+    width: 24px;
+    height: 24px;
+  }
+
+  .wooden-frame::before {
+    inset: 3px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   QUEST BOARD - Wooden guild board for Dip Finder (legacy)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.quest-board {
+  background: linear-gradient(
+    135deg,
+    rgba(92, 61, 46, 0.3) 0%,
+    rgba(139, 105, 20, 0.15) 50%,
+    rgba(92, 61, 46, 0.25) 100%
+  );
+  border: 2px solid rgba(139, 105, 20, 0.4);
+  border-radius: var(--border-radius-lg);
+  position: relative;
+}
+
+.quest-board::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: calc(var(--border-radius-lg) - 4px);
+  pointer-events: none;
+}
+
+/* Wax seal badge */
+.wax-seal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #C0392B, #922B21, #7B241C);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }

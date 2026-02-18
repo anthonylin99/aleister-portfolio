@@ -3,15 +3,15 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 /**
- * ThemeProvider - Stripe-inspired theme system
+ * ThemeProvider - Granblue Skyfarer theme system
  *
  * Design Philosophy:
- * - Single dark theme optimized for financial data
- * - Stripe's purple as the primary accent
- * - Smooth transitions between accent colors
+ * - Azure sky theme optimized for financial data
+ * - Gold accent as the primary highlight
+ * - Crystal blue secondary accents
  */
 
-export type AccentColor = 'stripe' | 'violet' | 'blue' | 'emerald' | 'amber' | 'rose';
+export type AccentColor = 'skyfarer' | 'gold' | 'blue' | 'emerald' | 'amber' | 'rose';
 
 interface ThemeSettings {
   accent: AccentColor;
@@ -24,20 +24,20 @@ interface ThemeContextType extends ThemeSettings {
 }
 
 const defaultSettings: ThemeSettings = {
-  accent: 'stripe', // Default to Stripe purple
+  accent: 'skyfarer',
   showBitcoinRain: true,
 };
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-// Stripe-inspired accent colors
+// Granblue Skyfarer accent colors
 const accentColors: Record<AccentColor, { primary: string; secondary: string; glow: string }> = {
-  stripe: { primary: '#A78BFA', secondary: '#C4B5FD', glow: 'rgba(167, 139, 250, 0.2)' },
-  violet: { primary: '#8b5cf6', secondary: '#a855f7', glow: 'rgba(139, 92, 246, 0.2)' },
-  blue: { primary: '#3b82f6', secondary: '#6366f1', glow: 'rgba(59, 130, 246, 0.2)' },
-  emerald: { primary: '#10b981', secondary: '#34d399', glow: 'rgba(16, 185, 129, 0.2)' },
-  amber: { primary: '#f59e0b', secondary: '#fbbf24', glow: 'rgba(245, 158, 11, 0.2)' },
-  rose: { primary: '#ec4899', secondary: '#f472b6', glow: 'rgba(236, 72, 153, 0.2)' },
+  skyfarer: { primary: '#D4AF37', secondary: '#5DADE2', glow: 'rgba(212, 175, 55, 0.2)' },
+  gold: { primary: '#D4AF37', secondary: '#E8C84A', glow: 'rgba(212, 175, 55, 0.25)' },
+  blue: { primary: '#5DADE2', secondary: '#3498DB', glow: 'rgba(93, 173, 226, 0.2)' },
+  emerald: { primary: '#2ECC71', secondary: '#1ABC9C', glow: 'rgba(46, 204, 113, 0.2)' },
+  amber: { primary: '#F39C12', secondary: '#E67E22', glow: 'rgba(243, 156, 18, 0.2)' },
+  rose: { primary: '#E74C3C', secondary: '#C0392B', glow: 'rgba(231, 76, 60, 0.2)' },
 };
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -47,11 +47,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Load settings from localStorage on mount
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('prometheus-theme');
+      const stored = localStorage.getItem('aleister-theme');
       if (stored) {
         const parsed = JSON.parse(stored);
-        // Migration: convert old 'violet' default to 'stripe'
-        const accent = parsed.accent === 'cyan' ? 'stripe' : (parsed.accent || defaultSettings.accent);
+        // Migration: convert old theme names to skyfarer
+        const accent = (['cyan', 'stripe', 'violet'].includes(parsed.accent)) ? 'skyfarer' : (parsed.accent || defaultSettings.accent);
         setSettings({
           accent,
           showBitcoinRain: parsed.showBitcoinRain ?? defaultSettings.showBitcoinRain,
@@ -74,25 +74,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.remove('light');
     root.classList.add('dark');
 
-    // Stripe-inspired theme colors
-    root.style.setProperty('--bg-primary', '#0a0a0f');
-    root.style.setProperty('--bg-secondary', '#0f0f16');
-    root.style.setProperty('--bg-tertiary', '#15151f');
-    root.style.setProperty('--bg-elevated', '#1a1a26');
-    root.style.setProperty('--bg-card', 'rgba(20, 20, 30, 0.6)');
-    root.style.setProperty('--bg-card-hover', 'rgba(30, 30, 45, 0.8)');
+    // Granblue Skyfarer theme colors
+    root.style.setProperty('--bg-primary', '#0D1B2A');
+    root.style.setProperty('--bg-secondary', '#122640');
+    root.style.setProperty('--bg-tertiary', '#1B3B5F');
+    root.style.setProperty('--bg-elevated', '#1F4570');
+    root.style.setProperty('--bg-card', 'rgba(27, 59, 95, 0.4)');
+    root.style.setProperty('--bg-card-hover', 'rgba(27, 59, 95, 0.6)');
 
-    // Text colors
-    root.style.setProperty('--text-primary', '#ffffff');
-    root.style.setProperty('--text-secondary', '#a1a1aa');
-    root.style.setProperty('--text-muted', '#71717a');
-    root.style.setProperty('--text-subtle', '#52525b');
+    // Text colors - parchment tones
+    root.style.setProperty('--text-primary', '#FDF5E6');
+    root.style.setProperty('--text-secondary', '#B8C6D4');
+    root.style.setProperty('--text-muted', '#7A8FA0');
+    root.style.setProperty('--text-subtle', '#556677');
 
-    // Borders
-    root.style.setProperty('--border-primary', `rgba(${hexToRgb(colors.primary)}, 0.15)`);
-    root.style.setProperty('--border-secondary', 'rgba(113, 113, 122, 0.15)');
-    root.style.setProperty('--card-border', `rgba(${hexToRgb(colors.primary)}, 0.15)`);
-    root.style.setProperty('--card-border-hover', `rgba(${hexToRgb(colors.primary)}, 0.35)`);
+    // Borders - gold-accented
+    root.style.setProperty('--border-primary', `rgba(${hexToRgb(colors.primary)}, 0.25)`);
+    root.style.setProperty('--border-secondary', 'rgba(212, 175, 55, 0.15)');
+    root.style.setProperty('--card-border', `rgba(${hexToRgb(colors.primary)}, 0.25)`);
+    root.style.setProperty('--card-border-hover', `rgba(${hexToRgb(colors.primary)}, 0.45)`);
 
     // Accent colors - dynamic based on selection
     root.style.setProperty('--accent-primary', colors.primary);
@@ -100,16 +100,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--accent-glow', colors.glow);
     root.style.setProperty('--gradient-glow', `radial-gradient(ellipse at 50% 0%, ${colors.glow} 0%, transparent 60%)`);
 
-    // Stripe gradient colors (always the same for consistency)
-    root.style.setProperty('--stripe-purple', '#A78BFA');
-    root.style.setProperty('--stripe-violet', '#C4B5FD');
-    root.style.setProperty('--stripe-fuchsia', '#c026d3');
-    root.style.setProperty('--stripe-pink', '#ec4899');
-    root.style.setProperty('--stripe-coral', '#f97316');
-    root.style.setProperty('--stripe-amber', '#fbbf24');
+    // Skyfarer gradient colors
+    root.style.setProperty('--stripe-purple', '#D4AF37');
+    root.style.setProperty('--stripe-violet', '#E8C84A');
+    root.style.setProperty('--stripe-fuchsia', '#5DADE2');
+    root.style.setProperty('--stripe-pink', '#3498DB');
+    root.style.setProperty('--stripe-coral', '#1ABC9C');
+    root.style.setProperty('--stripe-amber', '#F39C12');
 
     // Save to localStorage
-    localStorage.setItem('prometheus-theme', JSON.stringify(settings));
+    localStorage.setItem('aleister-theme', JSON.stringify(settings));
   }, [settings, mounted]);
 
   const setAccent = (accent: AccentColor) => setSettings((s) => ({ ...s, accent }));
@@ -144,6 +144,6 @@ export function useTheme() {
 // Helper to convert hex to RGB for rgba() usage
 function hexToRgb(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!result) return '99, 91, 255'; // Default to Stripe purple
+  if (!result) return '212, 175, 55'; // Default to Skyfarer Gold
   return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
 }

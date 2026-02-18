@@ -113,29 +113,29 @@ export function PINModal({ isOpen, onClose, onSuccess, correctPIN }: PINModalPro
       <div className={cn(
         "relative w-full max-w-sm mx-4 p-6 rounded-2xl",
         "bg-gradient-to-b from-slate-900 to-slate-950",
-        "border border-violet-400/20 shadow-2xl shadow-violet-400/10",
+        "border border-[var(--gb-gold-border)] shadow-2xl shadow-[var(--gb-gold)]/10",
         shake && "animate-shake"
       )}>
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800/50 transition-colors"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] hover:bg-[var(--gb-azure-deep)]/50 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Lock icon */}
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-400/20 to-purple-500/10 flex items-center justify-center border border-violet-400/30">
-            <Lock className="w-8 h-8 text-violet-400" />
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--gb-gold)]/20 to-[var(--gb-crystal-blue)]/10 flex items-center justify-center border border-[var(--gb-gold-border)]">
+            <Lock className="w-8 h-8 text-[var(--gb-gold)]" />
           </div>
         </div>
 
         {/* Title */}
-        <h2 className="text-xl font-bold text-white text-center mb-2">
+        <h2 className="text-xl font-bold text-[var(--gb-parchment)] text-center mb-2">
           Enter PIN
         </h2>
-        <p className="text-sm text-slate-400 text-center mb-6">
+        <p className="text-sm text-[var(--text-muted)] text-center mb-6">
           Enter your 4-digit PIN to reveal portfolio values
         </p>
 
@@ -154,14 +154,14 @@ export function PINModal({ isOpen, onClose, onSuccess, correctPIN }: PINModalPro
               onPaste={index === 0 ? handlePaste : undefined}
               className={cn(
                 "w-14 h-14 text-center text-2xl font-bold rounded-xl",
-                "bg-slate-800/50 border-2 transition-all duration-200",
-                "text-white placeholder-slate-600",
-                "focus:outline-none focus:ring-2 focus:ring-violet-400/50",
+                "bg-[var(--gb-azure-deep)]/50 border-2 transition-all duration-200",
+                "text-[var(--gb-parchment)] placeholder-slate-600",
+                "focus:outline-none focus:ring-2 focus:ring-[var(--gb-gold)]/50",
                 error 
                   ? "border-red-500/50 bg-red-500/10" 
                   : digit 
-                    ? "border-violet-400/50" 
-                    : "border-slate-700/50 hover:border-slate-600/50"
+                    ? "border-[var(--gb-gold-border-strong)]" 
+                    : "border-[var(--gb-gold-border)] hover:border-[var(--gb-gold-border)]/50"
               )}
             />
           ))}
@@ -171,7 +171,7 @@ export function PINModal({ isOpen, onClose, onSuccess, correctPIN }: PINModalPro
         <div className="flex justify-center mb-4">
           <button
             onClick={() => setShowPin(!showPin)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-[var(--text-muted)] hover:text-[var(--gb-parchment)] hover:bg-[var(--gb-azure-deep)]/50 transition-colors"
           >
             {showPin ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             {showPin ? 'Hide PIN' : 'Show PIN'}

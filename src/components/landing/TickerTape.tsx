@@ -67,19 +67,19 @@ export function TickerTape() {
   const displayTickers = [...tickers, ...tickers, ...tickers, ...tickers];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-black/80 via-slate-900/80 to-black/80 backdrop-blur-md border-b border-violet-400/20">
+    <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-black/80 via-slate-900/80 to-black/80 backdrop-blur-md border-b border-[var(--gb-gold-border)]">
       <div className="relative overflow-hidden h-8">
         <div className="ticker-scroll flex items-center h-full gap-12 whitespace-nowrap">
           {loading ? (
-            <div className="flex items-center gap-2 text-slate-500 text-xs px-4">
-              <div className="w-3 h-3 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
+            <div className="flex items-center gap-2 text-[var(--text-subtle)] text-xs px-4">
+              <div className="w-3 h-3 border-2 border-[var(--gb-gold)] border-t-transparent rounded-full animate-spin" />
               Loading market data...
             </div>
           ) : (
             displayTickers.map((ticker, index) => (
               <div key={`${ticker.symbol}-${index}`} className="flex items-center gap-3 text-sm">
-                <span className="font-semibold text-white">{DISPLAY_NAMES[ticker.symbol] || ticker.symbol}</span>
-                <span className="text-slate-300 tabular-nums">{formatPrice(ticker.price, ticker.symbol)}</span>
+                <span className="font-semibold text-[var(--gb-parchment)]">{DISPLAY_NAMES[ticker.symbol] || ticker.symbol}</span>
+                <span className="text-[var(--text-secondary)] tabular-nums">{formatPrice(ticker.price, ticker.symbol)}</span>
                 <span className={`flex items-center gap-1 tabular-nums ${ticker.changePercent >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                   {ticker.changePercent >= 0 ? (
                     <TrendingUp className="w-3 h-3" />

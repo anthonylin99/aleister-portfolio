@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     const isOwner = session.user.email && isOwnerEmail(session.user.email);
 
     if (isOwner) {
-      // Owner adds to the main Prometheus ETF portfolio
+      // Owner adds to the main Aleister portfolio
       const success = await upsertHolding({
         ticker: ticker.toUpperCase(),
         name: resolvedName,

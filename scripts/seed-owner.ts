@@ -47,7 +47,7 @@ async function seed() {
     email: OWNER_EMAIL,
     name: 'Anthony',
     etfTicker: 'ALIN',
-    etfName: 'Prometheus ETF',
+    etfName: 'Aleister',
     avatarColor: '#8b5cf6',
     circleId: null as string | null,
     createdAt: new Date().toISOString(),
@@ -57,7 +57,7 @@ async function seed() {
   await redis.set(`app:user:${OWNER_ID}`, appUser);
   await redis.set(`app:user:email:${OWNER_EMAIL}`, OWNER_ID);
   await redis.set(`app:user:ticker:ALIN`, OWNER_ID);
-  console.log('  Created app user: $ALIN (Prometheus ETF)');
+  console.log('  Created app user: $ALIN (Aleister)');
 
   // 3. Migrate portfolio.json to user portfolio
   const holdings = portfolioData.holdings.map((h) => ({

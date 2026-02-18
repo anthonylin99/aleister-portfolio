@@ -55,11 +55,11 @@ export function TickerStrip({ stocks, className }: TickerStripProps) {
         return (
           <div
             key={`${stock.ticker}-${i}`}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 flex-shrink-0"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--gb-azure-deep)]/60 flex-shrink-0"
           >
-            <span className="text-sm font-semibold text-white">{stock.ticker}</span>
+            <span className="text-sm font-semibold text-[var(--gb-parchment)]">{stock.ticker}</span>
             {stock.price !== undefined && (
-              <span className="text-sm text-slate-400 tabular-nums">
+              <span className="text-sm text-[var(--text-muted)] tabular-nums">
                 ${stock.price.toFixed(2)}
               </span>
             )}

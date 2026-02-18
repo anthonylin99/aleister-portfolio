@@ -22,7 +22,7 @@ const PRESET_AVATARS = [
 
 // Color palette for avatar backgrounds
 const AVATAR_COLORS = [
-  '#8b5cf6', // violet
+  '#D4AF37', // violet
   '#6366f1', // indigo
   '#3b82f6', // blue
   '#22d3ee', // cyan
@@ -45,7 +45,7 @@ interface AvatarPickerProps {
 
 export function AvatarPicker({
   currentIcon = 'rocket',
-  currentColor = '#8b5cf6',
+  currentColor = '#D4AF37',
   onSave,
   onClose,
 }: AvatarPickerProps) {
@@ -79,7 +79,7 @@ export function AvatarPicker({
 
       {/* Icon Selection */}
       <div>
-        <label className="block text-sm text-slate-400 mb-3">
+        <label className="block text-sm text-[var(--text-muted)] mb-3">
           Choose an icon
         </label>
         <div className="grid grid-cols-6 gap-2">
@@ -90,8 +90,8 @@ export function AvatarPicker({
               className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all',
                 selectedIcon === avatar.id
-                  ? 'bg-violet-400 ring-2 ring-violet-400 ring-offset-2 ring-offset-slate-900'
-                  : 'bg-slate-800/50 hover:bg-slate-700/50'
+                  ? 'bg-[var(--gb-gold)] ring-2 ring-[var(--gb-gold)] ring-offset-2 ring-offset-slate-900'
+                  : 'bg-[var(--gb-azure-deep)]/50 hover:bg-[var(--gb-azure)]/50'
               )}
               title={avatar.label}
             >
@@ -103,7 +103,7 @@ export function AvatarPicker({
 
       {/* Color Selection */}
       <div>
-        <label className="block text-sm text-slate-400 mb-3">
+        <label className="block text-sm text-[var(--text-muted)] mb-3">
           Background color
         </label>
         <div className="grid grid-cols-6 gap-2">
@@ -118,7 +118,7 @@ export function AvatarPicker({
               style={{ backgroundColor: color }}
             >
               {selectedColor === color && (
-                <Check className="w-5 h-5 text-white" />
+                <Check className="w-5 h-5 text-[var(--gb-parchment)]" />
               )}
             </button>
           ))}
@@ -129,14 +129,14 @@ export function AvatarPicker({
       <div className="flex gap-3 pt-2">
         <button
           onClick={onClose}
-          className="flex-1 py-3 bg-slate-800/50 border border-slate-700/50 text-slate-300 font-medium rounded-xl hover:bg-slate-700/50 transition-colors"
+          className="flex-1 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] text-[var(--text-secondary)] font-medium rounded-xl hover:bg-[var(--gb-azure)]/50 transition-colors"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-1 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-3 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {saving ? (
             <>

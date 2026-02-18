@@ -149,19 +149,19 @@ export function EditHoldingModal({
       <div className="relative glass-card p-6 rounded-2xl w-full max-w-md">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-bold text-white mb-4">Edit Holding</h2>
+        <h2 className="text-xl font-bold text-[var(--gb-parchment)] mb-4">Edit Holding</h2>
 
         {/* Stock Info */}
-        <div className="flex items-center gap-3 mb-6 p-3 bg-slate-800/30 rounded-xl">
+        <div className="flex items-center gap-3 mb-6 p-3 bg-[var(--gb-azure-deep)]/30 rounded-xl">
           <CompanyLogo ticker={ticker} domain={logoDomain} size="md" />
           <div>
-            <p className="text-white font-mono font-semibold">{ticker}</p>
-            <p className="text-slate-400 text-sm truncate max-w-[250px]">
+            <p className="text-[var(--gb-parchment)] font-mono font-semibold">{ticker}</p>
+            <p className="text-[var(--text-muted)] text-sm truncate max-w-[250px]">
               {name}
             </p>
           </div>
@@ -170,20 +170,20 @@ export function EditHoldingModal({
         <div className="space-y-4">
           {/* Shares */}
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Shares</label>
+            <label className="block text-sm text-[var(--text-muted)] mb-1">Shares</label>
             <input
               type="number"
               value={shares}
               onChange={(e) => setShares(e.target.value)}
               min="0.01"
               step="any"
-              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
+              className="w-full px-4 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)]"
             />
           </div>
 
           {/* Cost Basis */}
           <div>
-            <label className="block text-sm text-slate-400 mb-1">
+            <label className="block text-sm text-[var(--text-muted)] mb-1">
               Cost Basis (per share)
             </label>
             <input
@@ -193,13 +193,13 @@ export function EditHoldingModal({
               placeholder="Optional"
               min="0"
               step="any"
-              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
+              className="w-full px-4 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)]"
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm text-slate-400 mb-1">
+            <label className="block text-sm text-[var(--text-muted)] mb-1">
               Category
             </label>
             <div className="relative" ref={categoryDropdownRef}>
@@ -213,12 +213,12 @@ export function EditHoldingModal({
                 }}
                 onFocus={() => setShowCategoryDropdown(true)}
                 placeholder="Select or type a category"
-                className="w-full px-4 py-3 pr-10 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
+                className="w-full px-4 py-3 pr-10 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)]"
               />
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-subtle)] pointer-events-none" />
 
               {showCategoryDropdown && filteredCategories.length > 0 && (
-                <div className="absolute z-50 w-full mt-1 bg-slate-800 border border-slate-700/60 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-1 bg-[var(--gb-azure-deep)] border border-[var(--gb-gold-border)]/60 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                   {filteredCategories.map((cat) => (
                     <button
                       key={cat}
@@ -228,10 +228,10 @@ export function EditHoldingModal({
                         setShowCategoryDropdown(false);
                       }}
                       className={cn(
-                        'w-full text-left px-4 py-2 text-sm hover:bg-slate-700/50 transition-colors',
+                        'w-full text-left px-4 py-2 text-sm hover:bg-[var(--gb-azure)]/50 transition-colors',
                         cat === category
-                          ? 'text-violet-400'
-                          : 'text-slate-300'
+                          ? 'text-[var(--gb-gold)]'
+                          : 'text-[var(--text-secondary)]'
                       )}
                     >
                       {cat}
@@ -244,13 +244,13 @@ export function EditHoldingModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Notes</label>
+            <label className="block text-sm text-[var(--text-muted)] mb-1">Notes</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Optional notes about this position..."
               rows={3}
-              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 resize-none"
+              className="w-full px-4 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] resize-none"
             />
           </div>
 
@@ -265,14 +265,14 @@ export function EditHoldingModal({
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 py-2 bg-slate-700/50 text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-600/50 transition-colors"
+                  className="flex-1 py-2 bg-[var(--gb-azure)]/50 text-[var(--text-secondary)] text-sm font-medium rounded-lg hover:bg-slate-600/50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="flex-1 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-2 bg-red-600 hover:bg-red-500 text-[var(--gb-parchment)] text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {deleting ? (
                     <>
@@ -300,14 +300,14 @@ export function EditHoldingModal({
             )}
             <button
               onClick={onClose}
-              className="flex-1 py-3 bg-slate-800/50 border border-slate-700/50 text-slate-300 font-medium rounded-xl hover:bg-slate-700/50 transition-colors"
+              className="flex-1 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] text-[var(--text-secondary)] font-medium rounded-xl hover:bg-[var(--gb-azure)]/50 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={saving || showDeleteConfirm}
-              className="flex-1 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] font-medium rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>

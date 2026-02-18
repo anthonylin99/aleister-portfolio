@@ -16,7 +16,7 @@ import { LandingSections } from '@/components/landing/LandingSections';
  */
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative">
+    <div className="min-h-screen bg-[var(--gb-azure-deep)] relative">
       {/* Stripe-style flowing gradient background */}
       <div className="stripe-gradient-bg" />
 

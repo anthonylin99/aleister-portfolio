@@ -17,7 +17,7 @@ interface CollectionCardProps {
 
 const categoryBorderColors: Record<string, string> = {
   'anchor-sleeves': 'border-l-indigo-500',
-  'intelligence-compute': 'border-l-violet-400',
+  'intelligence-compute': 'border-l-[var(--gb-gold)]',
   'real-world-scarcity': 'border-l-amber-500',
   'alternative-assets': 'border-l-orange-500',
   'thematic-frontiers': 'border-l-cyan-500',
@@ -58,7 +58,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
   const stockCount = collection.stocks.length;
   const displayStocks = collection.stocks.slice(0, 9);
   const remainingCount = Math.max(0, stockCount - 9);
-  const borderClass = categoryBorderColors[collection.categoryId] || 'border-l-violet-400';
+  const borderClass = categoryBorderColors[collection.categoryId] || 'border-l-[var(--gb-gold)]';
 
   const handleAddClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,11 +71,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
       <Link
         href={`/explore/collection/${collection.id}`}
         className={cn(
-          'group block rounded-2xl p-5 border-l-[3px] transition-all duration-200 relative',
-          'bg-slate-800/40 border border-slate-700/50',
-          'hover:bg-slate-800/60 hover:border-slate-600/50',
-          'hover:shadow-lg hover:shadow-slate-900/50 hover:-translate-y-0.5',
-          borderClass,
+          'group block trading-card relative',
           className
         )}
       >
@@ -89,11 +85,11 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
             >
               {collection.category?.name || collection.categoryId}
             </span>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-[var(--text-subtle)]">
               {stockCount} stocks
             </span>
           </div>
-          <h3 className="text-lg font-bold text-white group-hover:text-violet-400 transition-colors truncate">
+          <h3 className="text-lg font-bold text-[var(--gb-parchment)] group-hover:text-[var(--gb-gold)] transition-colors truncate">
             {collection.name}
           </h3>
         </div>
@@ -101,7 +97,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
       </div>
 
       {/* Description */}
-      <p className="text-sm text-slate-400 line-clamp-2 mb-4 leading-relaxed">
+      <p className="text-sm text-[var(--text-muted)] line-clamp-2 mb-4 leading-relaxed">
         {collection.description}
       </p>
 
@@ -115,7 +111,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
           />
         ))}
         {remainingCount > 0 && (
-          <div className="w-7 h-7 rounded-full bg-slate-700/80 flex items-center justify-center text-[10px] font-medium text-slate-400">
+          <div className="w-7 h-7 rounded-full bg-[var(--gb-azure)]/80 flex items-center justify-center text-[10px] font-medium text-[var(--text-muted)]">
             +{remainingCount}
           </div>
         )}
@@ -125,7 +121,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-1.5">
           {collection.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="text-[11px] text-slate-500">
+            <span key={tag} className="text-[11px] text-[var(--text-subtle)]">
               #{tag}
             </span>
           ))}
@@ -134,7 +130,7 @@ export function CollectionCard({ collection, className, onAddSuccess }: Collecti
         {isAuthenticated && (
           <button
             onClick={handleAddClick}
-            className="p-2 rounded-lg bg-[#9b8ac4]/10 text-[#9b8ac4] border border-[#9b8ac4]/20 hover:bg-[#7c6baa] hover:text-white hover:border-transparent transition-all duration-200"
+            className="p-2 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 hover:bg-[#7c6baa] hover:text-[var(--gb-parchment)] hover:border-transparent transition-all duration-200"
             title="Add to portfolio"
           >
             <Plus className="w-4 h-4" />

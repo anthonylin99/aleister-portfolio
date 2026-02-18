@@ -70,16 +70,16 @@ const ACCORDION_SECTIONS = [
   { key: 'bullCase' as const, label: 'Bull Case', accent: 'border-l-emerald-500' },
   { key: 'bearCase' as const, label: 'Bear Case / Risks', accent: 'border-l-red-500' },
   { key: 'valuation' as const, label: 'Valuation', accent: 'border-l-blue-500' },
-  { key: 'catalysts' as const, label: 'Catalysts & Timeline', accent: 'border-l-violet-400' },
+  { key: 'catalysts' as const, label: 'Catalysts & Timeline', accent: 'border-l-[var(--gb-gold)]' },
 ] as const;
 
 function StockAnalysisSkeleton() {
   return (
-    <div className="glass-card rounded-2xl overflow-hidden border border-slate-700/50">
+    <div className="glass-card rounded-2xl overflow-hidden border border-[var(--gb-gold-border)]">
       {/* Banner skeleton */}
-      <div className="h-[72px] shimmer border-b border-slate-700/50" />
+      <div className="h-[72px] shimmer border-b border-[var(--gb-gold-border)]" />
       {/* Metrics grid skeleton */}
-      <div className="p-6 border-b border-slate-700/50">
+      <div className="p-6 border-b border-[var(--gb-gold-border)]">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {Array.from({ length: 7 }).map((_, i) => (
             <div key={i} className="h-[60px] rounded-lg shimmer" />
@@ -93,7 +93,7 @@ function StockAnalysisSkeleton() {
         ))}
       </div>
       {/* Footer skeleton */}
-      <div className="h-10 px-6 border-t border-slate-700/50 shimmer" />
+      <div className="h-10 px-6 border-t border-[var(--gb-gold-border)] shimmer" />
     </div>
   );
 }
@@ -126,7 +126,7 @@ export function StockAnalysisPanel({
   const pctStr = `${isPositive ? '+' : ''}${catalyst.priceChange.toFixed(1)}%`;
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden border border-slate-700/50 shadow-lg">
+    <div className="glass-card rounded-2xl overflow-hidden border border-[var(--gb-gold-border)] shadow-lg">
       {/* ——— Section 1: Price Catalyst Banner ——— */}
       <div
         className={cn(
@@ -136,21 +136,21 @@ export function StockAnalysisPanel({
             : 'bg-gradient-to-r from-red-950/60 via-red-900/30 to-transparent border-b border-red-800/30'
         )}
       >
-        <p className="text-slate-100 font-medium">
-          <span className="font-semibold text-white">{ticker}</span> is {direction}{' '}
+        <p className="text-[var(--gb-parchment)] font-medium">
+          <span className="font-semibold text-[var(--gb-parchment)]">{ticker}</span> is {direction}{' '}
           <span className={cn('font-semibold tabular-nums', isPositive ? 'text-emerald-300' : 'text-red-300')}>
             {pctStr}
           </span>
           {' — '}
-          <span className="text-slate-200">{stripMarkdown(catalyst.text?.trim() || 'Price movement as of last update.')}</span>
+          <span className="text-[var(--gb-parchment)]">{stripMarkdown(catalyst.text?.trim() || 'Price movement as of last update.')}</span>
         </p>
-        <p className="text-slate-500 text-xs mt-1.5">
+        <p className="text-[var(--text-subtle)] text-xs mt-1.5">
           Updated {getRelativeTime(catalyst.timestamp instanceof Date ? catalyst.timestamp.toISOString() : String(catalyst.timestamp))}
         </p>
       </div>
 
       {/* ——— Section 2: Key Metrics Grid ——— */}
-      <div className="p-6 border-b border-slate-700/50">
+      <div className="p-6 border-b border-[var(--gb-gold-border)]">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <MetricCell label="Market Cap" value={metrics.marketCap} delta={metricDeltas?.marketCap} historical={historicalMetrics?.marketCap} favorability="higher" />
           <MetricCell
@@ -182,7 +182,7 @@ export function StockAnalysisPanel({
             <div
               key={key}
               className={cn(
-                'rounded-lg border border-slate-700/50 mb-3 overflow-hidden',
+                'rounded-lg border border-[var(--gb-gold-border)] mb-3 overflow-hidden',
                 'border-l-4',
                 accent,
                 isEmpty && 'opacity-60'
@@ -191,29 +191,29 @@ export function StockAnalysisPanel({
               <button
                 type="button"
                 onClick={() => toggle(key)}
-                className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-800/40 hover:bg-slate-800/60 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 text-left bg-[var(--gb-azure-deep)]/40 hover:bg-[var(--gb-azure-deep)]/60 transition-colors"
               >
-                <span className="font-medium text-slate-200">{label}</span>
+                <span className="font-medium text-[var(--gb-parchment)]">{label}</span>
                 {isOpen ? (
-                  <ChevronDown className="w-4 h-4 text-slate-500 flex-shrink-0" />
+                  <ChevronDown className="w-4 h-4 text-[var(--text-subtle)] flex-shrink-0" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[var(--text-subtle)] flex-shrink-0" />
                 )}
               </button>
               {isOpen && (
                 isEmpty ? (
                   <div className="px-4 pb-4 pt-2">
-                    <p className="text-sm text-slate-500 italic">
+                    <p className="text-sm text-[var(--text-subtle)] italic">
                       {thesisStatus === 'empty'
                         ? 'No analysis available. Click Refresh to generate.'
                         : 'Generating analysis\u2026'}
                     </p>
                   </div>
                 ) : (
-                  <ul className="px-4 pb-4 pt-1 space-y-2 text-sm text-slate-300">
+                  <ul className="px-4 pb-4 pt-1 space-y-2 text-sm text-[var(--text-secondary)]">
                     {items.map((item, i) => (
                       <li key={i} className="flex gap-2">
-                        <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
+                        <span className="text-[var(--text-subtle)] mt-0.5 flex-shrink-0">•</span>
                         <span>{stripMarkdown(item)}</span>
                       </li>
                     ))}
@@ -226,8 +226,8 @@ export function StockAnalysisPanel({
       </div>
 
       {/* ——— Footer: AI-generated · Last updated · Refresh ——— */}
-      <div className="px-5 py-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-700/50 bg-slate-900/30">
-        <p className="text-xs text-slate-500">
+      <div className="px-5 py-3 flex flex-wrap items-center justify-between gap-2 border-t border-[var(--gb-gold-border)] bg-[var(--gb-azure-deep)]/30">
+        <p className="text-xs text-[var(--text-subtle)]">
           AI-generated · Last updated {getRelativeTime(lastAnalysisUpdate instanceof Date ? lastAnalysisUpdate.toISOString() : String(lastAnalysisUpdate))}
         </p>
         {onRefresh && (
@@ -238,7 +238,7 @@ export function StockAnalysisPanel({
             className={cn(
               'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors',
               refreshing
-                ? 'text-slate-500 cursor-not-allowed'
+                ? 'text-[var(--text-subtle)] cursor-not-allowed'
                 : 'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10'
             )}
           >
@@ -256,16 +256,16 @@ export function StockAnalysisPanel({
 }
 
 function getPercentileColor(pct: number, fav?: 'higher' | 'lower' | 'neutral'): string {
-  if (!fav || fav === 'neutral') return 'text-slate-400';
+  if (!fav || fav === 'neutral') return 'text-[var(--text-muted)]';
   if (fav === 'higher') {
     if (pct >= 70) return 'text-emerald-400';
     if (pct <= 30) return 'text-red-400';
-    return 'text-slate-400';
+    return 'text-[var(--text-muted)]';
   }
   // lower = green when low percentile
   if (pct <= 30) return 'text-emerald-400';
   if (pct >= 70) return 'text-red-400';
-  return 'text-slate-400';
+  return 'text-[var(--text-muted)]';
 }
 
 function MetricCell({
@@ -282,16 +282,16 @@ function MetricCell({
   favorability?: 'higher' | 'lower' | 'neutral';
 }) {
   return (
-    <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-      <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">{label}</p>
-      <p className="font-semibold text-white font-mono text-base tabular-nums">{value}</p>
+    <div className="p-4 rounded-xl bg-[var(--gb-azure-deep)]/40 border border-[var(--gb-gold-border)]">
+      <p className="text-xs text-[var(--text-subtle)] font-medium uppercase tracking-wide mb-1">{label}</p>
+      <p className="font-semibold text-[var(--gb-parchment)] font-mono text-base tabular-nums">{value}</p>
       {delta != null && delta !== '' && (
-        <p className="text-xs text-slate-400 mt-1 tabular-nums">{delta}</p>
+        <p className="text-xs text-[var(--text-muted)] mt-1 tabular-nums">{delta}</p>
       )}
       {historical && (
         <div className="mt-1.5">
           {historical.buildingHistory ? (
-            <p className="text-[11px] text-slate-500 italic">Building history\u2026</p>
+            <p className="text-[11px] text-[var(--text-subtle)] italic">Building history\u2026</p>
           ) : historical.percentile != null ? (
             <p className={cn('text-[11px] tabular-nums font-medium', getPercentileColor(historical.percentile, favorability))}>
               {ordinal(historical.percentile)} %ile
@@ -320,28 +320,28 @@ function IVMetricCell({ ivPercentile, currentIV }: { ivPercentile?: number | nul
   const hasIV = currentIV != null && Number.isFinite(currentIV);
 
   return (
-    <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-      <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">IV Percentile</p>
+    <div className="p-4 rounded-xl bg-[var(--gb-azure-deep)]/40 border border-[var(--gb-gold-border)]">
+      <p className="text-xs text-[var(--text-subtle)] font-medium uppercase tracking-wide mb-1">IV Percentile</p>
       {hasData ? (
         <>
           <p className={cn('font-semibold font-mono text-base tabular-nums', getIVColor(ivPercentile!))}>
             {ordinal(Math.round(ivPercentile!))} %ile
           </p>
           {hasIV && (
-            <p className="text-[11px] text-slate-400 mt-1 tabular-nums">IV: {currentIV!.toFixed(1)}%</p>
+            <p className="text-[11px] text-[var(--text-muted)] mt-1 tabular-nums">IV: {currentIV!.toFixed(1)}%</p>
           )}
         </>
       ) : hasIV ? (
         <>
-          <p className="font-semibold text-white font-mono text-base tabular-nums">
+          <p className="font-semibold text-[var(--gb-parchment)] font-mono text-base tabular-nums">
             {currentIV!.toFixed(1)}%
           </p>
-          <p className="text-[11px] text-slate-500 italic mt-1">Building history\u2026</p>
+          <p className="text-[11px] text-[var(--text-subtle)] italic mt-1">Building history\u2026</p>
         </>
       ) : (
         <>
-          <p className="font-semibold text-slate-500 font-mono text-base">&mdash;</p>
-          <p className="text-[11px] text-slate-600 mt-1">Options data unavailable</p>
+          <p className="font-semibold text-[var(--text-subtle)] font-mono text-base">&mdash;</p>
+          <p className="text-[11px] text-[var(--text-subtle)] mt-1">Options data unavailable</p>
         </>
       )}
     </div>

@@ -111,8 +111,8 @@ export async function GET(request: Request) {
     // Add portfolio as first item
     const alinData: BenchmarkData = {
       ticker: 'ALIN',
-      name: 'Prometheus ETF',
-      color: '#8b5cf6',
+      name: 'Aleister',
+      color: '#D4AF37',
       data: portfolioNormalized,
       performance: portfolioPerformance,
     };

@@ -213,8 +213,8 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-2">
-        <h2 className="text-xl font-bold text-white mb-1">Add your holdings</h2>
-        <p className="text-slate-400 text-sm">
+        <h2 className="text-xl font-bold text-[var(--gb-parchment)] mb-1">Add your holdings</h2>
+        <p className="text-[var(--text-muted)] text-sm">
           Search for stocks and add them to your portfolio
         </p>
       </div>
@@ -223,7 +223,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
       <div className="space-y-3">
         <div className="relative" ref={dropdownRef}>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-subtle)]" />
             <input
               ref={inputRef}
               type="text"
@@ -234,31 +234,31 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                 setAutoDetectedHint(null);
               }}
               placeholder="Search by ticker or company name..."
-              className="w-full pl-10 pr-10 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors font-mono uppercase"
+              className="w-full pl-10 pr-10 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] focus:ring-1 focus:ring-[var(--gb-gold)]/25 transition-colors font-mono uppercase"
             />
             {searching && (
-              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />
+              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] animate-spin" />
             )}
           </div>
 
           {/* Autocomplete Dropdown */}
           {showDropdown && searchResults.length > 0 && (
-            <div className="absolute z-50 w-full mt-1 bg-slate-800 border border-slate-700/60 rounded-xl shadow-xl overflow-hidden max-h-80 overflow-y-auto">
+            <div className="absolute z-50 w-full mt-1 bg-[var(--gb-azure-deep)] border border-[var(--gb-gold-border)]/60 rounded-xl shadow-xl overflow-hidden max-h-80 overflow-y-auto">
               {searchResults.map((result) => (
                 <button
                   key={result.symbol}
                   onClick={() => selectResult(result)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-700/50 transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--gb-azure)]/50 transition-colors text-left"
                 >
                   <CompanyLogo ticker={result.symbol} size="sm" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm font-medium truncate">
+                    <p className="text-[var(--gb-parchment)] text-sm font-medium truncate">
                       {result.longName || result.shortName || result.symbol}
                     </p>
-                    <p className="text-slate-400 text-xs">
-                      <span className="font-mono font-semibold text-slate-300">${result.symbol}</span>
+                    <p className="text-[var(--text-muted)] text-xs">
+                      <span className="font-mono font-semibold text-[var(--text-secondary)]">${result.symbol}</span>
                       {result.exchange && (
-                        <span className="ml-1.5 text-slate-500">{result.exchange}</span>
+                        <span className="ml-1.5 text-[var(--text-subtle)]">{result.exchange}</span>
                       )}
                     </p>
                   </div>
@@ -268,8 +268,8 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
           )}
 
           {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !searching && (
-            <div className="absolute z-50 w-full mt-1 bg-slate-800 border border-slate-700/60 rounded-xl shadow-xl p-4 text-center">
-              <p className="text-slate-400 text-sm">No results found</p>
+            <div className="absolute z-50 w-full mt-1 bg-[var(--gb-azure-deep)] border border-[var(--gb-gold-border)]/60 rounded-xl shadow-xl p-4 text-center">
+              <p className="text-[var(--text-muted)] text-sm">No results found</p>
             </div>
           )}
         </div>
@@ -280,7 +280,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
 
         {/* Loading quote */}
         {fetchingQuote && (
-          <div className="glass-card p-4 rounded-xl flex items-center justify-center gap-2 text-slate-400">
+          <div className="glass-card p-4 rounded-xl flex items-center justify-center gap-2 text-[var(--text-muted)]">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span className="text-sm">Loading stock details...</span>
           </div>
@@ -293,16 +293,16 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
               <div className="flex items-center gap-3">
                 <CompanyLogo ticker={selectedQuote.ticker} domain={logoDomain} size="md" />
                 <div>
-                  <span className="text-white font-mono font-semibold">
+                  <span className="text-[var(--gb-parchment)] font-mono font-semibold">
                     {selectedQuote.ticker}
                   </span>
-                  <p className="text-slate-400 text-sm truncate max-w-[200px]">
+                  <p className="text-[var(--text-muted)] text-sm truncate max-w-[200px]">
                     {selectedQuote.name}
                   </p>
                 </div>
               </div>
               {selectedQuote.price > 0 && (
-                <span className="text-slate-300 text-sm font-mono">
+                <span className="text-[var(--text-secondary)] text-sm font-mono">
                   {formatCurrency(selectedQuote.price)}
                 </span>
               )}
@@ -310,7 +310,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs text-slate-400 mb-1">
+                <label className="block text-xs text-[var(--text-muted)] mb-1">
                   Shares *
                 </label>
                 <input
@@ -320,11 +320,11 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                   placeholder="100"
                   min="0.01"
                   step="any"
-                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-sm"
+                  className="w-full px-3 py-2 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-lg text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">
+                <label className="block text-xs text-[var(--text-muted)] mb-1">
                   Cost Basis ($)
                 </label>
                 <input
@@ -334,14 +334,14 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                   placeholder="Optional"
                   min="0"
                   step="any"
-                  className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-sm"
+                  className="w-full px-3 py-2 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-lg text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] text-sm"
                 />
               </div>
             </div>
 
             {/* Category combo box */}
             <div>
-              <label className="block text-xs text-slate-400 mb-1">
+              <label className="block text-xs text-[var(--text-muted)] mb-1">
                 Category
               </label>
               <div className="relative" ref={categoryDropdownRef}>
@@ -355,12 +355,12 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                   }}
                   onFocus={() => setShowCategoryDropdown(true)}
                   placeholder="Select or type a category"
-                  className="w-full px-3 py-2 pr-8 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 text-sm"
+                  className="w-full px-3 py-2 pr-8 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-lg text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] text-sm"
                 />
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-subtle)] pointer-events-none" />
 
                 {showCategoryDropdown && filteredCategories.length > 0 && (
-                  <div className="absolute z-50 w-full mt-1 bg-slate-800 border border-slate-700/60 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-1 bg-[var(--gb-azure-deep)] border border-[var(--gb-gold-border)]/60 rounded-lg shadow-xl max-h-48 overflow-y-auto">
                     {filteredCategories.map(cat => (
                       <button
                         key={cat}
@@ -370,8 +370,8 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                           setShowCategoryDropdown(false);
                         }}
                         className={cn(
-                          "w-full text-left px-3 py-2 text-sm hover:bg-slate-700/50 transition-colors",
-                          cat === category ? "text-violet-400" : "text-slate-300"
+                          "w-full text-left px-3 py-2 text-sm hover:bg-[var(--gb-azure)]/50 transition-colors",
+                          cat === category ? "text-[var(--gb-gold)]" : "text-[var(--text-secondary)]"
                         )}
                       >
                         {cat}
@@ -381,7 +381,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
                 )}
               </div>
               {autoDetectedHint && (
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[var(--text-subtle)] mt-1">
                   Auto-detected: {autoDetectedHint}
                 </p>
               )}
@@ -390,7 +390,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
             <button
               onClick={handleAddHolding}
               disabled={!shares || Number(shares) <= 0}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               <Plus className="w-4 h-4" />
               Add to Portfolio
@@ -402,33 +402,33 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
       {/* Holdings List */}
       {holdings.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-300">
+          <h3 className="text-sm font-medium text-[var(--text-secondary)]">
             Your Holdings ({holdings.length})
           </h3>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {holdings.map((h) => (
               <div
                 key={h.ticker}
-                className="flex items-center justify-between p-3 bg-slate-800/30 border border-slate-700/30 rounded-xl"
+                className="flex items-center justify-between p-3 bg-[var(--gb-azure-deep)]/30 border border-[var(--gb-gold-border)]/30 rounded-xl"
               >
                 <div className="flex items-center gap-3">
                   <CompanyLogo ticker={h.ticker} domain={h.logoDomain} size="sm" />
                   <div>
-                    <span className="text-white font-mono font-semibold text-sm">
+                    <span className="text-[var(--gb-parchment)] font-mono font-semibold text-sm">
                       {h.ticker}
                     </span>
-                    <span className="text-slate-400 text-xs ml-2 hidden sm:inline">
+                    <span className="text-[var(--text-muted)] text-xs ml-2 hidden sm:inline">
                       {h.name}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-slate-300 text-sm">
+                  <span className="text-[var(--text-secondary)] text-sm">
                     {h.shares} shares
                   </span>
                   <button
                     onClick={() => removeHolding(h.ticker)}
-                    className="p-1 text-slate-500 hover:text-red-400 transition-colors"
+                    className="p-1 text-[var(--text-subtle)] hover:text-red-400 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -440,7 +440,7 @@ export function AddHoldingsStep({ holdings, onChange }: AddHoldingsStepProps) {
       )}
 
       {holdings.length === 0 && (
-        <p className="text-center text-slate-500 text-sm py-4">
+        <p className="text-center text-[var(--text-subtle)] text-sm py-4">
           Add at least one holding to continue
         </p>
       )}

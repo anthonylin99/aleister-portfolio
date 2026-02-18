@@ -30,8 +30,8 @@ type SortKey = 'ticker' | 'name' | 'value' | 'category' | 'price' | 'dayChange' 
 type SortOrder = 'asc' | 'desc';
 
 function SortIcon({ sortKey, sortOrder, columnKey }: { sortKey: SortKey; sortOrder: SortOrder; columnKey: SortKey }) {
-  if (sortKey !== columnKey) return <ArrowUpDown className="w-4 h-4 text-slate-500" />;
-  return sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 text-violet-400" /> : <ChevronDown className="w-4 h-4 text-violet-400" />;
+  if (sortKey !== columnKey) return <ArrowUpDown className="w-4 h-4 text-[var(--text-muted)]" />;
+  return sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 text-[var(--gb-gold)]" /> : <ChevronDown className="w-4 h-4 text-[var(--gb-gold)]" />;
 }
 
 export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTableProps) {
@@ -47,7 +47,6 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
   const { isVisible } = useVisibility();
   const [editingHolding, setEditingHolding] = useState<HoldingWithPrice | null>(null);
 
-  // Get existing categories for the edit modal
   const existingCategories = useMemo(() => {
     return Array.from(new Set(holdings.map((h) => h.category)));
   }, [holdings]);
@@ -110,21 +109,18 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
   const filteredAndSortedHoldings = useMemo(() => {
     let result = [...holdings];
 
-    // Filter by search
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
-        h => h.ticker.toLowerCase().includes(query) || 
+        h => h.ticker.toLowerCase().includes(query) ||
              h.name.toLowerCase().includes(query)
       );
     }
 
-    // Filter by category
     if (selectedCategory !== 'all') {
       result = result.filter(h => h.category === selectedCategory);
     }
 
-    // Sort
     result.sort((a, b) => {
       let comparison = 0;
       switch (sortKey) {
@@ -170,17 +166,17 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
       <div className="flex flex-col gap-4">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
           <input
             type="text"
-            placeholder="Search holdings..."
+            placeholder="Search relics..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-[var(--bg-secondary)]/70 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--gb-gold)] transition-colors backdrop-blur-sm"
           />
         </div>
 
-        {/* Category Filter - uniform button grid */}
+        {/* Category Filter */}
         <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
           {categories.map(cat => {
             const isActive = selectedCategory === cat;
@@ -195,8 +191,8 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                   "flex items-center justify-center min-w-0 overflow-hidden px-3",
                   "transition-colors duration-200",
                   isActive
-                    ? "bg-violet-400 text-white"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                    ? "bg-[var(--gb-gold)] text-[var(--bg-primary)] font-cinzel"
+                    : "bg-[var(--bg-secondary)]/70 text-[var(--text-secondary)] hover:bg-[var(--gb-gold)]/10 border border-[var(--gb-gold-border)]"
                 )}
               >
                 <span className="truncate block w-full text-center">{label}</span>
@@ -206,46 +202,46 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
         </div>
       </div>
 
-      {/* Table */}
-      <div className="glass-card rounded-2xl overflow-hidden">
+      {/* Parchment Scroll Table */}
+      <div className="parchment-card rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-700/50">
+              <tr className="border-b border-[var(--gb-gold-border)] parchment-header">
                 <th className="text-left p-4">
                   <button
                     onClick={() => handleSort('ticker')}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] transition-colors font-cinzel"
                   >
-                    Holding
+                    Relic
                     <SortIcon sortKey={sortKey} sortOrder={sortOrder} columnKey="ticker" />
                   </button>
                 </th>
                 <th className="text-left p-4 hidden md:table-cell">
                   <button
                     onClick={() => handleSort('category')}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] transition-colors font-cinzel"
                   >
-                    Category
+                    Territory
                     <SortIcon sortKey={sortKey} sortOrder={sortOrder} columnKey="category" />
                   </button>
                 </th>
                 <th className="text-right p-4">
                   <button
                     onClick={() => handleSort('price')}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                    className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] transition-colors ml-auto font-cinzel"
                   >
                     Price
                     <SortIcon sortKey={sortKey} sortOrder={sortOrder} columnKey="price" />
                   </button>
                 </th>
                 <th className="text-right p-4 hidden sm:table-cell">
-                  <span className="text-sm font-semibold text-slate-400">Shares</span>
+                  <span className="text-sm font-semibold text-[var(--text-secondary)] font-cinzel">Shares</span>
                 </th>
                 <th className="text-right p-4">
                   <button
                     onClick={() => handleSort('value')}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                    className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] transition-colors ml-auto font-cinzel"
                   >
                     Value
                     <SortIcon sortKey={sortKey} sortOrder={sortOrder} columnKey="value" />
@@ -254,7 +250,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                 <th className="text-right p-4 hidden lg:table-cell">
                   <button
                     onClick={() => handleSort('dayChange')}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                    className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] transition-colors ml-auto font-cinzel"
                   >
                     Day
                     <SortIcon sortKey={sortKey} sortOrder={sortOrder} columnKey="dayChange" />
@@ -262,11 +258,11 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                 </th>
                 <th className="text-right p-4 hidden xl:table-cell">
                   <div className="flex items-center justify-end gap-1">
-                    <span className="text-sm font-semibold text-slate-400">vs S&P</span>
+                    <span className="text-sm font-semibold text-[var(--text-secondary)] font-cinzel">vs S&P</span>
                     <select
                       value={vsRange}
                       onChange={(e) => setVsRange(e.target.value as VsBenchmarkRange)}
-                      className="ml-1 py-0.5 px-1.5 rounded bg-slate-800 border border-slate-600 text-slate-300 text-xs focus:outline-none focus:border-violet-400"
+                      className="ml-1 py-0.5 px-1.5 rounded bg-[var(--bg-secondary)] border border-[var(--gb-gold-border)] text-[var(--text-secondary)] text-xs focus:outline-none focus:border-[var(--gb-gold)]"
                     >
                       <option value="1M">1M</option>
                       <option value="3M">3M</option>
@@ -278,7 +274,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                 <th className="text-right p-4">
                   <button
                     onClick={() => handleSort('weight')}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors ml-auto"
+                    className="flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--gb-parchment)] transition-colors ml-auto font-cinzel"
                   >
                     Weight
                     <SortIcon sortKey={sortKey} sortOrder={sortOrder} columnKey="weight" />
@@ -291,23 +287,27 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
               {filteredAndSortedHoldings.map((holding) => {
                 const color = getCategoryColor(holding.category);
                 const dayPositive = holding.dayChangePercent >= 0;
+                const isSSR = Math.abs(holding.dayChangePercent) > 3;
 
                 return (
                   <tr
                     key={holding.ticker}
-                    className="border-b border-slate-800/50 hover:bg-white/5 transition-colors group"
+                    className={cn(
+                      "border-b border-[var(--gb-gold-border)]/30 parchment-row transition-colors group",
+                      isSSR && "golden-shimmer"
+                    )}
                   >
                     <td className="p-4">
                       <Link href={`/holdings/${holding.ticker}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                         <CompanyLogo ticker={holding.ticker} domain={holding.logoDomain} size="md" />
                         <div>
-                          <p className="font-semibold text-white">{holding.ticker}</p>
-                          <p className="text-sm text-slate-400">{holding.name}</p>
+                          <p className="font-semibold text-[var(--gb-parchment)] font-cinzel">{holding.ticker}</p>
+                          <p className="text-sm text-[var(--text-muted)]">{holding.name}</p>
                         </div>
                       </Link>
                     </td>
                     <td className="p-4 hidden md:table-cell">
-                      <span 
+                      <span
                         className="inline-flex items-center justify-center px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-center leading-tight w-[100px]"
                         style={{ backgroundColor: `${color}20`, color }}
                       >
@@ -315,24 +315,24 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <p className="font-medium text-white tabular-nums">
-                        {isVisible && Number.isFinite(holding.currentPrice) ? `$${holding.currentPrice.toFixed(2)}` : '$••••'}
+                      <p className="font-medium text-[var(--gb-parchment)] tabular-nums">
+                        {isVisible && Number.isFinite(holding.currentPrice) ? `$${holding.currentPrice.toFixed(2)}` : '$----'}
                       </p>
                     </td>
                     <td className="p-4 text-right hidden sm:table-cell">
-                      <span className="text-slate-300 tabular-nums">
-                        {isVisible ? holding.shares.toLocaleString() : '••••'}
+                      <span className="text-[var(--text-secondary)] tabular-nums">
+                        {isVisible ? holding.shares.toLocaleString() : '----'}
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <p className="font-bold text-white tabular-nums">
-                        {isVisible ? formatCurrency(holding.value) : '$••••••'}
+                      <p className="font-bold text-[var(--gb-parchment)] tabular-nums font-cinzel">
+                        {isVisible ? formatCurrency(holding.value) : '$------'}
                       </p>
                     </td>
                     <td className="p-4 text-right hidden lg:table-cell">
                       <p className={cn(
                         "font-medium tabular-nums",
-                        dayPositive ? "text-emerald-400" : "text-red-400"
+                        dayPositive ? "text-[var(--positive)]" : "text-[var(--negative)]"
                       )}>
                         {formatPercentagePrecise(holding.dayChangePercent)}
                       </p>
@@ -341,7 +341,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                       {(() => {
                         const vs = vsData[holding.ticker];
                         if (vsLoading || vs == null) {
-                          return <span className="text-slate-500">—</span>;
+                          return <span className="text-[var(--text-muted)]">---</span>;
                         }
                         const out = vs.outperforming;
                         const title = `${holding.ticker} is ${vs.tickerReturn >= 0 ? 'up' : 'down'} ${Math.abs(vs.tickerReturn).toFixed(1)}% (${vsRange}) vs S&P 500 ${vs.benchmarkReturn >= 0 ? 'up' : 'down'} ${Math.abs(vs.benchmarkReturn).toFixed(1)}%`;
@@ -350,7 +350,7 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                             title={title}
                             className={cn(
                               "inline-flex items-center gap-1 font-medium tabular-nums",
-                              out ? "text-emerald-400" : "text-red-400"
+                              out ? "text-[var(--positive)]" : "text-[var(--negative)]"
                             )}
                           >
                             {out ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
@@ -361,16 +361,16 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <div className="w-16 h-2 bg-slate-800 rounded-full overflow-hidden hidden sm:block">
-                          <div 
+                        <div className="w-16 h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden hidden sm:block">
+                          <div
                             className="h-full rounded-full"
-                            style={{ 
+                            style={{
                               width: `${Math.min(holding.weight * 3, 100)}%`,
                               backgroundColor: color,
                             }}
                           />
                         </div>
-                        <span className="text-sm text-slate-300 tabular-nums w-12 text-right">
+                        <span className="text-sm text-[var(--text-secondary)] tabular-nums w-12 text-right">
                           {formatPercentage(holding.weight)}
                         </span>
                       </div>
@@ -380,17 +380,17 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
                         {isAuthenticated && (
                           <button
                             onClick={() => setEditingHolding(holding)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-400/20 rounded-lg"
-                            title="Edit holding"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-[var(--gb-gold)]/15 rounded-lg"
+                            title="Edit relic"
                           >
-                            <Pencil className="w-4 h-4 text-slate-400 hover:text-violet-400" />
+                            <Pencil className="w-4 h-4 text-[var(--text-muted)] hover:text-[var(--gb-gold)]" />
                           </button>
                         )}
                         <Link
                           href={`/holdings/${holding.ticker}`}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-violet-400/20 rounded-lg inline-flex"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-[var(--gb-gold)]/15 rounded-lg inline-flex"
                         >
-                          <ArrowUpRight className="w-4 h-4 text-violet-400" />
+                          <ArrowUpRight className="w-4 h-4 text-[var(--gb-gold)]" />
                         </Link>
                       </div>
                     </td>
@@ -402,12 +402,12 @@ export function HoldingsTable({ holdings, totalValue, onRefresh }: HoldingsTable
         </div>
 
         {/* Table Footer */}
-        <div className="p-4 border-t border-slate-700/50 flex items-center justify-between bg-slate-900/30">
-          <span className="text-sm text-slate-400">
-            Showing {filteredAndSortedHoldings.length} of {holdings.length} holdings
+        <div className="p-4 border-t border-[var(--gb-gold-border)] flex items-center justify-between bg-[var(--bg-secondary)]/30">
+          <span className="text-sm text-[var(--text-muted)]">
+            Showing {filteredAndSortedHoldings.length} of {holdings.length} relics
           </span>
-          <span className="text-sm font-medium text-white tabular-nums">
-            Total: {isVisible ? formatCurrency(footerTotal) : '$••••••'}
+          <span className="text-sm font-medium text-[var(--gb-parchment)] tabular-nums font-cinzel">
+            Total: {isVisible ? formatCurrency(footerTotal) : '$------'}
           </span>
         </div>
       </div>

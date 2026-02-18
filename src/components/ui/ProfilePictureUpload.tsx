@@ -31,7 +31,7 @@ const iconSizes = {
 export function ProfilePictureUpload({
   currentImage,
   fallbackInitial = '?',
-  fallbackColor = '#8b5cf6',
+  fallbackColor = '#D4AF37',
   size = 'md',
   onUpload,
   onRemove,
@@ -96,12 +96,12 @@ export function ProfilePictureUpload({
             src={currentImage}
             alt="Profile"
             fill
-            className="rounded-full object-cover border-2 border-violet-400/30"
+            className="rounded-full object-cover border-2 border-[var(--gb-gold-border)]"
           />
         ) : (
           <div
             className={cn(
-              'rounded-full flex items-center justify-center text-white font-bold border-2 border-violet-400/30',
+              'rounded-full flex items-center justify-center text-[var(--gb-parchment)] font-bold border-2 border-[var(--gb-gold-border)]',
               sizeClasses[size],
               size === 'sm' && 'text-xs',
               size === 'md' && 'text-lg',
@@ -119,7 +119,7 @@ export function ProfilePictureUpload({
             onClick={() => setShowModal(true)}
             className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center transition-opacity"
           >
-            <Camera className={cn('text-white', iconSizes[size])} />
+            <Camera className={cn('text-[var(--gb-parchment)]', iconSizes[size])} />
           </button>
         )}
       </div>
@@ -131,12 +131,12 @@ export function ProfilePictureUpload({
           <div className="relative glass-card p-6 rounded-2xl w-full max-w-sm">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+              className="absolute top-4 right-4 text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-6">Change Profile Picture</h2>
+            <h2 className="text-xl font-bold text-[var(--gb-parchment)] mb-6">Change Profile Picture</h2>
 
             {/* Preview */}
             <div className="flex justify-center mb-6">
@@ -146,12 +146,12 @@ export function ProfilePictureUpload({
                     src={currentImage}
                     alt="Current"
                     fill
-                    className="rounded-full object-cover border-2 border-violet-400/30"
+                    className="rounded-full object-cover border-2 border-[var(--gb-gold-border)]"
                   />
                 </div>
               ) : (
                 <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-2xl border-2 border-violet-400/30"
+                  className="w-24 h-24 rounded-full flex items-center justify-center text-[var(--gb-parchment)] font-bold text-2xl border-2 border-[var(--gb-gold-border)]"
                   style={{ backgroundColor: fallbackColor }}
                 >
                   {fallbackInitial.charAt(0).toUpperCase()}
@@ -172,7 +172,7 @@ export function ProfilePictureUpload({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-violet-400 hover:bg-violet-400 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] font-medium rounded-xl transition-colors disabled:opacity-50"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -194,7 +194,7 @@ export function ProfilePictureUpload({
               )}
             </div>
 
-            <p className="text-xs text-slate-500 text-center mt-4">
+            <p className="text-xs text-[var(--text-subtle)] text-center mt-4">
               Max 2MB. Supports JPG, PNG, GIF.
             </p>
           </div>

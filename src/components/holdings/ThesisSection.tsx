@@ -23,7 +23,7 @@ export function ThesisSection({ ticker }: ThesisSectionProps) {
   return (
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-violet-400/30 flex-shrink-0">
+        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--gb-gold-border)] flex-shrink-0">
           <Image
             src="/profile.png"
             alt="Anthony"
@@ -33,18 +33,18 @@ export function ThesisSection({ ticker }: ThesisSectionProps) {
           />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white">Anthony&apos;s Thesis</h2>
-          <p className="text-sm text-slate-400">Personal investment reasoning and analysis</p>
+          <h2 className="text-xl font-bold text-[var(--gb-parchment)]">Anthony&apos;s Thesis</h2>
+          <p className="text-sm text-[var(--text-muted)]">Personal investment reasoning and analysis</p>
         </div>
       </div>
       <div className="space-y-4">
         {items.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-            <div className="flex items-center gap-2 text-slate-400 text-sm mb-2">
+          <div key={label} className="bg-[var(--gb-azure-deep)]/50 rounded-xl p-4 border border-[var(--gb-gold-border)]">
+            <div className="flex items-center gap-2 text-[var(--text-muted)] text-sm mb-2">
               <Icon className="w-4 h-4" />
               <span>{label}</span>
             </div>
-            <p className="text-slate-200 leading-relaxed">{value}</p>
+            <p className="text-[var(--gb-parchment)] leading-relaxed">{value}</p>
           </div>
         ))}
       </div>

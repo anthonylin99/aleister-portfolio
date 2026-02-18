@@ -146,8 +146,8 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
       <div className={cn("glass-card p-6 rounded-2xl", className)}>
         <div className="h-[400px] flex items-center justify-center">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
-            <span className="text-slate-400">Loading benchmark data...</span>
+            <div className="w-6 h-6 border-2 border-[var(--gb-gold)] border-t-transparent rounded-full animate-spin" />
+            <span className="text-[var(--text-muted)]">Loading benchmark data...</span>
           </div>
         </div>
       </div>
@@ -158,8 +158,8 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
     <div className={cn("glass-card p-6 rounded-2xl", className)}>
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
         <div>
-          <h3 className="text-xl font-bold text-white">Benchmark Comparison</h3>
-          <p className="text-sm text-slate-400">Performance normalized to 100</p>
+          <h3 className="text-xl font-bold text-[var(--gb-parchment)]">Benchmark Comparison</h3>
+          <p className="text-sm text-[var(--text-muted)]">Performance normalized to 100</p>
         </div>
 
         {/* Benchmark Toggle Buttons */}
@@ -171,8 +171,8 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 border",
                 activeBenchmarks.includes(b.ticker)
-                  ? "bg-slate-700 text-white border-slate-600"
-                  : "bg-slate-800/50 text-gray-400 border-slate-800 hover:border-slate-700"
+                  ? "bg-[var(--gb-azure)] text-[var(--gb-parchment)] border-[var(--gb-gold-border)]"
+                  : "bg-[var(--gb-azure-deep)]/50 text-gray-400 border-[var(--gb-gold-border)] hover:border-[var(--gb-gold-border)]"
               )}
             >
               <span 
@@ -192,7 +192,7 @@ export function BenchmarkChart({ range, className }: BenchmarkChartProps) {
       />
 
       {/* Performance Comparison Table */}
-      <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="mt-4 pt-4 border-t border-[var(--gb-gold-border)] grid grid-cols-2 md:grid-cols-5 gap-3">
         {/* Portfolio */}
         {portfolio && (
           <PerformanceBox 
@@ -227,13 +227,13 @@ function PerformanceBox({ name, color, value }: PerformanceBoxProps) {
   const isPositive = value >= 0;
   
   return (
-    <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+    <div className="bg-[var(--gb-azure-deep)]/50 rounded-lg p-3 border border-[var(--gb-gold-border)]">
       <div className="flex items-center gap-2 mb-1">
         <span 
           className="w-2.5 h-2.5 rounded-full" 
           style={{ backgroundColor: color }}
         />
-        <span className="text-sm text-slate-400">{name}</span>
+        <span className="text-sm text-[var(--text-muted)]">{name}</span>
       </div>
       <span className={cn(
         "text-lg font-semibold tabular-nums",

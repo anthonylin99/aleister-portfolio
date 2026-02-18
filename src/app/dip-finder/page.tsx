@@ -5,8 +5,9 @@ import { Header } from '@/components/layout/Header';
 import { DispersionChart, DispersionChartHeader } from '@/components/charts/DispersionChart';
 import { SMAData, SMAPeriod, SMA_PERIODS } from '@/types/sma';
 import { cn } from '@/lib/utils';
-import { TrendingDown, Loader2, RefreshCw, BarChart3 } from 'lucide-react';
+import { TrendingDown, RefreshCw, BarChart3 } from 'lucide-react';
 import { useUserPortfolio } from '@/lib/hooks';
+import { ScrollBanner } from '@/components/ui/ScrollBanner';
 
 type DataSource = 'portfolio' | 'watchlist';
 
@@ -92,191 +93,182 @@ export default function DipFinderPage() {
   const gains = data.filter((d) => d.deviation >= 0);
 
   return (
-    <div className="p-6 lg:p-8 min-h-screen">
-      {/* Header */}
-      <Header
-        title="Dip Finder"
-        subtitle="Find stocks trading below their moving average"
-      />
+    <div className="p-6 lg:p-8 min-h-screen relative">
+      {/* Granblue Sky Background */}
+      <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
 
-      {/* Controls */}
-      <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">
-        {/* Data Source Toggle */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-400">Source:</span>
-          <div className="flex rounded-lg overflow-hidden border border-slate-700/50">
-            <button
-              onClick={() => setSource('portfolio')}
-              className={cn(
-                'px-4 py-2 text-sm font-medium transition-colors',
-                source === 'portfolio'
-                  ? 'bg-[#9b8ac4] text-white'
-                  : 'bg-slate-800/50 text-slate-400 hover:text-white'
-              )}
-            >
-              Portfolio
-            </button>
-            <button
-              onClick={() => setSource('watchlist')}
-              className={cn(
-                'px-4 py-2 text-sm font-medium transition-colors',
-                source === 'watchlist'
-                  ? 'bg-[#9b8ac4] text-white'
-                  : 'bg-slate-800/50 text-slate-400 hover:text-white'
-              )}
-            >
-              Watchlist
-            </button>
-          </div>
-        </div>
+      <div className="relative z-10">
+        {/* Header */}
+        <Header
+          title="Dip Scout"
+          subtitle="Scout stocks trading below their moving average"
+        />
 
-        {/* SMA Period Toggle */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-400">SMA Period:</span>
-          <div className="flex rounded-lg overflow-hidden border border-slate-700/50">
-            {SMA_PERIODS.map((p) => (
+        {/* Controls */}
+        <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">
+          {/* Data Source Toggle */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-[var(--text-muted)] font-cinzel">Source:</span>
+            <div className="flex gap-1">
               <button
-                key={p}
-                onClick={() => setPeriod(p)}
-                className={cn(
-                  'px-3 py-2 text-sm font-medium transition-colors',
-                  period === p
-                    ? 'bg-[#9b8ac4] text-white'
-                    : 'bg-slate-800/50 text-slate-400 hover:text-white'
-                )}
+                onClick={() => setSource('portfolio')}
+                className={cn('game-toggle', source === 'portfolio' && 'active')}
               >
-                {p}D
+                Portfolio
               </button>
-            ))}
+              <button
+                onClick={() => setSource('watchlist')}
+                className={cn('game-toggle', source === 'watchlist' && 'active')}
+              >
+                Watchlist
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* Refresh Button */}
-        <button
-          onClick={fetchSMAData}
-          disabled={loading}
-          className="ml-auto glass-card px-4 py-2 rounded-lg flex items-center gap-2 text-slate-400 hover:text-white transition-colors disabled:opacity-50"
-        >
-          <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
-          Refresh
-        </button>
-      </div>
+          {/* SMA Period Toggle */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-[var(--text-muted)] font-cinzel">SMA Period:</span>
+            <div className="flex gap-1">
+              {SMA_PERIODS.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPeriod(p)}
+                  className={cn('game-toggle', period === p && 'active')}
+                >
+                  {p}D
+                </button>
+              ))}
+            </div>
+          </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="w-10 h-10 text-violet-400 animate-spin mb-4" />
-          <p className="text-slate-400">Calculating SMA deviation...</p>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && !loading && (
-        <div className="glass-card p-8 rounded-2xl text-center">
-          <p className="text-red-400 mb-4">{error}</p>
+          {/* Refresh Button */}
           <button
             onClick={fetchSMAData}
-            className="px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors"
+            disabled={loading}
+            className="ml-auto glass-card px-4 py-2 rounded-lg flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--gb-parchment)] transition-colors disabled:opacity-50 font-cinzel"
           >
-            Retry
+            <RefreshCw className={cn('w-4 h-4', loading && 'animate-spin')} />
+            Refresh
           </button>
         </div>
-      )}
 
-      {/* Empty State */}
-      {!loading && !error && data.length === 0 && (
-        <div className="glass-card p-10 rounded-2xl text-center max-w-md mx-auto">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-violet-400/20 flex items-center justify-center">
-            <BarChart3 className="w-8 h-8 text-violet-400" />
-          </div>
-          <h2 className="text-xl font-bold text-white mb-2">
-            No Data Available
-          </h2>
-          <p className="text-slate-400 text-sm">
-            {source === 'portfolio'
-              ? 'Add holdings to your portfolio to see SMA analysis.'
-              : 'Add stocks to your watchlist to see SMA analysis.'}
-          </p>
-        </div>
-      )}
-
-      {/* Results */}
-      {!loading && !error && data.length > 0 && (
-        <div className="space-y-8">
-          {/* Summary Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="glass-card p-4 rounded-xl">
-              <p className="text-slate-400 text-xs mb-1">Total Stocks</p>
-              <p className="text-2xl font-bold text-white">{data.length}</p>
+        {/* Loading State - Magic Circle */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="magic-circle-loader mb-4">
+              <div className="magic-circle-inner" />
             </div>
-            <div className="glass-card p-4 rounded-xl">
-              <p className="text-slate-400 text-xs mb-1">Below SMA</p>
-              <p className="text-2xl font-bold text-red-400">{dips.length}</p>
-            </div>
-            <div className="glass-card p-4 rounded-xl">
-              <p className="text-slate-400 text-xs mb-1">Above SMA</p>
-              <p className="text-2xl font-bold text-emerald-400">{gains.length}</p>
-            </div>
-            <div className="glass-card p-4 rounded-xl">
-              <p className="text-slate-400 text-xs mb-1">Biggest Dip</p>
-              <p className="text-2xl font-bold text-red-400">
-                {dips.length > 0 ? `${dips[0].deviation.toFixed(1)}%` : 'N/A'}
-              </p>
-            </div>
-          </div>
-
-          {/* Dips Section */}
-          {dips.length > 0 && (
-            <div className="glass-card p-6 rounded-2xl">
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingDown className="w-5 h-5 text-red-400" />
-                <h3 className="text-lg font-bold text-white">
-                  Below {period}-Day SMA
-                </h3>
-                <span className="text-sm text-slate-500">
-                  ({dips.length} stocks)
-                </span>
-              </div>
-              <DispersionChartHeader maxDeviation={maxDeviation} />
-              <DispersionChart
-                data={dips}
-                maxDeviation={maxDeviation}
-                onAddToPortfolio={handleAddToPortfolio}
-                onAddToWatchlist={handleAddToWatchlist}
-              />
-            </div>
-          )}
-
-          {/* Gains Section */}
-          {gains.length > 0 && (
-            <div className="glass-card p-6 rounded-2xl">
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingDown className="w-5 h-5 text-emerald-400 rotate-180" />
-                <h3 className="text-lg font-bold text-white">
-                  Above {period}-Day SMA
-                </h3>
-                <span className="text-sm text-slate-500">
-                  ({gains.length} stocks)
-                </span>
-              </div>
-              <DispersionChartHeader maxDeviation={maxDeviation} />
-              <DispersionChart
-                data={gains}
-                maxDeviation={maxDeviation}
-                onAddToPortfolio={handleAddToPortfolio}
-                onAddToWatchlist={handleAddToWatchlist}
-              />
-            </div>
-          )}
-
-          {/* Last Updated */}
-          {lastUpdated && (
-            <p className="text-center text-xs text-slate-500">
-              Last calculated: {new Date(lastUpdated).toLocaleString()}
+            <p className="text-[var(--text-secondary)] font-cinzel text-sm tracking-wide">
+              Scouting SMA deviation...
             </p>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="gradient-card p-8 rounded-2xl text-center filigree-corners">
+            <p className="text-red-400 mb-4">{error}</p>
+            <button
+              onClick={fetchSMAData}
+              className="btn-primary"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && data.length === 0 && (
+          <div className="gradient-card p-10 rounded-2xl text-center max-w-md mx-auto filigree-corners">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gb-gold)]/20 flex items-center justify-center border border-[var(--gb-gold-border)]">
+              <BarChart3 className="w-8 h-8 text-[var(--gb-gold)]" />
+            </div>
+            <h2 className="text-xl font-bold text-[var(--gb-parchment)] mb-2 font-cinzel">
+              No Data Available
+            </h2>
+            <p className="text-[var(--text-muted)] text-sm">
+              {source === 'portfolio'
+                ? 'Add holdings to your portfolio to see SMA analysis.'
+                : 'Add stocks to your watchlist to see SMA analysis.'}
+            </p>
+          </div>
+        )}
+
+        {/* Results */}
+        {!loading && !error && data.length > 0 && (
+          <div className="space-y-8">
+            {/* Summary Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="glass-card p-4 rounded-xl filigree-corners">
+                <p className="text-[var(--text-muted)] text-xs mb-1 font-cinzel">Total Stocks</p>
+                <p className="text-2xl font-bold text-[var(--gb-parchment)] font-cinzel">{data.length}</p>
+              </div>
+              <div className="glass-card p-4 rounded-xl filigree-corners">
+                <p className="text-[var(--text-muted)] text-xs mb-1 font-cinzel">Below SMA</p>
+                <p className="text-2xl font-bold text-red-400 font-cinzel">{dips.length}</p>
+              </div>
+              <div className="glass-card p-4 rounded-xl filigree-corners">
+                <p className="text-[var(--text-muted)] text-xs mb-1 font-cinzel">Above SMA</p>
+                <p className="text-2xl font-bold text-emerald-400 font-cinzel">{gains.length}</p>
+              </div>
+              <div className="glass-card p-4 rounded-xl filigree-corners">
+                <p className="text-[var(--text-muted)] text-xs mb-1 font-cinzel">Biggest Dip</p>
+                <p className="text-2xl font-bold text-red-400 font-cinzel">
+                  {dips.length > 0 ? `${dips[0].deviation.toFixed(1)}%` : 'N/A'}
+                </p>
+              </div>
+            </div>
+
+            {/* Dips Section */}
+            {dips.length > 0 && (
+              <div className="wooden-frame p-6 rounded-2xl">
+                <div className="flex items-center gap-2 mb-4 relative z-10">
+                  <TrendingDown className="w-5 h-5 text-red-400" />
+                  <ScrollBanner>Below {period}-Day SMA</ScrollBanner>
+                  <span className="text-sm text-[var(--text-subtle)] font-cinzel">
+                    ({dips.length} stocks)
+                  </span>
+                </div>
+                <DispersionChartHeader maxDeviation={maxDeviation} />
+                <DispersionChart
+                  data={dips}
+                  maxDeviation={maxDeviation}
+                  onAddToPortfolio={handleAddToPortfolio}
+                  onAddToWatchlist={handleAddToWatchlist}
+                />
+              </div>
+            )}
+
+            {/* Gains Section */}
+            {gains.length > 0 && (
+              <div className="parchment-scroll filigree-corners">
+                <div className="flex items-center gap-2 mb-4 relative z-10">
+                  <TrendingDown className="w-5 h-5 text-emerald-400 rotate-180" />
+                  <ScrollBanner>Above {period}-Day SMA</ScrollBanner>
+                  <span className="text-sm text-[var(--text-subtle)] font-cinzel">
+                    ({gains.length} stocks)
+                  </span>
+                </div>
+                <DispersionChartHeader maxDeviation={maxDeviation} />
+                <DispersionChart
+                  data={gains}
+                  maxDeviation={maxDeviation}
+                  onAddToPortfolio={handleAddToPortfolio}
+                  onAddToWatchlist={handleAddToWatchlist}
+                />
+              </div>
+            )}
+
+            {/* Last Updated */}
+            {lastUpdated && (
+              <p className="text-center text-xs text-[var(--text-subtle)] font-cinzel">
+                Last scouted: {new Date(lastUpdated).toLocaleString()}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -35,7 +35,7 @@ export default function OnboardingPage() {
     displayName: '',
     etfTicker: '',
     etfName: '',
-    avatarColor: '#8b5cf6',
+    avatarColor: '#D4AF37',
   });
 
   // Step 2 data
@@ -54,7 +54,7 @@ export default function OnboardingPage() {
 
   // Check if user is owner and redirect immediately
   const isOwner = session?.user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
-  
+
   useEffect(() => {
     if (status === 'authenticated' && isOwner) {
       // Owner skips onboarding - their profile is auto-created
@@ -65,7 +65,7 @@ export default function OnboardingPage() {
   if (status === 'loading' || (status === 'authenticated' && isOwner)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[var(--gb-gold)] animate-spin" />
       </div>
     );
   }
@@ -156,21 +156,25 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
+      {/* Granblue Sky Background */}
+      <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
+
       <div className="w-full max-w-lg">
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-purple-500/25">
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[var(--gb-gold)]/25">
               <Image
-                src="/prometheus.png"
-                alt="Prometheus"
+                src="/aleister.png"
+                alt="Aleister"
                 width={40}
                 height={40}
                 className="w-full h-full object-cover"
               />
             </div>
-            <h1 className="text-lg font-bold text-white tracking-tight">
-              Set up your portfolio
+            <h1 className="font-cinzel text-lg font-bold text-[var(--gb-parchment)] tracking-tight">
+              Prepare for Departure
             </h1>
           </div>
         </div>
@@ -179,11 +183,11 @@ export default function OnboardingPage() {
         <StepIndicator
           currentStep={step}
           totalSteps={3}
-          labels={['Name', 'Holdings', 'Circle']}
+          labels={['Identity', 'Armory', 'Guild']}
         />
 
         {/* Card */}
-        <div className="glass-card p-6 sm:p-8 rounded-2xl">
+        <div className="glass-card filigree-corners p-6 sm:p-8 rounded-2xl">
           {step === 1 && (
             <NameETFStep data={nameData} onChange={setNameData} />
           )}
@@ -199,14 +203,14 @@ export default function OnboardingPage() {
           )}
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-700/50">
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-[var(--gb-gold-border)]">
             {step > 1 ? (
               <button
                 onClick={() => {
                   setStep(step - 1);
                   setError(null);
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors text-sm"
+                className="flex items-center gap-2 px-4 py-2 text-[var(--text-muted)] hover:text-[var(--gb-parchment)] transition-colors text-sm"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back
@@ -222,7 +226,10 @@ export default function OnboardingPage() {
                   setError(null);
                 }}
                 disabled={step === 1 ? !canProceedStep1 : !canProceedStep2}
-                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-violet-400 to-violet-400 hover:from-violet-400 hover:to-purple-500 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-violet-400/25 text-sm"
+                className="flex items-center gap-2 px-6 py-2.5 font-cinzel font-semibold text-[var(--bg-primary)] rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[var(--gb-gold)]/20 text-sm"
+                style={{
+                  background: 'linear-gradient(135deg, var(--gb-gold) 0%, var(--gb-gold-light) 50%, var(--gb-gold) 100%)',
+                }}
               >
                 Continue
                 <ArrowRight className="w-4 h-4" />
@@ -231,13 +238,16 @@ export default function OnboardingPage() {
               <button
                 onClick={handleFinish}
                 disabled={saving}
-                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 shadow-lg shadow-emerald-500/25 text-sm"
+                className="flex items-center gap-2 px-6 py-2.5 font-cinzel font-semibold text-[var(--bg-primary)] rounded-xl transition-all duration-200 disabled:opacity-50 shadow-lg shadow-[var(--gb-gold)]/25 text-sm"
+                style={{
+                  background: 'linear-gradient(135deg, var(--gb-gold) 0%, var(--gb-gold-light) 50%, var(--gb-gold) 100%)',
+                }}
               >
                 {saving ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
-                    Launch Portfolio
+                    Set Sail
                     <Rocket className="w-4 h-4" />
                   </>
                 )}

@@ -1,4 +1,4 @@
-# Prometheus ETF Project Bible
+# Aleister Project Bible
 
 **Applies to every contributor and every AI (Cursor, Claude Code, etc.) working in this repo.**
 

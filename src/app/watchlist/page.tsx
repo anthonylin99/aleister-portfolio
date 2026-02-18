@@ -7,6 +7,7 @@ import { cn, formatCurrency, formatPercentagePrecise } from '@/lib/utils';
 import { CompanyLogo } from '@/components/ui/CompanyLogo';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { getCollectionsForTicker } from '@/data/collections-seed';
+import { ScrollBanner } from '@/components/ui/ScrollBanner';
 
 interface WatchlistStock {
   ticker: string;
@@ -24,7 +25,7 @@ export default function WatchlistPage() {
   // Load watchlist from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('prometheus-watchlist-tickers');
+      const stored = localStorage.getItem('aleister-watchlist-tickers');
       if (stored) {
         const parsed = JSON.parse(stored);
         setTickers(parsed);
@@ -70,7 +71,7 @@ export default function WatchlistPage() {
   const removeTicker = useCallback((ticker: string) => {
     setTickers((prev) => {
       const next = prev.filter((t) => t !== ticker);
-      localStorage.setItem('prometheus-watchlist-tickers', JSON.stringify(next));
+      localStorage.setItem('aleister-watchlist-tickers', JSON.stringify(next));
       return next;
     });
   }, []);
@@ -81,130 +82,135 @@ export default function WatchlistPage() {
     setTickers((prev) => {
       if (prev.includes(t)) return prev;
       const next = [...prev, t];
-      localStorage.setItem('prometheus-watchlist-tickers', JSON.stringify(next));
+      localStorage.setItem('aleister-watchlist-tickers', JSON.stringify(next));
       return next;
     });
     setAddInput('');
   }, [addInput]);
 
   return (
-    <div className="p-6 lg:p-8 min-h-screen">
-      {/* Back Button */}
-      <Link
-        href="/explore"
-        className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back to Explore
-      </Link>
+    <div className="p-6 lg:p-8 min-h-screen relative">
+      <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
 
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
-          <Star className="w-5 h-5 text-amber-400" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold text-white">My Watchlist</h1>
-          <p className="text-sm text-slate-400">
-            Track stocks you&apos;re interested in. Data saved to your browser.
-          </p>
-        </div>
-      </div>
-
-      {/* Add Ticker */}
-      <div className="glass-card p-4 rounded-xl mb-6 flex items-center gap-3">
-        <input
-          type="text"
-          value={addInput}
-          onChange={(e) => setAddInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && addTicker()}
-          placeholder="Add ticker (e.g. NVDA, AAPL)"
-          className="flex-1 px-3 py-2 rounded-lg bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 text-sm"
-        />
-        <button
-          onClick={addTicker}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-400 text-white hover:bg-violet-400 transition-colors text-sm font-medium"
+      <div className="relative z-10">
+        {/* Back Button */}
+        <Link
+          href="/explore"
+          className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--gb-parchment)] transition-colors mb-6"
         >
-          <Plus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
+          <ArrowLeft className="w-4 h-4" />
+          Back to Explore
+        </Link>
 
-      {/* Watchlist */}
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="w-8 h-8 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : tickers.length === 0 ? (
-        <div className="glass-card p-12 rounded-2xl text-center">
-          <Star className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400 mb-2">Your watchlist is empty</p>
-          <p className="text-sm text-slate-500 mb-4">
-            Add tickers above or star stocks from any collection
-          </p>
-          <Link
-            href="/explore"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-400 transition-colors text-sm"
-          >
-            Browse Collections
-          </Link>
-        </div>
-      ) : (
-        <div className="glass-card p-4 rounded-2xl">
-          <div className="divide-y divide-slate-700/50">
-            {tickers.map((ticker) => {
-              const stock = stocks[ticker];
-              const isPositive = (stock?.dayChangePercent ?? 0) >= 0;
-              const relatedCollections = getCollectionsForTicker(ticker);
-
-              return (
-                <div key={ticker} className="flex items-center gap-3 p-3 hover:bg-slate-800/50 rounded-xl transition-colors">
-                  <Link href={`/holdings/${ticker}`} className="flex-shrink-0">
-                    <CompanyLogo ticker={ticker} size="md" />
-                  </Link>
-                  <div className="flex-1 min-w-0">
-                    <Link href={`/holdings/${ticker}`} className="font-semibold text-white hover:text-violet-400 transition-colors">
-                      {ticker}
-                    </Link>
-                    {relatedCollections.length > 0 && (
-                      <p className="text-xs text-slate-500 truncate">
-                        In: {relatedCollections.map((c) => c.name).join(', ')}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    {stock?.price !== undefined ? (
-                      <>
-                        <p className="font-semibold text-white tabular-nums">
-                          {formatCurrency(stock.price)}
-                        </p>
-                        {stock.dayChangePercent !== undefined && (
-                          <p className={cn(
-                            'flex items-center gap-0.5 text-sm font-medium justify-end',
-                            isPositive ? 'text-emerald-400' : 'text-red-400'
-                          )}>
-                            {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                            {formatPercentagePrecise(stock.dayChangePercent)}
-                          </p>
-                        )}
-                      </>
-                    ) : (
-                      <div className="w-16 h-4 bg-slate-800 rounded animate-pulse" />
-                    )}
-                  </div>
-                  <button
-                    onClick={() => removeTicker(ticker)}
-                    className="p-1.5 rounded-lg text-slate-600 hover:text-red-400 transition-colors"
-                    title="Remove from watchlist"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              );
-            })}
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+            <Star className="w-5 h-5 text-amber-400" />
+          </div>
+          <div>
+            <ScrollBanner className="text-2xl">Watch Tower</ScrollBanner>
+            <p className="text-sm text-[var(--text-muted)] mt-2">
+              Track stocks you&apos;re interested in. Data saved to your browser.
+            </p>
           </div>
         </div>
-      )}
+
+        {/* Add Ticker */}
+        <div className="parchment-card p-4 rounded-xl mb-6 flex items-center gap-3 filigree-corners">
+          <input
+            type="text"
+            value={addInput}
+            onChange={(e) => setAddInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addTicker()}
+            placeholder="Add ticker (e.g. NVDA, AAPL)"
+            className="flex-1 px-3 py-2 rounded-lg bg-[var(--gb-azure-deep)]/80 border border-[var(--gb-gold-border)] text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold)] text-sm"
+          />
+          <button
+            onClick={addTicker}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--gb-gold)] text-[var(--gb-parchment)] hover:bg-[var(--gb-gold)]/80 transition-colors text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            Add
+          </button>
+        </div>
+
+        {/* Watchlist */}
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="w-8 h-8 border-2 border-[var(--gb-gold)] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : tickers.length === 0 ? (
+          <div className="glass-card p-12 rounded-2xl text-center filigree-corners">
+            <Star className="w-12 h-12 text-[var(--text-subtle)] mx-auto mb-3" />
+            <p className="text-[var(--text-muted)] mb-2 font-cinzel">Your watch tower is empty</p>
+            <p className="text-sm text-[var(--text-subtle)] mb-4">
+              Add tickers above or star stocks from any collection
+            </p>
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--gb-gold)] text-[var(--gb-parchment)] rounded-lg hover:bg-[var(--gb-gold)]/80 transition-colors text-sm"
+            >
+              Browse Collections
+            </Link>
+          </div>
+        ) : (
+          <div className="parchment-scroll filigree-corners">
+            <div className="divide-y divide-[var(--gb-gold-border)]/30">
+              {tickers.map((ticker) => {
+                const stock = stocks[ticker];
+                const isPositive = (stock?.dayChangePercent ?? 0) >= 0;
+                const relatedCollections = getCollectionsForTicker(ticker);
+
+                return (
+                  <div key={ticker} className="flex items-center gap-3 p-3 parchment-row rounded-xl">
+                    <Link href={`/holdings/${ticker}`} className="flex-shrink-0">
+                      <CompanyLogo ticker={ticker} size="md" />
+                    </Link>
+                    <div className="flex-1 min-w-0">
+                      <Link href={`/holdings/${ticker}`} className="font-semibold text-[var(--gb-parchment)] hover:text-[var(--gb-gold)] transition-colors">
+                        {ticker}
+                      </Link>
+                      {relatedCollections.length > 0 && (
+                        <p className="text-xs text-[var(--text-subtle)] truncate">
+                          In: {relatedCollections.map((c) => c.name).join(', ')}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      {stock?.price !== undefined ? (
+                        <>
+                          <p className="font-semibold text-[var(--gb-parchment)] tabular-nums">
+                            {formatCurrency(stock.price)}
+                          </p>
+                          {stock.dayChangePercent !== undefined && (
+                            <p className={cn(
+                              'flex items-center gap-0.5 text-sm font-medium justify-end',
+                              isPositive ? 'text-emerald-400' : 'text-red-400'
+                            )}>
+                              {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                              {formatPercentagePrecise(stock.dayChangePercent)}
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <div className="w-16 h-4 bg-[var(--gb-azure-deep)] rounded animate-pulse" />
+                      )}
+                    </div>
+                    <button
+                      onClick={() => removeTicker(ticker)}
+                      className="p-1.5 rounded-lg text-[var(--text-subtle)] hover:text-red-400 transition-colors"
+                      title="Remove from watchlist"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

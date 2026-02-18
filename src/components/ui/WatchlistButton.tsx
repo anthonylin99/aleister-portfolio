@@ -105,7 +105,7 @@ export function WatchlistButton({
         sizeClasses[size],
         isInWatchlist
           ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30'
-          : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-amber-400',
+          : 'bg-[var(--gb-azure-deep)]/50 text-[var(--text-muted)] hover:bg-[var(--gb-azure)]/50 hover:text-amber-400',
         (loading || checking) && 'opacity-50 cursor-wait',
         className
       )}

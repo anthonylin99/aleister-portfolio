@@ -3,7 +3,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 
-const VISITOR_KEY = 'prometheus-visitor-id';
+const VISITOR_KEY = 'aleister-visitor-id';
 
 /**
  * Get or create a visitor ID from localStorage (client-side only).
@@ -32,7 +32,7 @@ export function getVisitorIdFromRequest(request: Request): string | null {
 
   // Check cookie
   const cookies = request.headers.get('cookie') || '';
-  const match = cookies.match(/prometheus-visitor-id=([^;]+)/);
+  const match = cookies.match(/aleister-visitor-id=([^;]+)/);
   if (match) return match[1];
 
   return null;

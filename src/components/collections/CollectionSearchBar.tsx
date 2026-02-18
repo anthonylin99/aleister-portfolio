@@ -33,18 +33,18 @@ export function CollectionSearchBar({
 
   return (
     <div className={cn('relative', className)}>
-      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
+      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-subtle)] pointer-events-none" />
       <input
         type="text"
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full pl-11 pr-10 py-3 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-violet-400 transition-colors text-sm"
+        className="w-full pl-11 pr-10 py-3 rounded-xl bg-[var(--gb-azure-deep)]/80 border border-[var(--gb-gold-border)] text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold)] transition-colors text-sm"
       />
       {value && (
         <button
           onClick={handleClear}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded text-slate-500 hover:text-white transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded text-[var(--text-subtle)] hover:text-[var(--gb-parchment)] transition-colors"
         >
           <X className="w-4 h-4" />
         </button>

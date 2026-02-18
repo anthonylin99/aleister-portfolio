@@ -28,14 +28,14 @@ export function CategorySection({ category, collections, showViewAll = true }: C
             </span>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{category.name}</h2>
-            <p className="text-sm text-slate-400">{category.description}</p>
+            <h2 className="text-xl font-bold text-[var(--gb-parchment)]">{category.name}</h2>
+            <p className="text-sm text-[var(--text-muted)]">{category.description}</p>
           </div>
         </div>
         {showViewAll && (
           <Link
             href={`/explore/category/${category.id}`}
-            className="flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+            className="flex items-center gap-1 text-sm text-[var(--gb-gold)] hover:text-[var(--gb-gold-light)] transition-colors"
           >
             View all <ChevronRight className="w-4 h-4" />
           </Link>

@@ -32,24 +32,24 @@ export function InviteCard({ inviteCode, circleName }: InviteCardProps) {
   return (
     <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center gap-3 mb-4">
-        <Share2 className="w-5 h-5 text-violet-400" />
-        <h2 className="text-lg font-bold text-white">Invite Friends</h2>
+        <Share2 className="w-5 h-5 text-[var(--gb-gold)]" />
+        <h2 className="text-lg font-bold text-[var(--gb-parchment)] font-cinzel">Summon Allies</h2>
       </div>
 
-      <p className="text-slate-400 text-sm mb-4">
+      <p className="text-[var(--text-muted)] text-sm mb-4">
         Share this code with friends to invite them to{' '}
-        <span className="text-white font-medium">{circleName}</span>
+        <span className="text-[var(--gb-parchment)] font-medium">{circleName}</span>
       </p>
 
       <div className="flex items-center gap-2">
-        <div className="flex-1 px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-center">
-          <span className="text-white font-mono font-bold tracking-[0.3em] text-lg">
+        <div className="flex-1 px-4 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-center">
+          <span className="text-[var(--gb-parchment)] font-mono font-bold tracking-[0.3em] text-lg">
             {inviteCode}
           </span>
         </div>
         <button
           onClick={handleCopy}
-          className="px-4 py-3 bg-violet-400 hover:bg-violet-400 text-white rounded-xl transition-colors flex items-center gap-2"
+          className="px-4 py-3 bg-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80 text-[var(--gb-parchment)] rounded-xl transition-colors flex items-center gap-2"
         >
           {copied ? (
             <Check className="w-4 h-4" />

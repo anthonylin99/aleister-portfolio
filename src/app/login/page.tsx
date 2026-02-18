@@ -39,7 +39,7 @@ export default function LoginPage() {
       } else {
         // Check if we're in dev mode (no RESEND_API_KEY configured)
         const isDevMode = !process.env.NEXT_PUBLIC_RESEND_API_KEY || process.env.NODE_ENV === 'development';
-        
+
         if (isDevMode) {
           // Dev mode: auto-complete the magic link flow
           // Add a delay to ensure sendVerificationRequest has run
@@ -60,24 +60,28 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
+      {/* Granblue Sky Background */}
+      <div className="stripe-gradient-bg" />
+      <div className="sky-sparkles" />
+
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-purple-500/25">
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg shadow-[var(--gb-gold)]/25">
               <Image
-                src="/prometheus.png"
-                alt="Prometheus"
+                src="/aleister.png"
+                alt="Aleister"
                 width={48}
                 height={48}
                 className="w-full h-full object-cover"
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">
-                Prometheus
+              <h1 className="font-cinzel text-2xl font-bold text-[var(--gb-parchment)] tracking-tight">
+                Aleister
               </h1>
-              <span className="text-xs font-medium text-violet-400 tracking-widest">
+              <span className="text-xs font-medium text-[var(--gb-gold)] tracking-widest">
                 SOCIAL ETF
               </span>
             </div>
@@ -85,20 +89,22 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="glass-card p-8 rounded-2xl">
+        <div className="glass-card filigree-corners p-8 rounded-2xl">
           {sent ? (
             /* Success State */
             <div className="text-center space-y-4">
               <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 flex items-center justify-center">
                 <CheckCircle className="w-8 h-8 text-emerald-400" />
               </div>
-              <h2 className="text-xl font-bold text-white">Check your email</h2>
-              <p className="text-slate-400 text-sm">
+              <h2 className="font-cinzel text-xl font-bold text-[var(--gb-parchment)]">
+                A Letter Awaits
+              </h2>
+              <p className="text-[var(--text-muted)] text-sm">
                 We sent a magic link to{' '}
-                <span className="text-white font-medium">{email}</span>
+                <span className="text-[var(--gb-parchment)] font-medium">{email}</span>
               </p>
-              <p className="text-slate-500 text-xs">
-                Click the link in the email to sign in. It expires in 24 hours.
+              <p className="text-[var(--text-subtle)] text-xs">
+                Click the link in the email to board the ship. It expires in 24 hours.
               </p>
               {(!process.env.NEXT_PUBLIC_RESEND_API_KEY || process.env.NODE_ENV === 'development') && (
                 <p className="text-amber-400/80 text-xs mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
@@ -110,7 +116,7 @@ export default function LoginPage() {
                   setSent(false);
                   setEmail('');
                 }}
-                className="text-sm text-violet-400 hover:text-violet-300 transition-colors mt-4"
+                className="text-sm text-[var(--gb-gold)] hover:text-[var(--gb-gold-light)] transition-colors mt-4"
               >
                 Use a different email
               </button>
@@ -119,17 +125,17 @@ export default function LoginPage() {
             /* Form State */
             <>
               <div className="text-center mb-6">
-                <h2 className="text-xl font-bold text-white mb-2">
-                  Sign in to your portfolio
+                <h2 className="font-cinzel text-xl font-bold text-[var(--gb-parchment)] mb-2">
+                  Enter Aleister
                 </h2>
-                <p className="text-slate-400 text-sm">
-                  Enter your email to receive a magic link
+                <p className="text-[var(--text-muted)] text-sm">
+                  Enter your email to receive a boarding pass
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-subtle)]" />
                   <input
                     type="email"
                     value={email}
@@ -137,7 +143,7 @@ export default function LoginPage() {
                     placeholder="you@example.com"
                     required
                     autoFocus
-                    className="w-full pl-11 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50 focus:ring-1 focus:ring-violet-400/25 transition-colors"
+                    className="w-full pl-11 pr-4 py-3 bg-[var(--gb-azure-deep)]/50 border border-[var(--gb-gold-border)] rounded-xl text-[var(--gb-parchment)] placeholder-[var(--text-subtle)] focus:outline-none focus:border-[var(--gb-gold-border-strong)] focus:ring-1 focus:ring-[var(--gb-gold)]/25 transition-colors"
                   />
                 </div>
 
@@ -148,26 +154,26 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading || !email.trim()}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 text-[var(--bg-primary)] font-cinzel font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   style={{
-                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-                    boxShadow: '0 10px 30px rgba(139, 92, 246, 0.3)',
+                    background: 'linear-gradient(135deg, var(--gb-gold) 0%, var(--gb-gold-light) 50%, var(--gb-gold) 100%)',
+                    boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)',
                   }}
                 >
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
                     <>
-                      Send Magic Link
+                      Embark
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
                 </button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-slate-700/50 text-center">
-                <p className="text-slate-500 text-xs">
-                  No password needed. We&apos;ll email you a secure sign-in link.
+              <div className="mt-6 pt-6 border-t border-[var(--gb-gold-border)] text-center">
+                <p className="text-[var(--text-subtle)] text-xs">
+                  No password needed. We&apos;ll send a secure boarding pass to your email.
                 </p>
               </div>
             </>
@@ -175,8 +181,8 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-600 text-xs mt-6">
-          Create your own ETF and compete with friends
+        <p className="text-center text-[var(--text-subtle)] text-xs mt-6">
+          Chart your own course across the skies of the market
         </p>
       </div>
     </div>

@@ -18,10 +18,10 @@ export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggle
   const isPositive = (stock.dayChangePercent ?? 0) >= 0;
 
   return (
-    <div className="group flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 transition-colors">
+    <div className="group flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--gb-azure-deep)]/50 transition-colors">
       {/* Rank */}
       {rank !== undefined && (
-        <span className="w-6 text-center text-sm font-medium text-slate-500 tabular-nums">
+        <span className="w-6 text-center text-sm font-medium text-[var(--text-subtle)] tabular-nums">
           {rank}
         </span>
       )}
@@ -34,24 +34,24 @@ export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggle
       {/* Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <Link href={`/holdings/${stock.ticker}`} className="font-semibold text-white hover:text-violet-400 transition-colors">
+          <Link href={`/holdings/${stock.ticker}`} className="font-semibold text-[var(--gb-parchment)] hover:text-[var(--gb-gold)] transition-colors">
             {stock.ticker}
           </Link>
           {stock.name && (
-            <span className="text-sm text-slate-500 truncate hidden sm:inline">
+            <span className="text-sm text-[var(--text-subtle)] truncate hidden sm:inline">
               {stock.name}
             </span>
           )}
         </div>
         {stock.note && (
-          <p className="text-xs text-slate-500 truncate mt-0.5">{stock.note}</p>
+          <p className="text-xs text-[var(--text-subtle)] truncate mt-0.5">{stock.note}</p>
         )}
       </div>
 
       {/* Holdings % */}
       {holdingsPercent !== undefined && (
         <div className="text-right flex-shrink-0 min-w-[60px]">
-          <p className="text-sm font-medium text-slate-400 tabular-nums">
+          <p className="text-sm font-medium text-[var(--text-muted)] tabular-nums">
             {holdingsPercent.toFixed(2)}%
           </p>
         </div>
@@ -61,7 +61,7 @@ export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggle
       <div className="text-right flex-shrink-0">
         {stock.price !== undefined && Number.isFinite(stock.price) && stock.price > 0 ? (
           <>
-            <p className="font-semibold text-white tabular-nums">
+            <p className="font-semibold text-[var(--gb-parchment)] tabular-nums">
               {formatCurrency(stock.price)}
             </p>
             {stock.dayChangePercent !== undefined && Number.isFinite(stock.dayChangePercent) && (
@@ -75,7 +75,7 @@ export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggle
             )}
           </>
         ) : (
-          <div className="w-16 h-4 bg-slate-800 rounded animate-pulse" />
+          <div className="w-16 h-4 bg-[var(--gb-azure-deep)] rounded animate-pulse" />
         )}
       </div>
 
@@ -90,7 +90,7 @@ export function StockRow({ stock, rank, holdingsPercent, isWatchlisted, onToggle
             'p-1.5 rounded-lg transition-colors flex-shrink-0',
             isWatchlisted
               ? 'text-amber-400 hover:text-amber-300'
-              : 'text-slate-600 hover:text-slate-400 opacity-0 group-hover:opacity-100'
+              : 'text-[var(--text-subtle)] hover:text-[var(--text-muted)] opacity-0 group-hover:opacity-100'
           )}
           title={isWatchlisted ? 'Remove from watchlist' : 'Add to watchlist'}
         >

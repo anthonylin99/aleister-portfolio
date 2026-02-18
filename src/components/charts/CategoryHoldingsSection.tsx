@@ -84,23 +84,23 @@ export function CategoryHoldingsSection({ data, totalValue }: CategoryHoldingsSe
                     className="w-3 h-3 rounded-full mb-2"
                     style={{ backgroundColor: activeData.color }}
                   />
-                  <span className="text-2xl font-bold text-white tabular-nums">
+                  <span className="text-2xl font-bold text-[var(--gb-parchment)] tabular-nums">
                     {formatPercentage(activeData.percentage)}
                   </span>
-                  <span className="text-sm text-slate-300 text-center px-4 mt-1 max-w-[140px] leading-tight">
+                  <span className="text-sm text-[var(--text-secondary)] text-center px-4 mt-1 max-w-[140px] leading-tight">
                     {activeData.name}
                   </span>
-                  <span className="text-xs text-slate-500 mt-1">
+                  <span className="text-xs text-[var(--text-subtle)] mt-1">
                     {activeData.holdings.length} holding{activeData.holdings.length > 1 ? 's' : ''}
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="text-sm text-slate-400 font-medium">Total</span>
-                  <span className="text-2xl font-bold text-white tabular-nums">
+                  <span className="text-sm text-[var(--text-muted)] font-medium">Total</span>
+                  <span className="text-2xl font-bold text-[var(--gb-parchment)] tabular-nums">
                     {formatCurrency(totalValue)}
                   </span>
-                  <span className="text-xs text-slate-500 mt-1">
+                  <span className="text-xs text-[var(--text-subtle)] mt-1">
                     {data.length} categories
                   </span>
                 </>
@@ -110,9 +110,9 @@ export function CategoryHoldingsSection({ data, totalValue }: CategoryHoldingsSe
         </div>
 
         {/* Category Table - Right Side */}
-        <div className="flex-1 border-t xl:border-t-0 xl:border-l border-slate-700/30">
+        <div className="flex-1 border-t xl:border-t-0 xl:border-l border-[var(--gb-gold-border)]/30">
           {/* Table Header */}
-          <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-6 py-4 border-b border-slate-700/30 text-sm font-medium text-slate-400">
+          <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-6 py-4 border-b border-[var(--gb-gold-border)]/30 text-sm font-medium text-[var(--text-muted)]">
             <span>Category</span>
             <span className="text-right w-28">Value</span>
             <span className="text-right w-20">Weight</span>
@@ -136,8 +136,8 @@ export function CategoryHoldingsSection({ data, totalValue }: CategoryHoldingsSe
                     style={{ backgroundColor: category.color }}
                   />
                   <div className="min-w-0">
-                    <p className="font-medium text-white truncate">{category.name}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="font-medium text-[var(--gb-parchment)] truncate">{category.name}</p>
+                    <p className="text-xs text-[var(--text-subtle)]">
                       {category.holdings.length} {category.holdings.length === 1 ? 'holding' : 'holdings'}
                     </p>
                   </div>
@@ -145,14 +145,14 @@ export function CategoryHoldingsSection({ data, totalValue }: CategoryHoldingsSe
 
                 {/* Value */}
                 <div className="text-right w-28">
-                  <p className="font-semibold text-white tabular-nums">
+                  <p className="font-semibold text-[var(--gb-parchment)] tabular-nums">
                     {formatCurrency(category.value)}
                   </p>
                 </div>
 
                 {/* Allocation */}
                 <div className="text-right w-20">
-                  <p className="font-medium text-white tabular-nums">
+                  <p className="font-medium text-[var(--gb-parchment)] tabular-nums">
                     {formatPercentage(category.percentage)}
                   </p>
                 </div>
@@ -161,12 +161,12 @@ export function CategoryHoldingsSection({ data, totalValue }: CategoryHoldingsSe
           </div>
 
           {/* Total Row */}
-          <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-6 py-4 border-t border-slate-700/30 bg-slate-900/30">
-            <span className="font-medium text-slate-400">Total</span>
-            <span className="text-right w-28 font-bold text-white tabular-nums">
+          <div className="grid grid-cols-[1fr_auto_auto] gap-4 px-6 py-4 border-t border-[var(--gb-gold-border)]/30 bg-[var(--gb-azure-deep)]/30">
+            <span className="font-medium text-[var(--text-muted)]">Total</span>
+            <span className="text-right w-28 font-bold text-[var(--gb-parchment)] tabular-nums">
               {formatCurrency(totalValue)}
             </span>
-            <span className="text-right w-20 font-medium text-white tabular-nums">
+            <span className="text-right w-20 font-medium text-[var(--gb-parchment)] tabular-nums">
               100%
             </span>
           </div>

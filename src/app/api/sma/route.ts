@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
       const watchlist = await getWatchlist(session.user.id);
       tickers = watchlist.map((w: { ticker: string }) => w.ticker);
     } else if (portfolioType === 'sample') {
-      // Use the sample Prometheus ETF portfolio
+      // Use the sample Aleister portfolio
       tickers = portfolioData.holdings.map((h: { ticker: string }) => h.ticker);
-      sourceLabel = 'Prometheus ETF';
+      sourceLabel = 'Aleister';
     } else if (portfolioType === 'friend' && targetUserId) {
       // Verify user is in the same circle as the target
       const circle = await getCircleByUserId(session.user.id);

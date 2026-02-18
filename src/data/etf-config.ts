@@ -1,4 +1,4 @@
-// ETF Configuration for $ALIN (Prometheus ETF)
+// ETF Configuration for $ALIN (Aleister)
 // Inception Date: January 24, 2026
 // Starting Price: $100.00
 // Owner: anthonylin99@gmail.com
@@ -7,18 +7,20 @@ export const OWNER_EMAIL = 'anthonylin99@gmail.com';
 
 export const etfConfig = {
   ticker: 'ALIN',
-  name: 'Prometheus ETF',
-  description: `In Greek mythology, Prometheus defied the gods to steal fire from Mount Olympus and gift it to humanity—giving mortals the power that was once reserved only for the divine.
+  name: 'Aleister',
+  description: `"Do what thou wilt shall be the whole of the Law."
 
-Today, the financial markets remain a modern Olympus. Institutional investors, hedge funds, and algorithms command tools, data, and strategies that everyday investors can only dream of. The game has always been rigged in favor of the few.
+Aleister Crowley taught that true magick is the science and art of causing change in conformity with Will. The uninitiated see markets as chaos — noise, fear, herd behavior. But to the adept, every price movement is a ritual, every thesis an invocation, every conviction trade an act of Will.
 
-Prometheus ETF exists to change that.
+The financial establishment guards its secrets like the old mystery schools — opaque strategies, asymmetric information, and tools reserved for the initiated few. They want you passive. They want you in index funds. They want you asleep.
 
-We are returning fire to the people. This portfolio represents a thesis-driven approach to investing—transparent, conviction-based, and built on the belief that individual investors deserve access to the same opportunities as the institutions. No hidden fees. No opaque strategies. Just a curated selection of high-conviction positions across the themes shaping our future: AI infrastructure, digital assets, space technology, and fintech innovation.
+Aleister exists to awaken you.
 
-This is not financial advice. This is a declaration: the power to build wealth belongs to everyone, not just the elite.
+This portfolio is a grimoire of high-conviction positions across the forces reshaping reality: AI infrastructure, digital assets, space technology, and fintech innovation. No hidden fees. No institutional gatekeeping. Just pure, thesis-driven magick — transparent and open to all who dare to look.
 
-Welcome to Prometheus. Take the fire.`,
+"Love is the law, love under will."
+
+Welcome to the Great Work. The market is your temple.`,
   inceptionDate: '2026-01-24',
   inceptionPrice: 100.00,
   
@@ -58,7 +60,7 @@ Welcome to Prometheus. Take the fire.`,
 // Benchmark tickers for comparison
 // Colors: Artemis purple, vibrant green, coral orange, electric blue
 export const benchmarks = [
-  { ticker: 'SPY', name: 'S&P 500', color: '#A78BFA' },      // Artemis purple
+  { ticker: 'SPY', name: 'S&P 500', color: '#D4AF37' },      // Artemis purple
   { ticker: 'QQQ', name: 'Nasdaq 100', color: '#00D9A5' },   // Vibrant teal-green
   { ticker: 'ARKK', name: 'ARK Innovation', color: '#FF6B6B' }, // Coral red
   { ticker: 'BITQ', name: 'Bitwise Crypto', color: '#FFB800' }, // Golden yellow

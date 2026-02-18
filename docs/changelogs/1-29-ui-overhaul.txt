@@ -1,5 +1,5 @@
 ================================================================================
-PROMETHEUS ETF - COMPLETE UI OVERHAUL CHANGELOG
+ALEISTER - COMPLETE UI OVERHAUL CHANGELOG
 Date: January 29, 2026
 ================================================================================
 

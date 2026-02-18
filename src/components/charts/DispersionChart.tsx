@@ -16,7 +16,7 @@ interface DispersionChartProps {
 export function DispersionChart({ data, maxDeviation, onAddToPortfolio, onAddToWatchlist }: DispersionChartProps) {
   if (data.length === 0) {
     return (
-      <div className="text-center text-slate-400 py-12">
+      <div className="text-center text-[var(--text-muted)] py-12">
         No data available
       </div>
     );
@@ -88,11 +88,11 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
   };
 
   return (
-    <div className="flex items-center gap-3 group hover:bg-slate-800/30 rounded-lg p-2 -mx-2 transition-colors">
+    <div className="flex items-center gap-3 group hover:bg-[var(--gb-azure-deep)]/30 rounded-lg p-2 -mx-2 transition-colors">
       {/* Ticker - clickable to view/edit */}
       <Link
         href={`/holdings/${item.ticker}`}
-        className="w-16 text-sm font-mono font-semibold text-white shrink-0 hover:text-violet-400 transition-colors"
+        className="w-16 text-sm font-mono font-semibold text-[var(--gb-parchment)] shrink-0 hover:text-[var(--gb-gold)] transition-colors"
       >
         {item.ticker}
       </Link>
@@ -135,7 +135,7 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
       </div>
 
       {/* Price vs SMA on hover */}
-      <div className="w-32 text-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 hidden sm:block">
+      <div className="w-32 text-right text-xs text-[var(--text-subtle)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 hidden sm:block">
         ${item.currentPrice.toFixed(2)} / ${item.sma.toFixed(2)}
       </div>
 
@@ -144,7 +144,7 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
         {/* Edit button - always shown */}
         <Link
           href={`/holdings/${item.ticker}`}
-          className="p-1.5 rounded-md text-xs font-medium transition-all bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 hover:text-white"
+          className="p-1.5 rounded-md text-xs font-medium transition-all bg-[var(--gb-azure)]/50 text-[var(--text-secondary)] hover:bg-slate-600/50 hover:text-[var(--gb-parchment)]"
           title="View & Edit"
         >
           <Pencil className="w-3.5 h-3.5" />
@@ -157,7 +157,7 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
               'p-1.5 rounded-md text-xs font-medium transition-all',
               portfolioState === 'success'
                 ? 'bg-emerald-500/20 text-emerald-400'
-                : 'bg-violet-400/20 text-violet-400 hover:bg-violet-400/30'
+                : 'bg-[var(--gb-gold)]/20 text-[var(--gb-gold)] hover:bg-[var(--gb-gold)]/80/30'
             )}
             title="Add to Portfolio"
           >
@@ -199,7 +199,7 @@ function DispersionBar({ item, maxDeviation, onAddToPortfolio, onAddToWatchlist 
 // Header component with scale labels
 export function DispersionChartHeader({ maxDeviation = 20 }: { maxDeviation?: number }) {
   return (
-    <div className="flex items-center gap-3 px-2 mb-2 text-xs text-slate-500">
+    <div className="flex items-center gap-3 px-2 mb-2 text-xs text-[var(--text-subtle)]">
       <div className="w-16 shrink-0">Ticker</div>
       <div className="flex-1 flex items-center">
         <div className="flex-1 text-right pr-2">-{maxDeviation.toFixed(0)}%</div>
