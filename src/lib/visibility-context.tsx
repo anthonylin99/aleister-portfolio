@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-// PIN for unlocking visibility - stored here for simplicity (only for main ETF values)
-const UNLOCK_PIN = '2119';
+// Public demos should not reveal private-sized account values by default.
+const UNLOCK_PIN = process.env.NEXT_PUBLIC_VISIBILITY_PIN ?? '';
 
 interface VisibilityContextType {
   isVisible: boolean;
@@ -19,9 +19,7 @@ interface VisibilityContextType {
 const VisibilityContext = createContext<VisibilityContextType | undefined>(undefined);
 
 export function VisibilityProvider({ children }: { children: ReactNode }) {
-  // Default to VISIBLE - everyone can see portfolio values at all times
-  // The PIN is only for extra-sensitive main ETF $ amounts if needed
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isPINModalOpen, setIsPINModalOpen] = useState(false);
 
   const openPINModal = useCallback(() => {

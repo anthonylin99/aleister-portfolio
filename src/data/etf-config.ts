@@ -1,9 +1,9 @@
 // ETF Configuration for $ALIN (Aleister)
 // Inception Date: January 24, 2026
 // Starting Price: $100.00
-// Owner: anthonylin99@gmail.com
+// Public demo data only. Do not commit personal dollar exposure here.
 
-export const OWNER_EMAIL = 'anthonylin99@gmail.com';
+export const OWNER_EMAIL = process.env.NEXT_PUBLIC_OWNER_EMAIL ?? '';
 
 export const etfConfig = {
   ticker: 'ALIN',
@@ -16,7 +16,7 @@ The financial establishment guards its secrets like the old mystery schools — 
 
 Aleister exists to awaken you.
 
-This portfolio is a grimoire of high-conviction positions across the forces reshaping reality: AI infrastructure, digital assets, space technology, and fintech innovation. No hidden fees. No institutional gatekeeping. Just pure, thesis-driven magick — transparent and open to all who dare to look.
+This public demo is a grimoire of sample high-conviction positions across the forces reshaping reality: AI infrastructure, digital assets, space technology, and fintech innovation. No hidden fees. No institutional gatekeeping. Just pure, thesis-driven magick — transparent and open to all who dare to look.
 
 "Love is the law, love under will."
 

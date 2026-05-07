@@ -33,7 +33,7 @@ Stack:   Next.js 16.1 (App Router), React 19, TypeScript 5, Tailwind CSS 4,
          Upstash Redis, Yahoo Finance, lightweight-charts, Anthropic Claude
 Files:   131 TS/TSX files, 41 API routes, 46 components, 17 service/lib files
 Build:   PASSING (45 routes, 0 errors, 0 TypeScript errors)
-Live:    https://prometheus-personal-portfolio.vercel.app/
+Live:    not currently published
 
 Overall Grade: B- (7.2/10)
 
@@ -129,7 +129,7 @@ CRIT-01: EMPTY CATCH BLOCKS (bible.md violation: "Fail Loudly")
 CRIT-02: HARDCODED API TOKEN IN SOURCE CODE
 --------------------------------------------
   File: src/lib/utils.ts:278
-  Code: `https://img.logo.dev/${resolved}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ`
+  Code: `https://img.logo.dev/${resolved}?token=REDACTED`
 
   This token is shipped in the client bundle and visible in browser DevTools.
   Even if it's a public token, it should be an environment variable for

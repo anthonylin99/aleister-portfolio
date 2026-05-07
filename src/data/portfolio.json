@@ -3,35 +3,35 @@
     {
       "ticker": "ASTS",
       "name": "AST SpaceMobile",
-      "shares": 242,
+      "shares": 12,
       "category": "Space & Satellite",
       "description": "Space-based cellular broadband network"
     },
     {
       "ticker": "IREN",
       "name": "Iris Energy",
-      "shares": 378,
+      "shares": 15,
       "category": "Crypto Infrastructure",
       "description": "Bitcoin mining with renewable energy"
     },
     {
       "ticker": "HOOD",
       "name": "Robinhood",
-      "shares": 190,
+      "shares": 8,
       "category": "Fintech",
       "description": "Commission-free trading platform"
     },
     {
       "ticker": "GLXY",
       "name": "Galaxy Digital",
-      "shares": 420,
+      "shares": 10,
       "category": "Crypto Infrastructure",
       "description": "Digital assets platform and data center infrastructure (NASDAQ: GLXY)"
     },
     {
       "ticker": "MTPLF",
       "name": "Metaplanet",
-      "shares": 3000,
+      "shares": 100,
       "category": "Digital Asset Treasury",
       "description": "Japan's Bitcoin treasury company",
       "exchange": "OTC"
@@ -39,42 +39,42 @@
     {
       "ticker": "AMZN",
       "name": "Amazon",
-      "shares": 46,
+      "shares": 2,
       "category": "Big Tech",
       "description": "E-commerce, cloud (AWS), AI infrastructure"
     },
     {
       "ticker": "FIGR",
       "name": "Figure Technology Solutions",
-      "shares": 110,
+      "shares": 5,
       "category": "Fintech",
       "description": "Blockchain-native capital marketplace for lending and tokenization (NASDAQ: FIGR)"
     },
     {
       "ticker": "META",
       "name": "Meta Platforms",
-      "shares": 11,
+      "shares": 1,
       "category": "AI Infrastructure",
       "description": "Social media, VR/AR, AI research"
     },
     {
       "ticker": "NVDA",
       "name": "NVIDIA",
-      "shares": 128,
+      "shares": 4,
       "category": "AI Infrastructure",
       "description": "GPU computing & AI chips"
     },
     {
       "ticker": "COIN",
       "name": "Coinbase",
-      "shares": 7,
+      "shares": 1,
       "category": "Fintech",
       "description": "Crypto exchange & custody"
     },
     {
       "ticker": "KRKNF",
       "name": "Kraken Robotics",
-      "shares": 600,
+      "shares": 50,
       "category": "Defense Tech",
       "description": "Underwater robotics, batteries & sensors for defense",
       "exchange": "TSX"

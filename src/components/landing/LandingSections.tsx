@@ -278,8 +278,8 @@ export function LandingSections() {
 
                   <div className="grid grid-cols-2 gap-4 mt-8">
                     <div className="text-center p-4 rounded-xl bg-[var(--gb-gold)]/5 border border-[var(--gb-gold-border)]">
-                      <div className="text-3xl font-bold text-[var(--gb-parchment)] font-cinzel">$2M+</div>
-                      <div className="text-sm text-[var(--text-muted)]">Tracked</div>
+                      <div className="text-3xl font-bold text-[var(--gb-parchment)] font-cinzel">Demo</div>
+                      <div className="text-sm text-[var(--text-muted)]">Data Mode</div>
                     </div>
                     <div className="text-center p-4 rounded-xl bg-[var(--gb-gold)]/5 border border-[var(--gb-gold-border)]">
                       <div className="text-3xl font-bold text-[var(--gb-parchment)] font-cinzel">24/7</div>

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn, formatCurrency, formatPercentagePrecise } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { OWNER_EMAIL } from '@/data/etf-config';
 
 interface SidebarData {
   totalValue: number;
@@ -250,7 +251,7 @@ export function Sidebar() {
           <div className="glass-card p-3 rounded-xl filigree-corners">
             <div className="flex items-center gap-3">
               {isAuthenticated && session?.user ? (
-                session.user.email?.toLowerCase() === 'anthonylin99@gmail.com' ? (
+                OWNER_EMAIL && session.user.email?.toLowerCase() === OWNER_EMAIL.toLowerCase() ? (
                   <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--gb-gold)] flex-shrink-0">
                     <Image
                       src="/profile.png"

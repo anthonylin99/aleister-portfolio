@@ -107,11 +107,11 @@ export function LandingHero() {
             </div>
 
             <div className="mt-12 pt-8 border-t border-[var(--gb-gold-border)] animate-fade-in-up delay-400">
-              <p className="text-sm text-[var(--text-muted)] mb-4 font-cinzel">Trusted by Skyfarers tracking</p>
+              <p className="text-sm text-[var(--text-muted)] mb-4 font-cinzel">Public demo configured for</p>
               <div className="flex items-center gap-8">
                 <div>
-                  <div className="text-2xl font-bold text-[var(--gb-parchment)] font-cinzel">$2M+</div>
-                  <div className="text-sm text-[var(--text-muted)]">Fleet Value</div>
+                  <div className="text-2xl font-bold text-[var(--gb-parchment)] font-cinzel">Sample</div>
+                  <div className="text-sm text-[var(--text-muted)]">Portfolio Data</div>
                 </div>
                 <div className="w-px h-10 bg-[var(--gb-gold-border)]" />
                 <div>

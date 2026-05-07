@@ -366,7 +366,7 @@ export default function ETFPage() {
           <div className="p-4 rounded-xl bg-[var(--gb-azure,var(--bg-secondary))]/30 border border-[var(--gb-gold-border)] flex-1">
             <p className="text-xs text-[var(--text-subtle)] leading-relaxed">
               <strong className="text-[var(--text-muted)]">Disclaimer:</strong> $ALIN (Aleister) is a
-              hypothetical personal portfolio for educational and tracking purposes only.
+              hypothetical sample portfolio for educational and tracking purposes only.
               This is not a registered investment fund. Historical performance is calculated
               based on actual stock prices but assumes constant share holdings since inception.
               Past performance does not guarantee future results.

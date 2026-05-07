@@ -274,8 +274,12 @@ const TICKER_DOMAIN_MAP: Record<string, string> = {
 
 export function getLogoUrl(ticker: string, domain?: string): string {
   const resolved = TICKER_DOMAIN_MAP[ticker.toUpperCase()] || domain;
+  const token = process.env.NEXT_PUBLIC_LOGO_API_TOKEN;
   if (resolved) {
-    return `https://img.logo.dev/${resolved}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ`;
+    const encodedDomain = encodeURIComponent(resolved);
+    return token
+      ? `https://img.logo.dev/${encodedDomain}?token=${encodeURIComponent(token)}`
+      : `https://logo.clearbit.com/${encodedDomain}`;
   }
   return '';
 }

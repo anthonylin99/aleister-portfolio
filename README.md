@@ -1,6 +1,6 @@
 # Aleister
 
-A professional, dark-themed personal portfolio tracking website showcasing your investment thesis. Built with Next.js 14, Tailwind CSS, and Recharts.
+An interview-safe, dark-themed portfolio tracking demo showcasing thesis-driven investing workflows. Built with Next.js 16, Tailwind CSS, and Recharts.
 
 **Philosophy & standards (all contributors & AI):** Everyone editing this repo—including AI in **Cursor** and **Claude Code**—must follow **[bible.md](./bible.md)**. It defines long-term stewardship, architecture-over-expediency, radical reliability, and the "Considerate Coworker" protocol. Project context for both editors: **[CLAUDE.md](./CLAUDE.md)**.
 
@@ -17,21 +17,23 @@ A professional, dark-themed personal portfolio tracking website showcasing your 
 - **Responsive**: Mobile-first design with collapsible sidebar navigation
 - **Animations**: Smooth fade-in effects, hover states, and chart animations
 
-## Portfolio Summary
+## Public Demo Data
 
-| Category | Value | Weight |
-|----------|-------|--------|
-| Crypto Infrastructure | $40,700 | 29.6% |
-| Fintech | $34,700 | 25.3% |
-| Space & Satellite | $28,000 | 20.4% |
-| AI Infrastructure | $12,100 | 8.8% |
-| Digital Asset Treasury | $11,200 | 8.2% |
-| Big Tech | $10,600 | 7.7% |
-| **Total** | **$137,300** | **100%** |
+The committed portfolio uses small sample positions only. Personal dollar exposure, real account balances, and production credentials should stay in private storage or environment-backed services.
+
+| Category | Demo Weight |
+|----------|-------------|
+| Crypto Infrastructure | 26% |
+| Fintech | 21% |
+| Space & Satellite | 18% |
+| AI Infrastructure | 20% |
+| Digital Asset Treasury | 6% |
+| Big Tech | 7% |
+| Defense Tech | 2% |
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4
 - **Charts**: Recharts

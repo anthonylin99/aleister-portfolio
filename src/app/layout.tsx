@@ -10,8 +10,8 @@ import { ThemeSettings } from "@/components/ui/ThemeSettings";
 import { ConditionalEffects } from "@/components/layout/ConditionalEffects";
 
 export const metadata: Metadata = {
-  title: "Aleister | Personal Portfolio Tracker",
-  description: "A hypothetical ETF showcasing my personal investment thesis across Space, Crypto, Fintech, and AI sectors.",
+  title: "Aleister | Portfolio Tracker Demo",
+  description: "A sample ETF-style portfolio tracker showcasing thesis workflows across Space, Crypto, Fintech, and AI sectors.",
   keywords: ["portfolio", "ETF", "investing", "crypto", "fintech", "AI", "space"],
   authors: [{ name: "Aleister" }],
   icons: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Aleister",
-    description: "Personal Investment Portfolio Tracker",
+    description: "Portfolio tracker demo with sample public data",
     type: "website",
   },
 };
